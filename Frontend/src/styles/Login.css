@@ -1,0 +1,11 @@
+.main-login {
+    /* border: 1px solid red; */
+    margin: auto;
+    max-width: 1200px;
+    height: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    
+}
