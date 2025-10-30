@@ -11,10 +11,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ProductosRequest {
 
+    private Long id;
+    private Long categoriaId;
     private String nombre;
     private String descripcion;
     private Double precio;
     private Integer stock;
-    private String categoriaId;
     private String imagen;
 }
