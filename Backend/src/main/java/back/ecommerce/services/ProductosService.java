@@ -2,6 +2,7 @@ package back.ecommerce.services;
 
 import back.ecommerce.dtos.ProductosRequest;
 import back.ecommerce.dtos.ProductosResponse;
+import java.util.List;
 
 public interface ProductosService {
     //Crear
@@ -14,5 +15,6 @@ public interface ProductosService {
     ProductosResponse update(Long id, ProductosRequest producto);
     //Eliminar
     void delete(Long id);
+    List<ProductosResponse>readAll();
     
 }

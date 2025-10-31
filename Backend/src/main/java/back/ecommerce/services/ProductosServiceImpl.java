@@ -12,6 +12,10 @@ import back.ecommerce.repositories.ProductosRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+
 @Service
 @Transactional
 @Slf4j
@@ -65,6 +69,32 @@ public class ProductosServiceImpl implements ProductosService{
     @Override
     public ProductosResponse readByName(String nombre) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    //lo agrego para que me use el readall
+    @Override
+    public List<ProductosResponse> readAll() {
+        
+        // 1. Llama al repositorio para traer todas las entidades
+        List<ProductosEntity> listaDeProductos = this.productosRepository.findAll();
+
+        // 2. Convierte esa lista de Entidades a una lista de DTOs (ProductosResponse)
+        return listaDeProductos.stream()
+                .map(producto -> {
+                    // Crea un DTO de respuesta por cada producto
+                    ProductosResponse response = new ProductosResponse();
+                    
+                    // Copia las propiedades (igual que en tu método readById)
+                    BeanUtils.copyProperties(producto, response);
+
+                    // Asigna la categoría (igual que en tu método readById)
+                    if (producto.getCategoria() != null) {
+                        response.setCategoriaId(producto.getCategoria().getId());
+                        response.setCategoriaNombre(producto.getCategoria().getNombre());
+                    }
+                    return response;
+                })
+                .collect(Collectors.toList()); // 3. Devuelve la lista de DTOs
     }
 
 @Override

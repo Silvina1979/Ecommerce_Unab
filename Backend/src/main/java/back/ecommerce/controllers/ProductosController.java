@@ -21,7 +21,7 @@ import lombok.AllArgsConstructor;
 
 
 @RestController// use to expose RESTFULL
-@RequestMapping(path = "productos")//wat to get this controller
+@RequestMapping(path = "api/productos")//wat to get this controller
 @CrossOrigin(origins = "*") // Permitir solicitudes desde cualquier origen
 @AllArgsConstructor
 public class ProductosController {
@@ -65,6 +65,11 @@ public class ProductosController {
     public ResponseEntity<Void> deleteProductos(@PathVariable Long id){
         this.productosService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ProductosResponse>> getAllProductos() {
+        return ResponseEntity.ok(this.productosService.readAll());
     }
     
 }
