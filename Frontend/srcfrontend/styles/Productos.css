@@ -1,0 +1,87 @@
+.grid-home-prod, .main-home-contenedor {
+    /* border: 1px solid red; */
+    width: 100%;
+    max-width: 1270px;
+    display: flex;
+    gap: var(--spacing-lg);
+    margin: auto;
+    flex-flow: row wrap;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.prod-home-container {
+    border: 1px solid rgb(196, 196, 196);
+    border-radius: var(--border-radius);
+    box-shadow: 1px 1px 1px rgba(165, 165, 165, 0.474);
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    padding: var(--spacing-md);
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+    max-width: 250px;
+    cursor: pointer;
+}
+
+.prod-home-container:hover {
+    transform: translateY(-4px);
+    box-shadow: 2px 2px 2px rgba(133, 133, 133, 0.474);
+}
+
+.prod-home-image {
+    border: 1px solid rgb(220, 220, 220);
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: var(--border-radius);
+    margin-bottom: var(--spacing-md);
+}
+
+.prod-home-nombre {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin: 0 0 var(--spacing-sm) 0;
+}
+
+.prod-home-precio {
+    font-weight: 700;
+    font-size: var(--font-size-2xl);
+    color: var(--primary-color);
+    margin: 0 0 var(--spacing-sm) 0;
+}
+
+.prod-home-stock {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    margin: 0 0 var(--spacing-sm) 0;
+}
+
+.prod-home-descripcion {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin: 0 0 var(--spacing-md) 0;
+    flex-grow: 1;
+    line-height: 1.5;
+}
+
+.prod-home-btn-carrito {
+    background-color: var(--third-color);
+    color: var(--text-white);
+    border: none;
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+    margin-top: auto;
+}
+
+.prod-home-btn-carrito:hover {
+    background-color: var(--third-dark-color);
+}
+
+.prod-home-btn-carrito:active {
+    transform: scale(0.98);
+}

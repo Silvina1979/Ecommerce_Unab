@@ -1,0 +1,226 @@
+/* --- contenedor principal --- */
+.main-login {
+    /* border: 1px solid red; */
+    margin: 0 auto;
+    background: #386b1142;
+    height: 570px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.all-login-container {
+    /* border: 1px solid red; */
+    position: relative;
+    width: 900px;
+    height: 550px;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 16px;
+    box-shadow: 0px 1px 10px 5px rgba(0,0,0,0.15);
+    /* background: #386b1142; */
+}
+
+/* --- cajas de formulario (posicionadas) --- */
+.login-box, .register-box {
+    /* border: 1px solid red; */
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.7s cubic-bezier(.2,.8,.2,1), opacity 0.5s;
+    z-index: 3; /* formularios encima del panel de bienvenida */
+}
+
+/* login a la izquierda por defecto */
+.login-box {
+    left: 0;
+    transform: translateX(0);
+    opacity: 1;
+}
+
+/* registro "fuera" a la derecha por defecto */
+.register-box {
+    right: 0;
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+/* --- cuando estamos en modo registro: login se va a la izquierda y registro entra --- */
+.all-login-container.active .login-box {
+    transform: translateX(-100%);
+    opacity: 0;
+    pointer-events: none; /* evita que el formulario oculto reciba clicks */
+}
+
+.all-login-container.active .register-box {
+    transform: translateX(0%);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* --- form interno --- */
+.all-login-container form {
+    /* border: 1px solid red; */
+    width: 80%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+}
+
+.all-login-container h2 {
+    margin: 0 0 12px 0;
+    font-size: 1.6rem;
+    margin-bottom: 22px;
+}
+
+/* --- inputs --- */
+.input-box {
+    /* border: 1px solid red; */
+    width: 100%;
+    margin-bottom: 22px;
+    position: relative;
+    border-bottom: 1px solid rgba(140, 140, 140, 0.321);
+}
+
+.input-box input {
+    width: 100%;
+    height: 42px;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #111;
+    padding: 0 46px 0 6px;
+    font-size: 1rem;
+}
+
+.input-box label {
+    position: absolute;
+    left: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.95rem;
+    color: rgba(0,0,0,0.6);
+    pointer-events: none;
+    transition: all 0.25s;
+}
+
+.input-box input:focus + label,
+.input-box input:not(:placeholder-shown) + label {
+    top: -8px;
+    font-size: 0.75rem;
+}
+
+/* icon */
+.input-box .icon {
+    position: absolute;
+    right: 6%;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(0,0,0,0.45);
+}
+
+/* Mostrar contraseña */
+.password-details {
+    /* border: 1px solid red; */
+    color: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Recuperar contraseña */
+.password-forgot {
+    /* border: 1px solid red; */
+    color: rgba(0,0,0,0.6);
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    bottom: 40px;
+}
+
+/* --- botones --- */
+.submit-button-contenedor { 
+    margin-top: 18px; 
+}
+
+.submit-button-contenedor button { 
+    background: #111;
+    color: #fff;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.submit-button-contenedor button, .welcome-btn {
+    padding: 10px 28px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+/* --- panel de bienvenida (ocupa la mitad derecha inicialmente) --- */
+.container-welcome {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50%;
+    height: 100%;
+    z-index: 2; /* por debajo de los formularios */
+    overflow: hidden;
+    background: linear-gradient(150deg,#7ac2a4,#3c7d37);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.7s cubic-bezier(.2,.8,.2,1);
+}
+
+/* mover panel de bienvenida a la izquierda cuando active */
+.all-login-container.active .container-welcome {
+    transform: translateX(-100%);
+}
+
+/* --- paneles internos de bienvenida --- */
+.welcome-panel {
+    position: absolute;
+    width: 100%;
+    padding: 24px;
+    text-align: center;
+    color: #fff;
+    transition: opacity .45s ease, transform .45s ease;
+    pointer-events: none; /* por defecto no reciben clicks */
+}
+
+/* welcome-register está visible por defecto */
+.welcome-register {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto; /* el que está visible acepta clics */
+}
+
+/* welcome-login está oculto por defecto (se hara visible en active) */
+.welcome-login {
+    transform: translateX(-20%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* cuando active: invertimos visibilidad */
+.all-login-container.active .welcome-register {
+    transform: translateX(20%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.all-login-container.active .welcome-login {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* --- pequeños ajustes visuales --- */
+.welcome-panel h2 { margin-bottom: 10px; font-size: 1.5rem; }
+.welcome-panel p { margin: 0 0 16px 0; color: rgba(255,255,255,0.95); }

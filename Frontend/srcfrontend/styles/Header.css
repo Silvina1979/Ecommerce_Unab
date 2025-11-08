@@ -1,0 +1,218 @@
+.link-logo {
+    text-decoration: none;
+    color: var(--text-primary)
+}
+.link-login {
+    text-decoration: none;
+    color: var(--text-primary)
+}
+.link-carrito {
+    text-decoration: none;
+    color: var(--text-primary)
+}
+
+.header-all-contenedor {
+    /* border: 2px solid blue; */
+    border-bottom: 2px solid rgb(29, 95, 54);
+    background-color: rgb(41, 137, 84);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header {
+    /* border: 1px solid blue; */
+    background-color: rgb(41, 137, 84);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1270px;
+    height: 60px;
+    gap: var(--spacing-sm);
+}
+
+.cart-icon {
+    /* border: 1px solid black; */
+    display: flex;
+    align-items: center;
+    border-radius: var(--border-radius);
+    padding: 0.75rem;
+    text-decoration: none;
+    border:none;
+    background-color: rgb(41, 137, 84);
+    margin: 0;
+}
+
+.cuenta-box:hover, .cart-icon:hover {
+    cursor: pointer;
+    background-color: rgb(99, 201, 123);
+    transition: var(--transition-normal);
+}
+
+.header-logo, .header-search, .header-right {
+    /* border: 2px solid rgb(0, 0, 0);  */
+    display: flex;
+    gap: var(--spacing-md);
+    align-items: center;
+    padding-left: var(--spacing-lg);
+    padding-right: var(--spacing-lg);
+    flex-shrink: 0;
+    height: 50px;
+}
+
+.header-right {
+    gap: var(--spacing-xl);
+}
+
+.header-search {
+    flex-grow: 1;
+}
+
+.search-box {
+    border: 2px solid rgb(25, 105, 48);
+    background-color: white;
+    border-radius: var(--border-radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px 10px;
+    width: 100%;
+    max-width: 400px;
+    height: 37px;
+}
+
+.buscador {
+    min-width: 0;
+}
+
+.search-box input {
+    width: 100%;
+    flex: 1;
+    border: none;
+    outline: none;
+    background: none;
+    padding: 0px 10px;
+}
+
+.cuenta-box {
+    /* border: 1px solid rgb(0, 0, 0); */
+    display: flex;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius);
+}
+
+
+
+/* Media Queries para Responsive Design */
+
+/* ==================================  Tablets pequeñas (481px - 768px)  =========================================================== *//* ========================================================================================================================== */
+
+/* @media screen and (max-width: 850px) {
+
+    .header {
+        max-width: 850px;
+    }
+    
+    .header-logo, .nav-menu, .header-right {
+        display: flex;
+        gap: 0;
+        align-items: center;
+        padding: 0;
+    }
+
+    .nav-menu {
+        padding-left: 10px;
+    }
+    .header-right {
+        padding-right: 10px;
+    }
+
+    .header-search {
+        padding: 0;
+        justify-content: center;
+    }
+    
+    .search-box {
+        max-width: 230px;
+    }
+
+    .search-box input {
+        min-width: 10px;
+        width: 10px;
+    }
+    
+
+    .header-right {
+        gap: var(--spacing-md);
+    }
+} */
+
+
+
+
+/* ==================================  Móviles (320px - 480px)  =========================================================== */
+
+/* @media screen and (max-width: 500px) {
+    .header {
+        padding: var(--spacing-xs);
+        gap: var(--spacing-sm);
+    }
+    
+    .nav-menu, .header-logo, .header-search, .header-right {
+        padding-left: var(--spacing-xs);
+        padding-right: var(--spacing-xs);
+        gap: var(--spacing-sm);
+    }
+    
+    .header-right {
+        gap: var(--spacing-sm);
+    }
+    
+    .search-box {
+        height: 28px;
+        padding: 0px 8px;
+    }
+
+    .lupa {
+        min-width: 26px;
+    }
+    
+    .cart-icon {
+        padding: var(--spacing-xs);
+    }
+    
+    .cuenta-box {
+        padding: var(--spacing-xs);
+        gap: var(--spacing-xs);
+    }
+} */
+
+/* ==================================  Móviles muy pequeños (hasta 320px)  =========================================================== */
+
+/* @media screen and (max-width: 320px) {
+    .header {
+        padding: var(--spacing-xs);
+    }
+    
+    .nav-menu, .header-logo, .header-search, .header-right {
+        padding-left: var(--spacing-xs);
+        padding-right: var(--spacing-xs);
+        gap: var(--spacing-xs);
+    }
+    
+    .search-box {
+        height: 26px;
+        padding: 0px 6px;
+    }
+    
+    .cart-icon {
+        padding: 2px;
+    }
+    
+    .cuenta-box {
+        padding: 2px;
+        gap: 2px;
+    }
+} */
