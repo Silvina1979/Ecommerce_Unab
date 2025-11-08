@@ -1,6 +1,7 @@
 package back.ecommerce.controllers;
 
 import java.net.URI;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -20,25 +22,22 @@ import back.ecommerce.services.ProductosService;
 import lombok.AllArgsConstructor;
 
 
-@RestController// use to expose RESTFULL
-@RequestMapping(path = "productos")//wat to get this controller
-@CrossOrigin(origins = "*") // Permitir solicitudes desde cualquier origen
+
+@RestController
+@RequestMapping(path = "productos")
+@CrossOrigin(origins = "*")
 @AllArgsConstructor
 public class ProductosController {
 
     private final ProductosService productosService;
 
-    //@GetMapping(path = "{nombre}")//use to get data
-    //public ResponseEntity<ProductosResponse> getProductosByName(@PathVariable String nombre) {
-    //     return ResponseEntity.ok(this.productosService.readByName(nombre));
-    //}
-    @GetMapping(path = "{id}")//use to get data
+    @GetMapping(path = "{id}")
     public ResponseEntity<ProductosResponse> getProductosById (@PathVariable Long id) {
          return ResponseEntity.ok(this.productosService.readById(id));
     }
 
     @PostMapping
-    public ResponseEntity<?> postProductos(@RequestBody ProductosRequest request){ 
+    public ResponseEntity<ProductosResponse> postProductos(@RequestBody ProductosRequest request){ 
         
     final var producto = this.productosService.create(request);
 
@@ -48,8 +47,8 @@ public class ProductosController {
         .buildAndExpand(producto.getId()) // Sustituye {id} por el valor real
         .toUri();
     return ResponseEntity
-        .created(location) // <- URI COMPLETA aquí
-        .body(producto); // <- Incluir el recurso creado en el cuerpo es útil
+        .created(location)
+        .body(producto);
     }
 
     @PatchMapping(path = "{id}")
@@ -65,6 +64,27 @@ public class ProductosController {
     public ResponseEntity<Void> deleteProductos(@PathVariable Long id){
         this.productosService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<ProductosResponse>>getAll() {
+        final List<ProductosResponse> productos = this.productosService.readAll();
+
+        return ResponseEntity.ok(productos);
+    }
+
+    @GetMapping(path = "/buscar")
+    public ResponseEntity<List<ProductosResponse>> buscarProductos(
+            @RequestParam("q") String terminoBusqueda) {
+        
+        return ResponseEntity.ok(this.productosService.buscarPorNombre(terminoBusqueda));
+    }
+
+    @GetMapping(path = "/categoria/{id}")
+    public ResponseEntity<List<ProductosResponse>> obtenerProductosPorCategoria(
+            @PathVariable Long id) {
+        
+        return ResponseEntity.ok(this.productosService.buscarPorCategoria(id));
     }
     
 }

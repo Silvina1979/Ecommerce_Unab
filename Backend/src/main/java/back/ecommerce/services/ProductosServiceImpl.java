@@ -1,5 +1,8 @@
 package back.ecommerce.services;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +25,6 @@ public class ProductosServiceImpl implements ProductosService{
     private final CategoriasRepository categoriasRepository;
 
 
-    //create producto
     @Override
     public ProductosResponse create(ProductosRequest producto) {
         var entity = new ProductosEntity();
@@ -44,7 +46,7 @@ public class ProductosServiceImpl implements ProductosService{
         return response;
     }
 
-    //get producto by id
+
     @Override
     public ProductosResponse readById(Long id) {
         final var entityResponse = this.productosRepository.findById(id)
@@ -69,11 +71,10 @@ public class ProductosServiceImpl implements ProductosService{
 
 @Override
 public ProductosResponse update(Long id, ProductosRequest productoRequest) {
-    // 1. Busca el producto en la base de datos o lanza una excepción.
+    
     final var entityFromDB = this.productosRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado con id: " + id));
 
-    // 2. Aplica las actualizaciones campo por campo, solo si no son nulos.
     if (productoRequest.getNombre() != null && !productoRequest.getNombre().isBlank()) {
         entityFromDB.setNombre(productoRequest.getNombre());
     }
@@ -94,17 +95,14 @@ public ProductosResponse update(Long id, ProductosRequest productoRequest) {
         entityFromDB.setImagen(productoRequest.getImagen());
     }
 
-    // 3. Mantiene la lógica para actualizar la categoría si se provee una nueva.
     if (productoRequest.getCategoriaId() != null) {
         var categoria = categoriasRepository.findById(productoRequest.getCategoriaId())
             .orElseThrow(() -> new IllegalArgumentException("Categoría no encontrada con id: " + productoRequest.getCategoriaId()));
         entityFromDB.setCategoria(categoria);
     }
     
-    // 4. Guarda la entidad con los cambios aplicados.
     var productoActualizado = this.productosRepository.save(entityFromDB);
 
-    // 5. Crea y rellena el DTO de respuesta.
     final var response = new ProductosResponse();
     BeanUtils.copyProperties(productoActualizado, response);
 
@@ -126,5 +124,52 @@ public ProductosResponse update(Long id, ProductosRequest productoRequest) {
         this.productosRepository.delete(producto);
     }
 
+    @Override
+    public List<ProductosResponse> readAll() {
+        List<ProductosEntity> entityFromDB = this.productosRepository.findAll();
+
+        return entityFromDB.stream()
+            .map(entidad -> {
+                ProductosResponse response = new ProductosResponse();
+                BeanUtils.copyProperties(entidad, response);
+                if (entidad.getCategoria() != null) {
+                    response.setCategoriaId(entidad.getCategoria().getId());
+                    response.setCategoriaNombre(entidad.getCategoria().getNombre());
+                }
+                return response;
+            })
+            .collect(Collectors.toList());
+    }
+
+    
+    @Override
+    public List<ProductosResponse> buscarPorNombre(String termino) {
+        List<ProductosEntity> productosEncontrados = this.productosRepository.findByNombreContainingIgnoreCase(termino);
+        
+        return productosEncontrados.stream()
+            .map(this::convertirEntidadAResponse) // Llama al helper
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductosResponse> buscarPorCategoria(Long categoriaId) {
+        List<ProductosEntity> productosEncontrados = this.productosRepository.findByCategoriaId(categoriaId);
+
+        return productosEncontrados.stream()
+            .map(this::convertirEntidadAResponse) // Llama al helper
+            .collect(Collectors.toList());
+    }
+
+    private ProductosResponse convertirEntidadAResponse(ProductosEntity entidad) {
+        ProductosResponse response = new ProductosResponse();
+        BeanUtils.copyProperties(entidad, response);
+        
+        if (entidad.getCategoria() != null) {
+            response.setCategoriaId(entidad.getCategoria().getId());
+            response.setCategoriaNombre(entidad.getCategoria().getNombre());
+        }
+        
+        return response;
+    }
 
 }

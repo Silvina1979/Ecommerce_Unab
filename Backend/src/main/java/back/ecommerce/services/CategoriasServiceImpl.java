@@ -22,7 +22,7 @@ public class CategoriasServiceImpl implements CategoriasService{
 
     private final CategoriasRepository categoriasRepository;
 
-    //create categoria
+
     @Override
     public CategoriasResponse create(CategoriasRequest categoria) {
         var entity = new CategoriasEntity();
@@ -36,7 +36,6 @@ public class CategoriasServiceImpl implements CategoriasService{
         return response;
     }
 
-    //get categoria by id
     @Override
     public CategoriasResponse readById(Long id) {
         final var entityResponse = this.categoriasRepository.findById(id)
@@ -48,19 +47,18 @@ public class CategoriasServiceImpl implements CategoriasService{
         return response;
     }
 
-    @Override // Anotación que indica que estás implementando un método de la interfaz
+    @Override
     public List<CategoriasResponse> readAll() {
-        // 1. Llama al repositorio para traer todas las entidades de la DB.
         List<CategoriasEntity> entityFromDB = this.categoriasRepository.findAll();
 
-        // 2. Usa un Stream para convertir cada entidad a su DTO correspondiente.
+        
         return entityFromDB.stream()
             .map(entidad -> {
                 CategoriasResponse response = new CategoriasResponse();
                 BeanUtils.copyProperties(entidad, response);
                 return response;
             })
-            .collect(Collectors.toList()); // 3. Junta todos los DTOs en una nueva lista.
+            .collect(Collectors.toList());
     }
 
     @Override
