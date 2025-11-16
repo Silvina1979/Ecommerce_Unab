@@ -1,7 +1,6 @@
 package back.ecommerce.controllers;
 
 import java.net.URI;
-import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -20,41 +19,41 @@ import back.ecommerce.dtos.PedidosResponse;
 import back.ecommerce.services.PedidosService;
 import lombok.AllArgsConstructor;
 
-@RestController
-@RequestMapping(path = "pedidos")
-@CrossOrigin(origins = "*")
+@RestController// use to expose RESTFULL
+@RequestMapping(path = "pedidos")//wat to get this controller
+@CrossOrigin(origins = "*") // Permitir solicitudes desde cualquier origen
 @AllArgsConstructor
 public class PedidosController {
 
     private final PedidosService pedidosService;
 
-    @GetMapping(path = "{id}")
+    @GetMapping(path = "{id}")//use to get data
     public ResponseEntity<PedidosResponse> getPedidos(@PathVariable Long id) {
         return ResponseEntity.ok(this.pedidosService.readById(id));
     }
 
-    @PostMapping
-    public ResponseEntity<PedidosResponse> postPedidos(@RequestBody PedidosRequest request){
+    @PostMapping//use to create data
+    public ResponseEntity<?> postPedidos(@RequestBody PedidosRequest request){
 
     final var pedido = this.pedidosService.create(request);
     
-    
+    // 1. Construir la URL completa y absoluta
     URI location = ServletUriComponentsBuilder
-            .fromCurrentRequest() // Toma la URL base actual
-            .path("/{id}") // Agrega el segmento /ID
-            .buildAndExpand(pedido.getId()) // Sustituye {id} por el valor real
-            .toUri();
-            
-    
+        .fromCurrentRequest() // Toma la URL base actual (ej: http://localhost:8080/ecommerce/pedidos)
+        .path("/{id}") // Agrega el segmento /ID
+        .buildAndExpand(pedido.getId()) // Sustituye {id} por el valor real
+        .toUri();
+        
+    // 2. Devolver 201 Created con el encabezado Location correcto Y el cuerpo del pedido
     return ResponseEntity
-            .created(location)
-            .body(pedido);
+        .created(location) // <- URL COMPLETA aquí
+        .body(pedido); // <- Incluir el recurso creado en el cuerpo es útil
     }
 
-    @PatchMapping(path = "{id}")
+    @PatchMapping(path = "{id}")//use to update data
     public ResponseEntity<PedidosResponse> updatePedidos(
-            @PathVariable Long id, 
-            @RequestBody PedidosRequest request
+        @PathVariable Long id, 
+        @RequestBody PedidosRequest request
     ){
         return ResponseEntity.ok(this.pedidosService.update(id, request));
     }
@@ -65,9 +64,5 @@ public class PedidosController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping(path = "usuario/{dni}")
-    public ResponseEntity<List<PedidosResponse>> getPedidosByUsuarioDni(@PathVariable Long dni) {
-        final List<PedidosResponse> pedidos = this.pedidosService.findByUsuarioDni(dni);
-        return ResponseEntity.ok(pedidos);
-    }
+
 }

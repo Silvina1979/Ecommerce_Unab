@@ -22,41 +22,41 @@ import lombok.AllArgsConstructor;
 
 
 @RestController
-@RequestMapping(path = "categorias")
-@CrossOrigin(origins = "*")
+@RequestMapping(path = "categorias")//use to get this controller
+@CrossOrigin(origins = "*") // Permitir solicitudes desde cualquier origen
 @AllArgsConstructor
 public class CategoriasController {
 
     private final CategoriasService categoriasService;
     
-    @GetMapping(path = "{id}")
+    @GetMapping(path = "{id}")//use to get data
     public ResponseEntity<CategoriasResponse> getCategoriasById (@PathVariable Long id) {
-         return ResponseEntity.ok(this.categoriasService.readById(id));
+        return ResponseEntity.ok(this.categoriasService.readById(id));
     }
 
     @GetMapping
     public ResponseEntity<List<CategoriasResponse>> getAll() {
-        
+        // 1. Llama al servicio para obtener la lista completa de DTOs.
         final List<CategoriasResponse> categorias = this.categoriasService.readAll();
         
-        
+        // 2. Devuelve la lista en el cuerpo de la respuesta con un estado 200 OK.
         return ResponseEntity.ok(categorias);
     }
     
 
     @PostMapping
-    public ResponseEntity<CategoriasResponse> postCategorias(@RequestBody CategoriasRequest request){ 
+    public ResponseEntity<?> postCategorias(@RequestBody CategoriasRequest request){ 
         
         final var categoria = this.categoriasService.create(request);
     
         URI location = ServletUriComponentsBuilder
-            .fromCurrentRequest() // Toma la URL base actual
+            .fromCurrentRequest() // Toma la URL base actual (ej: http://localhost:8080/ecommerce/categorias)
             .path("/{id}") // Agrega el segmento /ID
             .buildAndExpand(categoria.getId()) // Sustituye {id} por el valor real
             .toUri();
         return ResponseEntity
-            .created(location)
-            .body(categoria);
+            .created(location) // <- URI COMPLETA aquí
+            .body(categoria); // <- Incluir el recurso creado en el cuerpo es útil
         }
 
     @PatchMapping(path = "{id}")
@@ -72,5 +72,4 @@ public class CategoriasController {
         this.categoriasService.delete(id);
         return ResponseEntity.noContent().build();
     }
-
 }
