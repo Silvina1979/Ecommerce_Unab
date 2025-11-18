@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home.jsx";
-import Login from "./pages/Login";
-import Catalogo from "./pages/Catalogo";
-import Carrito from "./pages/Carrito";
-import Checkout from "./pages/Checkout";
+import Login from "./pages/Login.jsx";
+import Catalogo from "./pages/Catalogo.jsx";
+import Carrito from "./pages/Carrito.jsx";
+import Checkout from "./pages/Checkout.jsx";
 
 /**
 * Componente App
