@@ -13,8 +13,8 @@
 
 .header-all-contenedor {
     /* border: 2px solid blue; */
-    border-bottom: 2px solid rgb(29, 95, 54);
-    background-color: rgb(41, 137, 84);
+    border-bottom: 2px solid var(--primary-dark-color);
+    background-color: var(--primary-color);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -28,8 +28,9 @@
     align-items: center;
     width: 100%;
     max-width: 1270px;
-    height: 60px;
-    gap: var(--spacing-sm);
+    height: 70px;
+    gap: var(--spacing-md);
+    padding: 0 var(--spacing-md);
 }
 
 .cart-icon {
@@ -68,6 +69,21 @@
 .header-search {
     flex-grow: 1;
 }
+
+/*agrego left para poner logo*/
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+}
+
+/* LOGO */
+.logo-img {
+    height: 42px;
+    width: auto;
+    object-fit: contain;
+}
+
 
 .search-box {
     border: 2px solid rgb(25, 105, 48);

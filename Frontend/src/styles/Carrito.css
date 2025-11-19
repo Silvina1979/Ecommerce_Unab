@@ -1,44 +1,91 @@
 .main-carrito {
     /* border: 1px solid red; */
-    margin: auto;
+    margin: 40px auto;
     max-width: 1270px;
     display: flex;
-    justify-content: center;
+    /*justify-content: center;
     align-content: center;
-    margin-top: 20px;
-
-    display: flex;
-    gap: 20px; 
-    flex-flow: nowrap;
+    margin-top: 20px;*/
+    gap: 30px; 
+    /*flex-flow: nowrap;*/
+    padding: auto 20px;
 }
 
 .item-cart-cont {
     /* border: 1px solid red; */
-    width: 75%;
+    width: 70%;
     display: flex;
-    flex-flow: column;
-    gap: 15px;
+    /*flex-flow: column;*/
+    flex-direction: column;
+    gap: 20px;
+    
 }
 
+
 .items-cart {
-    background-color: rgb(255, 255, 255);
-    border: 1px solid rgb(196, 196, 196);
-    border-radius: var(--border-radius);
-    box-shadow: 1px 1px 1px rgba(165, 165, 165, 0.474);
-    height: 120px;
+    background-color: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);/*1px 1px 1px rgba(165, 165, 165, 0.474);*/
+    height: 140px;
     display: flex;
     align-items: center;
-    align-content: center;
-    justify-content: center;
+    /*align-content: center;
+    justify-content: center;*/
+    padding: 20px;
+    gap: 20px;
+    transition: var(--transition-normal);
 }
+
+.item-cart:hover{
+    box-shadow: var(--shadow-lg);
+    transform: translate(-2px);
+}
+
+
+/*poner fotos!!!!!
+.item-cart img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    border-radius: var(--border-radius);
+}  */
+
+
 
 .cart-confirm {
     /* border: 1px solid red; */
-    background-color: rgb(255, 255, 255);
-    border: 1px solid rgb(196, 196, 196);
-    border-radius: var(--border-radius);
-    box-shadow: 1px 1px 1px rgba(165, 165, 165, 0.474);
-    justify-items: center;
-    flex-grow: 1;
-    height: 200px;
+    background-color: #fff; 
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    width: 30%;
+    padding: 25px;
+    gap: 15px;
+    display: flex;
+    /*justify-items: center;*/
+    /*flex-grow: 1;*/
+    height: fit-content;
+    flex-direction: column;
 }
+
+
+
+/* --- botones --- para mirar .cart-btn {
+    width: 100%;
+    padding: 12px 20px;
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-lg);
+    cursor: pointer;
+
+    transition: var(--transition-normal);
+}
+
+.cart-btn:hover {
+    background-color: var(--primary-dark-color);
+    transform: scale(1.02);
+}
+*/

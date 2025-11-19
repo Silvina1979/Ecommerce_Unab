@@ -6,13 +6,13 @@ import api from "./api";
 
 // Obtener todos los productos
 export async function getProductos() {
-    const res = await api.get("/api/productos");
+    const res = await api.get("/productos");
     return res.data;
 }
 
 // Obtener un producto específico por ID
 export async function getProductoById(id) {
-    const res = await api.get(`/api/productos/${id}`);
+    const res = await api.get(`/productos/${id}`);
     return res.data;
 }
 

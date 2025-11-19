@@ -11,11 +11,11 @@ body {
 :root {
     /* Colores principales */
     --primary-color: #287f62;
-    --secundary-color: #56af38;
-    --third-color: #356f34;
     --primary-dark-color:#1b5542;
-    --secundary-dark-color:#326721;
-    --third-dark-color:#244c23;
+    --secundary-color: #56af38;
+    --third-color: #356f34; /*botones*/
+    /*--secundary-dark-color:#326721;
+    --third-dark-color:#244c23;*/
     
     /* Colores Secundarios */
     --medical-blue: #0ea5e9;
