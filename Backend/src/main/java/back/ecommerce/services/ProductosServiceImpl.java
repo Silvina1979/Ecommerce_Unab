@@ -15,14 +15,15 @@ import back.ecommerce.repositories.ProductosRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.List;
-import java.util.stream.Collectors;
+/*import java.util.List;
+import java.util.stream.Collectors;*/
 
 
 @Service
 @Transactional
 @Slf4j
 @AllArgsConstructor
+
 public class ProductosServiceImpl implements ProductosService{
 
     private final ProductosRepository productosRepository;
@@ -30,7 +31,7 @@ public class ProductosServiceImpl implements ProductosService{
 
 
     @Override
-    public ProductosResponse create(ProductosRequest producto) {
+    public ProductosResponse create(ProductosRequest producto){ 
         var entity = new ProductosEntity();
         BeanUtils.copyProperties(producto, entity);
 
@@ -70,7 +71,7 @@ public class ProductosServiceImpl implements ProductosService{
     
     @Override
     public ProductosResponse readByName(String nombre) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Aun no disponible en la tienda");
     }
 
     //lo agrego para que me use el readall
@@ -86,10 +87,10 @@ public class ProductosServiceImpl implements ProductosService{
                     // Crea un DTO de respuesta por cada producto
                     ProductosResponse response = new ProductosResponse();
                     
-                    // Copia las propiedades (igual que en tu método readById)
+                    // Copia las propiedades (igual que en el método readById)
                     BeanUtils.copyProperties(producto, response);
 
-                    // Asigna la categoría (igual que en tu método readById)
+                    // Asigna la categoría (igual que en el método readById)
                     if (producto.getCategoria() != null) {
                         response.setCategoriaId(producto.getCategoria().getId());
                         response.setCategoriaNombre(producto.getCategoria().getNombre());
@@ -154,7 +155,7 @@ public ProductosResponse update(Long id, ProductosRequest productoRequest) {
         this.productosRepository.delete(producto);
     }
 
-    @Override
+    /*@Override
     public List<ProductosResponse> readAll() {
         List<ProductosEntity> entityFromDB = this.productosRepository.findAll();
 
@@ -168,8 +169,8 @@ public ProductosResponse update(Long id, ProductosRequest productoRequest) {
                 }
                 return response;
             })
-            .collect(Collectors.toList());
-    }
+            .collect(Collectors.toList());*/
+    
 
     
     @Override
@@ -201,5 +202,6 @@ public ProductosResponse update(Long id, ProductosRequest productoRequest) {
         
         return response;
     }
-
 }
+
+
