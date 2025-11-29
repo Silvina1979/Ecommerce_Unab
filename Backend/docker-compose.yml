@@ -1,0 +1,47 @@
+services:
+  # SERVICIO 1: Base de Datos MySQL
+  mysqldb:
+    image: mysql:8.0
+    container_name: ecommerce-mysql
+    ports:
+      - "3306:3306" # Permite que te conectes desde DBeaver/Workbench en tu PC
+    environment:
+      - MYSQL_DATABASE=ecommerce_db
+      - MYSQL_ROOT_PASSWORD=rootpassword
+    volumes:
+      - mysql_data:/var/lib/mysql # ¡IMPORTANTE! Esto guarda los datos aunque apagues el contenedor
+    restart: always
+    
+    #inicia antes que mysql empiece a correr
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # SERVICIO 2: Tu Aplicación Spring Boot
+  app:
+    build: .
+    container_name: ecommerce-app
+    ports:
+      - "8080:8080" # Tu app estará en http://localhost:8080/ecommerce
+    environment:
+      # Activamos el perfil de producción
+      - SPRING_PROFILES_ACTIVE=prod
+      # Llenamos las variables que pusiste en application-prod.properties
+      - JDBC_DATABASE_URL=jdbc:mysql://mysqldb:3306/ecommerce_db?allowPublicKeyRetrieval=true&useSSL=false
+      - JDBC_DATABASE_USERNAME=root
+      - JDBC_DATABASE_PASSWORD=rootpassword
+    depends_on:
+      # Espera a que la DB inicie antes de arrancar la app
+    
+      mysqldb:
+        condition: service_healthy
+    restart: always
+
+  
+
+# Definición del volumen para persistencia de datos
+volumes:
+  mysql_data:
+

@@ -46,14 +46,14 @@ public class UsuariosController {
             .body(usuarioCreado);
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<List<UsuariosResponse>> obtenerTodosLosUsuarios() {
         return ResponseEntity.ok(usuariosService.readAll());
     }
 
     @GetMapping(path = "{dni}")
     public ResponseEntity<UsuariosResponse> getUsuarios(@PathVariable Long dni) {
-       return ResponseEntity.ok(this.usuariosService.readByDni(dni));
+        return ResponseEntity.ok(this.usuariosService.readByDni(dni));
     }
     
     @PatchMapping(path = "{dni}")
