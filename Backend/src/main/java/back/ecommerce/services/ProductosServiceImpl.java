@@ -137,7 +137,7 @@ public class ProductosServiceImpl implements ProductosService {
                 .orElseThrow(() -> new IllegalArgumentException("Categoría no encontrada con id: " + productoRequest.getCategoriaId()));
 
             if (!categoria.getTienda().getId().equals(entityFromDB.getTienda().getId())) {
-                 throw new IllegalArgumentException("Error: No puedes mover este producto a una categoría de otra tienda.");
+                throw new IllegalArgumentException("Error: No puedes mover este producto a una categoría de otra tienda.");
             }
             entityFromDB.setCategoria(categoria);
         }

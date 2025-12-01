@@ -35,12 +35,11 @@ public class ProductosEntity {
     private String descripcion;
     private Double precio;
     private Integer stock;
-    /*private String imagen;*/
+    private String imagen;
+    private Long tiendaId;
 
 
-    /*para hacer un carrousel de fotos de cada producto */
-    @ElementCollection
-    private List<String> imagenes;
+    
 
     @ManyToOne
     @JoinColumn(name = "categoria_id")

@@ -10,7 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -38,7 +38,7 @@ public class ProductosRequest {
     @Min(value = 0, message = "El stock no puede ser negativo")
     private Integer stock;
 
-    private List<String> imagenes;
+    
 
-    private Long tiendaId;
+    
 }
