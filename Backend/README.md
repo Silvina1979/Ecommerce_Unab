@@ -74,6 +74,8 @@ Si la aplicación inició correctamente, podrá acceder a:
 * **URL Base (Render)(Producción):** `https://ecommerce-back-2uxy.onrender.com`
 * **Documentación Swagger UI(Render):** `https://ecommerce-back-2uxy.onrender.com/swagger-ui/index.html`
 
+* **Repositorio backend con commits completos:** `https://github.com/poeticstew40/ecommerce-back`
+
 > **Nota para el equipo de Frontend:** Se recomienda utilizar Swagger UI para probar los endpoints y comprender la estructura de los objetos JSON requeridos antes de la integración.
 
 ### 1. Autenticación y Seguridad (JWT)
