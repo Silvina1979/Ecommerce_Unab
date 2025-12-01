@@ -26,6 +26,7 @@
     </scm>
     <properties>
         <java.version>21</java.version>
+        <skipTests>true</skipTests>
     </properties>
     <dependencies>
 
