@@ -1,15 +1,21 @@
-.link-logo {
+.link-logo
+.link-login
+.link-carrito{
     text-decoration: none;
     color: var(--text-primary)
 }
-.link-login {
+a{
     text-decoration: none;
     color: var(--text-primary)
 }
-.link-carrito {
+/*{
     text-decoration: none;
     color: var(--text-primary)
 }
+{
+    text-decoration: none;
+    color: var(--text-primary)
+}*/
 
 .header-all-contenedor {
     /* border: 2px solid blue; */
@@ -22,7 +28,7 @@
 
 .header {
     /* border: 1px solid blue; */
-    background-color: rgb(41, 137, 84);
+    background-color: var(--primary-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -41,23 +47,28 @@
     padding: 0.75rem;
     text-decoration: none;
     border:none;
-    background-color: rgb(41, 137, 84);
+    background-color: var(--primary-color);
     margin: 0;
 }
 
-.cuenta-box:hover, .cart-icon:hover {
+.cuenta-box:hover, 
+.cart-icon:hover 
+{
     cursor: pointer;
-    background-color: rgb(99, 201, 123);
+    background-color: var(--primary-ligth-color);
     transition: var(--transition-normal);
 }
 
-.header-logo, .header-search, .header-right {
+.header-logo, 
+.header-search, 
+.header-right 
+{
     /* border: 2px solid rgb(0, 0, 0);  */
     display: flex;
     gap: var(--spacing-md);
     align-items: center;
-    padding-left: var(--spacing-lg);
-    padding-right: var(--spacing-lg);
+    padding-left: var(--spacing-md);
+    padding-right: var(--spacing-md);
     flex-shrink: 0;
     height: 50px;
 }
@@ -68,6 +79,7 @@
 
 .header-search {
     flex-grow: 1;
+    
 }
 
 /*agrego left para poner logo*/
@@ -86,7 +98,7 @@
 
 
 .search-box {
-    border: 2px solid rgb(25, 105, 48);
+    border: 2px solid var(--primary-dark-color);
     background-color: white;
     border-radius: var(--border-radius-lg);
     display: flex;
@@ -119,6 +131,10 @@
     border-radius: var(--border-radius);
 }
 
+/* Oculta BOTÓN DE CATEGORÍAS solo en la página de Login */
+body.no-categories .categories-button {
+    display: none !important;
+}
 
 
 /* Media Queries para Responsive Design */

@@ -74,18 +74,22 @@
 .prod-home-btn-carrito {
     background-color: var(--third-color);
     color: var(--text-white);
-    border: none;
-    border-radius: var(--border-radius);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: var(--border-radius-lg);
     padding: var(--spacing-md);
     font-size: var(--font-size-base);
     font-weight: 600;
     cursor: pointer;
-    transition: background-color var(--transition-fast);
+    transition: background-color var(--transition-fast),  box-shadow 0.3s ease;
     margin-top: auto;
+    transition: background-color var(--transition-fast),
+                box-shadow var(--transition-normal),
+                transform var(--transition-fast);
 }
 
 .prod-home-btn-carrito:hover {
     background-color: var(--third-dark-color);
+    box-shadow: var(shadow-md);
 }
 
 .prod-home-btn-carrito:active {

@@ -36,6 +36,7 @@ function Header() {
                                 type="text" 
                                 className="buscador" 
                                 placeholder="Buscar productos..."
+                                aria-label="Buscar productos"
                             />
                         </div>
                     </div>
@@ -45,7 +46,7 @@ function Header() {
                         {/* Enlace a la página de login/inicio de sesión */}
                         <Link to="/login" className="link-login">
                             <div className="cuenta-box">
-                                <VscAccount className="logo-cuenta" size={25}/>
+                                <VscAccount className="logo-cuenta" size={24}/>
                                 <span>Mi Cuenta</span>
                             </div>
                         </Link>
@@ -53,7 +54,7 @@ function Header() {
                         {/* Enlace al carrito de compras */}
                         <Link to="/carrito" className="link-carrito">
                             <div className="cart-icon">
-                                <MdOutlineAddShoppingCart size={25}/>
+                                <MdOutlineAddShoppingCart size={26}/>
                             </div>
                         </Link>
                     </div>

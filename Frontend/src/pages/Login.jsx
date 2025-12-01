@@ -3,6 +3,7 @@ import Header from "../components/Header.jsx";
 import "../styles/Login.css";
 
 import { useState } from "react";
+import { useEffect } from "react";
 
 import { IoPerson } from "react-icons/io5";
 import { FaLock } from "react-icons/fa";
@@ -78,6 +79,14 @@ function Login() {
         }
     };
 
+    useEffect(() => {
+    document.body.classList.add("no-categories");
+
+    return () => {
+        document.body.classList.remove("no-categories");
+    };
+}, []);
+
     return (
         <div>
             {/* Header de navegación de la aplicación */}
@@ -121,10 +130,12 @@ function Login() {
                                     Mostrar contraseña
                                 </label>
                             </div>
+                            <a className="password-forgot" href="#">¿Olvidaste tu contraseña?</a>
+                            
                             <div className="submit-button-contenedor">
                                 <button type="submit">Iniciar Sesión</button>
                             </div>
-                                <a className="password-forgot" href="#">¿Olvidaste tu contraseña?</a>
+                                
                         </form>
                     </div>
 

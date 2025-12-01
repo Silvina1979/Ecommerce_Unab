@@ -17,7 +17,9 @@ function Carrito() {
 
             {/* Sección de los items del carrito */}
             <div className="main-carrito">
+
                 <div className="item-cart-cont">
+                    
                     <div className="items-cart">
                         <h1>Producto 1</h1>
                     </div>

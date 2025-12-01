@@ -2,28 +2,35 @@
 .main-login {
     /* border: 1px solid red; */
     margin: 0 auto;
-    background: #386b1142;
-    height: 570px;
+    background: var(--text-white);
+    height: 100vh;
+    min-height: 100vh;
+    width: 100vw;
+    padding: 0;
+    margin: 0;
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden
 
 }
 
 .all-login-container {
     /* border: 1px solid red; */
     position: relative;
-    width: 900px;
-    height: 550px;
+    width: 90%;
+    max-width: 1100px;
+    height: 85vh;
     margin: 0 auto;
     overflow: hidden;
-    border-radius: 16px;
-    box-shadow: 0px 1px 10px 5px rgba(0,0,0,0.15);
-    /* background: #386b1142; */
+    border-radius: var(--border-radius-xlg);
+    box-shadow: var(--shadow-lg);
+    background: var(--bg-secondary); 
 }
 
 /* --- cajas de formulario (posicionadas) --- */
-.login-box, .register-box {
+.login-box, 
+.register-box {
     /* border: 1px solid red; */
     position: absolute;
     top: 0;
@@ -74,8 +81,9 @@
 
 .all-login-container h2 {
     margin: 0 0 12px 0;
-    font-size: 1.6rem;
+    font-size: var(--font-size-2xl);
     margin-bottom: 22px;
+    color: var(--text-primary);
 }
 
 /* --- inputs --- */
@@ -93,9 +101,9 @@
     background: transparent;
     border: none;
     outline: none;
-    color: #111;
+    color: var(--text-primary);
     padding: 0 46px 0 6px;
-    font-size: 1rem;
+    font-size: var(--font-size-base);
 }
 
 .input-box label {
@@ -103,8 +111,8 @@
     left: 6px;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 0.95rem;
-    color: rgba(0,0,0,0.6);
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
     pointer-events: none;
     transition: all 0.25s;
 }
@@ -121,13 +129,17 @@
     right: 6%;
     top: 50%;
     transform: translateY(-50%);
-    color: rgba(0,0,0,0.45);
+    color: var(--text-primary);
+}
+
+inpu::placeholder{
+    color: var(--text-muted);
 }
 
 /* Mostrar contraseña */
 .password-details {
     /* border: 1px solid red; */
-    color: rgba(0,0,0,0.6);
+    color: var(--text-primary);
     display: flex;
     justify-content: space-between;
 }
@@ -135,11 +147,20 @@
 /* Recuperar contraseña */
 .password-forgot {
     /* border: 1px solid red; */
-    color: rgba(0,0,0,0.6);
+    color: var(--text-primary);
     position: absolute;
-    display: flex;
+    display: block;
     justify-content: center;
     bottom: 40px;
+    text-align: right;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    color: var(--primary-dark-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+.password-forgot:hover {
+    text-decoration: underline;
 }
 
 /* --- botones --- */
@@ -148,19 +169,28 @@
 }
 
 .submit-button-contenedor button { 
-    background: #111;
-    color: #fff;
+    background: var(--primary-dark-color);
+    color: var(--text-white);
     width: 100%;
     margin-bottom: 10px;
-}
-
-.submit-button-contenedor button, .welcome-btn {
     padding: 10px 28px;
     border-radius: 20px;
     border: none;
     cursor: pointer;
     font-weight: 700;
+    transition: var(--transition-normal);
 }
+.submit-button-contenedor button:hover {
+    background: var(--primary-color);
+}
+
+/*.submit-button-contenedor button, .welcome-btn {
+    padding: 10px 28px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+}*/
 
 /* --- panel de bienvenida (ocupa la mitad derecha inicialmente) --- */
 .container-welcome {
@@ -171,7 +201,7 @@
     height: 100%;
     z-index: 2; /* por debajo de los formularios */
     overflow: hidden;
-    background: linear-gradient(150deg,#7ac2a4,#3c7d37);
+    background: linear-gradient(150deg,var(--primary-light-color), var(--primary-dark-color));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -189,7 +219,7 @@
     width: 100%;
     padding: 24px;
     text-align: center;
-    color: #fff;
+    color: var(--text-white);
     transition: opacity .45s ease, transform .45s ease;
     pointer-events: none; /* por defecto no reciben clicks */
 }
@@ -222,5 +252,12 @@
 }
 
 /* --- pequeños ajustes visuales --- */
-.welcome-panel h2 { margin-bottom: 10px; font-size: 1.5rem; }
-.welcome-panel p { margin: 0 0 16px 0; color: rgba(255,255,255,0.95); }
+.welcome-panel h2 { 
+    margin-bottom: 10px; 
+    font-size: var(--font-size-2xl);
+}
+
+.welcome-panel p { 
+    margin: 0 0 16px 0; 
+    color: rgba(255,255,255,0.95);
+}

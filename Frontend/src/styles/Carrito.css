@@ -11,7 +11,7 @@
     padding: auto 20px;
 }
 
-.item-cart-cont {
+.items-cart-cont {
     /* border: 1px solid red; */
     width: 70%;
     display: flex;
@@ -37,19 +37,19 @@
     transition: var(--transition-normal);
 }
 
-.item-cart:hover{
+.items-cart:hover{
     box-shadow: var(--shadow-lg);
-    transform: translate(-2px);
+    transform: translate(-3px);
 }
 
 
-/*poner fotos!!!!!
-.item-cart img {
+/*Imagenes de los productos en el carrito*/
+.items-cart img {
     width: 100px;
     height: 100px;
     object-fit: contain;
     border-radius: var(--border-radius);
-}  */
+}  
 
 
 
@@ -71,7 +71,8 @@
 
 
 
-/* --- botones --- para mirar .cart-btn {
+/* --- botones --- para mirar*/ 
+.cart-btn {
     width: 100%;
     padding: 12px 20px;
     background-color: var(--primary-color);
@@ -80,7 +81,6 @@
     border-radius: var(--border-radius);
     font-size: var(--font-size-lg);
     cursor: pointer;
-
     transition: var(--transition-normal);
 }
 
@@ -88,4 +88,3 @@
     background-color: var(--primary-dark-color);
     transform: scale(1.02);
 }
-*/
