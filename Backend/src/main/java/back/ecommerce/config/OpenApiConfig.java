@@ -11,8 +11,8 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 @Configuration
 public class OpenApiConfig {
 
-    @Bean
-    public OpenAPI customOpenAPI() {
+@Bean
+public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
                         .title("API E-commerce Multitienda")
@@ -32,7 +32,7 @@ public class OpenApiConfig {
                                 3. Copia el `token` que recibes en la respuesta JSON.
                                 4. Ve a la parte superior de esta página y haz clic en el botón **Authorize** (el candado).
                                 5. En el campo de texto, escribe la palabra `Bearer` seguida de un espacio y pega tu token.
-                                   Ejemplo: `Bearer eyJhbGciOiJIUzI1NiJ9...`
+                                Ejemplo: `Bearer eyJhbGciOiJIUzI1NiJ9...`
                                 6. Haz clic en **Authorize**. Ahora estás logueado.
 
                                 ---
@@ -64,12 +64,12 @@ public class OpenApiConfig {
                 .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
                 .components(new io.swagger.v3.oas.models.Components()
                         .addSecuritySchemes("Bearer Authentication", createAPIKeyScheme()));
-    }
+}
 
-    private SecurityScheme createAPIKeyScheme() {
+private SecurityScheme createAPIKeyScheme() {
         return new SecurityScheme()
                 .type(SecurityScheme.Type.HTTP)
                 .bearerFormat("JWT")
                 .scheme("bearer");
-    }
+}
 }

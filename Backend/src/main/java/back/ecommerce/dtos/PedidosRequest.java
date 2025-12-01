@@ -20,4 +20,5 @@ public class PedidosRequest {
     private String metodoEnvio;
     private String direccionEnvio;
     private Double costoEnvio;
+    
 }

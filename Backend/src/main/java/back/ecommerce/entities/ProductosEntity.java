@@ -5,6 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,11 +30,17 @@ public class ProductosEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String nombre;
     private String descripcion;
     private Double precio;
     private Integer stock;
-    private String imagen;
+    /*private String imagen;*/
+
+
+    /*para hacer un carrousel de fotos de cada producto */
+    @ElementCollection
+    private List<String> imagenes;
 
     @ManyToOne
     @JoinColumn(name = "categoria_id")
