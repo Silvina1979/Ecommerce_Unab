@@ -4,89 +4,102 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import back.ecommerce.dtos.CategoriasRequest;
 import back.ecommerce.dtos.CategoriasResponse;
 import back.ecommerce.entities.CategoriasEntity;
+import back.ecommerce.entities.TiendaEntity;
+import back.ecommerce.entities.UsuariosEntity;
 import back.ecommerce.repositories.CategoriasRepository;
+import back.ecommerce.repositories.TiendaRepository;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Transactional
-@Slf4j
 @AllArgsConstructor
-public class CategoriasServiceImpl implements CategoriasService{
+public class CategoriasServiceImpl implements CategoriasService {
 
     private final CategoriasRepository categoriasRepository;
-
+    private final TiendaRepository tiendaRepository;
 
     @Override
-    public CategoriasResponse create(CategoriasRequest categoria) {
+    public CategoriasResponse create(String nombreTienda, CategoriasRequest request) {
+        var tienda = tiendaRepository.findByNombreUrl(nombreTienda)
+                .orElseThrow(() -> new IllegalArgumentException("Tienda no encontrada: " + nombreTienda));
+        
+        validarDueño(tienda);
+
+        boolean existe = categoriasRepository.findByTiendaNombreUrl(nombreTienda).stream()
+                .anyMatch(cat -> cat.getNombre().equalsIgnoreCase(request.getNombre()));
+        
+        if (existe) {
+            throw new IllegalArgumentException("Ya existe una categoría con el nombre '" + request.getNombre() + "' en esta tienda.");
+        }
+
         var entity = new CategoriasEntity();
-        BeanUtils.copyProperties(categoria, entity);
+        entity.setNombre(request.getNombre());
+        entity.setTienda(tienda);
+        
+        var categoriaGuardada = categoriasRepository.save(entity);
+        return convertirEntidadAResponse(categoriaGuardada);
+    }
 
-        var categoriaCreated = categoriasRepository.save(entity);
-
-        var response = new CategoriasResponse();
-        BeanUtils.copyProperties(categoriaCreated, response);
-
-        return response;
+    @Override
+    public List<CategoriasResponse> readAllByTienda(String nombreTienda) {
+        return categoriasRepository.findByTiendaNombreUrl(nombreTienda).stream()
+                .map(this::convertirEntidadAResponse)
+                .collect(Collectors.toList());
     }
 
     @Override
     public CategoriasResponse readById(Long id) {
-        final var entityResponse = this.categoriasRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Categoria no encontrada con id: " + id));
-
-        var response = new CategoriasResponse();
-        BeanUtils.copyProperties(entityResponse, response);
-
-        return response;
+        var entity = categoriasRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Categoría no encontrada con id: " + id));
+        return convertirEntidadAResponse(entity);
     }
 
     @Override
-    public List<CategoriasResponse> readAll() {
-        List<CategoriasEntity> entityFromDB = this.categoriasRepository.findAll();
-
+    public CategoriasResponse update(Long id, CategoriasRequest request) {
+        var entity = categoriasRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Categoría no encontrada con id: " + id));
         
-        return entityFromDB.stream()
-            .map(entidad -> {
-                CategoriasResponse response = new CategoriasResponse();
-                BeanUtils.copyProperties(entidad, response);
-                return response;
-            })
-            .collect(Collectors.toList());
-    }
+        validarDueño(entity.getTienda());
 
-    @Override
-    public CategoriasResponse update(Long id, CategoriasRequest categoria) {
-        final var entityFromDB = this.categoriasRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Categoria no encontrada con id: " + id));
-
-        if (categoria.getNombre() != null && 
-            !categoria.getNombre().isBlank()) {
-            entityFromDB.setNombre(categoria.getNombre());
+        if (request.getNombre() != null && !request.getNombre().isBlank()) {
+            entity.setNombre(request.getNombre());
         }
-        var categoriaActualizada = this.categoriasRepository.save(entityFromDB);
 
-        final var response = new CategoriasResponse();
-
-        BeanUtils.copyProperties(categoriaActualizada, response);
-
-        return response;
+        var categoriaActualizada = categoriasRepository.save(entity);
+        return convertirEntidadAResponse(categoriaActualizada);
     }
 
     @Override
     public void delete(Long id) {
-        var categoria = this.categoriasRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Categoria no encontrada con id: " + id));
+        var entity = categoriasRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Categoría no encontrada con id: " + id));
+        
+        validarDueño(entity.getTienda());
 
-        log.info("Eliminando categoria: {}", categoria.getNombre());
-
-        this.categoriasRepository.delete(categoria);
+        categoriasRepository.delete(entity);
     }
 
+    private void validarDueño(TiendaEntity tienda) {
+        UsuariosEntity usuarioLogueado = (UsuariosEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        
+        if (!tienda.getVendedor().getEmail().equals(usuarioLogueado.getEmail())) {
+            throw new IllegalArgumentException("ACCESO DENEGADO: No eres el dueño de esta tienda (Email incorrecto).");
+        }
+        if (!tienda.getVendedor().getDni().equals(usuarioLogueado.getDni())) {
+            throw new IllegalArgumentException("ACCESO DENEGADO: No eres el dueño de esta tienda (DNI incorrecto).");
+        }
+    }
+
+    private CategoriasResponse convertirEntidadAResponse(CategoriasEntity entity) {
+        var response = new CategoriasResponse();
+        BeanUtils.copyProperties(entity, response);
+        return response;
+    }
 }

@@ -1,27 +1,17 @@
 package back.ecommerce.services;
 
 import java.util.List;
-
+import org.springframework.web.multipart.MultipartFile;
 import back.ecommerce.dtos.ProductosRequest;
 import back.ecommerce.dtos.ProductosResponse;
-import java.util.List;
 
 public interface ProductosService {
-    //Crear
-    ProductosResponse create(ProductosRequest producto); 
-    //Obtener por id
+    ProductosResponse create(String nombreTienda, ProductosRequest producto);
+    ProductosResponse create(String nombreTienda, ProductosRequest producto, MultipartFile file);
+    List<ProductosResponse> readAllByTienda(String nombreTienda, String orden);
+    List<ProductosResponse> buscarPorNombre(String nombreTienda, String termino);
+    List<ProductosResponse> buscarPorCategoria(String nombreTienda, Long categoriaId);
     ProductosResponse readById(Long id);
-    //Obtener por nombre
-    ProductosResponse readByName(String nombre);
-    //Actualizar
     ProductosResponse update(Long id, ProductosRequest producto);
-    //Eliminar
     void delete(Long id);
-    //obtener todos
-    List<ProductosResponse> readAll();
-    //lista de productos por nombre
-    List<ProductosResponse> buscarPorNombre(String termino);
-    //lista de productos por categoria
-    List<ProductosResponse> buscarPorCategoria(Long categoriaId);
-    
 }

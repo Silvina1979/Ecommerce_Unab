@@ -1,6 +1,7 @@
 package back.ecommerce.controllers;
 
 import java.net.URI;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,50 +20,60 @@ import back.ecommerce.dtos.PedidosResponse;
 import back.ecommerce.services.PedidosService;
 import lombok.AllArgsConstructor;
 
-@RestController// use to expose RESTFULL
-@RequestMapping(path = "pedidos")//wat to get this controller
-@CrossOrigin(origins = "*") // Permitir solicitudes desde cualquier origen
+@RestController
+@RequestMapping("/api/tiendas/{nombreTienda}/pedidos")
+@CrossOrigin(origins = "*")
 @AllArgsConstructor
 public class PedidosController {
 
     private final PedidosService pedidosService;
 
-    @GetMapping(path = "{id}")//use to get data
-    public ResponseEntity<PedidosResponse> getPedidos(@PathVariable Long id) {
+    @PostMapping
+    public ResponseEntity<PedidosResponse> postPedidos(
+            @PathVariable String nombreTienda,
+            @RequestBody PedidosRequest request) {
+
+        final var pedido = this.pedidosService.create(nombreTienda, request);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentContextPath()
+                .path("/tienda/{nombreTienda}/pedidos/{id}")
+                .buildAndExpand(nombreTienda, pedido.getId())
+                .toUri();
+        return ResponseEntity.created(location).body(pedido);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<PedidosResponse>> getAllByTienda(@PathVariable String nombreTienda) {
+        return ResponseEntity.ok(this.pedidosService.readAllByTienda(nombreTienda));
+    }
+
+    @GetMapping("/usuario/{dni}")
+    public ResponseEntity<List<PedidosResponse>> getPedidosByUsuarioDni(
+            @PathVariable String nombreTienda,
+            @PathVariable Long dni) {
+        return ResponseEntity.ok(this.pedidosService.findByUsuarioDni(nombreTienda, dni));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PedidosResponse> getPedidosById(
+            @PathVariable String nombreTienda,
+            @PathVariable Long id) {
         return ResponseEntity.ok(this.pedidosService.readById(id));
     }
 
-    @PostMapping//use to create data
-    public ResponseEntity<?> postPedidos(@RequestBody PedidosRequest request){
-
-    final var pedido = this.pedidosService.create(request);
-    
-    // 1. Construir la URL completa y absoluta
-    URI location = ServletUriComponentsBuilder
-        .fromCurrentRequest() // Toma la URL base actual (ej: http://localhost:8080/ecommerce/pedidos)
-        .path("/{id}") // Agrega el segmento /ID
-        .buildAndExpand(pedido.getId()) // Sustituye {id} por el valor real
-        .toUri();
-        
-    // 2. Devolver 201 Created con el encabezado Location correcto Y el cuerpo del pedido
-    return ResponseEntity
-        .created(location) // <- URL COMPLETA aquí
-        .body(pedido); // <- Incluir el recurso creado en el cuerpo es útil
-    }
-
-    @PatchMapping(path = "{id}")//use to update data
+    @PatchMapping("/{id}")
     public ResponseEntity<PedidosResponse> updatePedidos(
-        @PathVariable Long id, 
-        @RequestBody PedidosRequest request
-    ){
+            @PathVariable String nombreTienda,
+            @PathVariable Long id, 
+            @RequestBody PedidosRequest request) {
         return ResponseEntity.ok(this.pedidosService.update(id, request));
     }
 
-    @DeleteMapping(path = "{id}")
-    public ResponseEntity<Void> deletePedidos(@PathVariable Long id){
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePedidos(
+            @PathVariable String nombreTienda,
+            @PathVariable Long id) {
         this.pedidosService.delete(id);
         return ResponseEntity.noContent().build();
     }
-
-
 }
