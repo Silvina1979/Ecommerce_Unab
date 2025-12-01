@@ -25,8 +25,8 @@ FROM eclipse-temurin:21-jre-jammy
 # Establecemos el directorio de trabajo
 WORKDIR /app
 
-# Cambio a *.jar para que sea generico por si cambiamos la version(<artifactId>-<version>.jar)
-COPY --from=build /app/target/*.jar ./app.jar
+# Copiamos el .jar generado en la etapa anterior. El nombre viene de tu pom.xml (<artifactId>-<version>.jar)
+COPY --from=build /app/target/ecommerce-0.0.1-SNAPSHOT.jar ./app.jar
 
 # Exponemos el puerto 8080, que es el puerto por defecto de Spring Boot
 EXPOSE 8080

@@ -1,6 +1,9 @@
 package back.ecommerce.services;
 
-import org.springframework.beans.BeanUtils;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,9 +14,6 @@ import back.ecommerce.repositories.UsuariosRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 @Transactional
 @Slf4j
@@ -21,20 +21,7 @@ import java.util.stream.Collectors;
 public class UsuariosServiceImpl implements UsuariosService {
 
     private final UsuariosRepository usuariosRepository;
-
-    @Override
-    public UsuariosResponse create(UsuariosRequest usuario) {
-        if (usuariosRepository.findById(usuario.getDni()).isPresent()) {
-            throw new IllegalArgumentException("Ya existe un usuario con el DNI: " + usuario.getDni());
-        }
-
-        final var entity = new UsuariosEntity();
-        BeanUtils.copyProperties(usuario, entity);
- 
-        var usuarioGuardado = this.usuariosRepository.save(entity);
-
-        return convertirEntidadAResponse(usuarioGuardado);
-    }
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public List<UsuariosResponse> readAll() {
@@ -47,7 +34,6 @@ public class UsuariosServiceImpl implements UsuariosService {
     public UsuariosResponse readByDni(Long dni) {
         final var entityResponse = this.usuariosRepository.findById(dni)
             .orElseThrow(() -> new IllegalArgumentException("No existe el usuario con id: " + dni));
-        
         return convertirEntidadAResponse(entityResponse);
     }
 
@@ -66,8 +52,7 @@ public class UsuariosServiceImpl implements UsuariosService {
             entidad.setEmail(request.getEmail());
         }
         if (request.getPassword() != null && !request.getPassword().isBlank()) {
-            // encriptar la password antes de guardarla (por hacer)
-            entidad.setPassword(request.getPassword());
+            entidad.setPassword(passwordEncoder.encode(request.getPassword()));
         }
 
         var usuarioActualizado = usuariosRepository.save(entidad);
@@ -78,7 +63,6 @@ public class UsuariosServiceImpl implements UsuariosService {
     public void delete(Long dni) {
         final var entidad = this.usuariosRepository.findById(dni)
             .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con DNI: " + dni));
-        
         this.usuariosRepository.delete(entidad);
     }
 
