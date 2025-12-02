@@ -26,10 +26,10 @@ jobs:
       # Con esto se ejecuta el test real. Si falla, el pipeline se detendrá.
       - name: Run Tests
         run: |
-          cd frontend
+          cd Frontend
           npm run test
 
       - name: Build Frontend
         run: |
-          cd frontend
+          cd Frontend
           npm run build
