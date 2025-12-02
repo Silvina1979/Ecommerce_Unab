@@ -1,6 +1,5 @@
-import "../styles/Login.css";
 import Header from "../components/Header";
-import BuscarUsuario from "../components/UsuarioID";
+// import BuscarUsuario from "../components/UsuarioID";
 
 /**
 * Componente Checkout

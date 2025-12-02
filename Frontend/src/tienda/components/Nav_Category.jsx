@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { getCategorias } from "../services/categorias";
 import { Link } from "react-router-dom";
-
+import { useParams } from "react-router-dom";
 import "../styles/Nav_Category.css";
-
 import "../styles/Header.css";
 
 import { FaBars } from "react-icons/fa6";
@@ -17,6 +16,7 @@ import { FaBars } from "react-icons/fa6";
 */
 
 function Nav_Categories() {
+    const { nombreTienda } = useParams();
     // Estado para almacenar las categorías obtenidas de la API
     const [categorias, setCategorias] = useState([]);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -56,7 +56,7 @@ function Nav_Categories() {
                         {/* Menú desplegable */}
                         {isMenuOpen && (
                             <div className="menu-desplegable">
-                                <Link to="/catalogo" className="menu-item" onClick={() => setIsMenuOpen(false)}>Todas las categorías ⮞</Link>
+                                <Link to={`/tienda/${nombreTienda}/catalogo`} className="menu-item" onClick={() => setIsMenuOpen(false)}>Todas las categorías ⮞</Link>
                                 {categorias.map((categoria) => (
                                     <div key={categoria.id} className="menu-item categoria">{categoria.nombre}</div>
                                 ))}

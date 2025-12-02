@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext.jsx";
 import Nav_Categories from "./Nav_Category";
 
 import "../styles/Header.css";
@@ -11,9 +12,17 @@ import { FaSearch } from "react-icons/fa";
 * Componente Header
 * 
 * Renderiza el encabezado principal de la aplicación con navegación.
+* Detecta automáticamente si está en una tienda para usar el login correcto.
 */
 
 function Header() {
+    const { nombreTienda } = useParams();
+    const location = useLocation();
+    const { isAuthenticated, userType } = useAuth();
+    
+    // Si no hay nombreTienda en params, intentar extraerlo de la URL como fallback
+    const tiendaSlug = nombreTienda || location.pathname.split("/")[2];
+    const loginPath = tiendaSlug ? `/tienda/${tiendaSlug}/login` : "/login";
 
     return (
         <>
@@ -22,7 +31,7 @@ function Header() {
                 <header className="header">
 
                     {/* Logo de la aplicación con enlace a la página principal */}
-                    <Link to="/" className="link-logo">
+                    <Link to={tiendaSlug ? `/tienda/${tiendaSlug}/home` : "/"} className="link-logo">
                         <div className="header-logo">
                             <h1>TRADIOGLOBAL</h1>
                         </div>
@@ -44,17 +53,33 @@ function Header() {
                     {/* Sección derecha: Enlaces a cuenta y carrito */}
                     <div className="header-right">
                         {/* Enlace a la página de login/inicio de sesión */}
-                        <Link to="/login" className="link-login">
-                            <div className="cuenta-box">
-                                <VscAccount className="logo-cuenta" size={24}/>
-                                <span>Mi Cuenta</span>
-                            </div>
-                        </Link>
+                        {!isAuthenticated ? (
+                            <Link 
+                                to={loginPath} 
+                                className="link-login"
+                                state={{ from: location.pathname }}
+                            >
+                                <div className="cuenta-box">
+                                    <VscAccount className="logo-cuenta" size={24}/>
+                                    <span>Iniciar Sesión</span>
+                                </div>
+                            </Link>
+                        ) : (
+                            <Link to={loginPath} className="link-login">
+                                <div className="cuenta-box">
+                                    <VscAccount className="logo-cuenta" size={26}/>
+                                    <span>Mi Cuenta</span>
+                                </div>
+                            </Link>
+                        )}
 
                         {/* Enlace al carrito de compras */}
-                        <Link to="/carrito" className="link-carrito">
+                        <Link 
+                            to={tiendaSlug ? `/tienda/${tiendaSlug}/carrito` : "/"} 
+                            className="link-carrito"
+                        >
                             <div className="cart-icon">
-                                <MdOutlineAddShoppingCart size={26}/>
+                                <MdOutlineAddShoppingCart size={25}/>
                             </div>
                         </Link>
                     </div>

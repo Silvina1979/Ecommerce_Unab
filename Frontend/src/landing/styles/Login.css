@@ -184,13 +184,13 @@ inpu::placeholder{
     background: var(--primary-color);
 }
 
-/*.submit-button-contenedor button, .welcome-btn {
+.submit-button-contenedor button, .welcome-btn {
     padding: 10px 28px;
     border-radius: 20px;
     border: none;
     cursor: pointer;
     font-weight: 700;
-}*/
+}
 
 /* --- panel de bienvenida (ocupa la mitad derecha inicialmente) --- */
 .container-welcome {
