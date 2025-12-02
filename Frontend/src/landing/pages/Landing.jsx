@@ -121,6 +121,7 @@ function Landing() {
                     <div className="features-container">
                         <h2 className="section-title">¿Por qué elegir nuestra plataforma?</h2>
                         <p className="section-subtitle">
+
                             Nuestra plataforma está diseñada para vendedores y compradores
                             ofreciendo herramientas poderosas y fáciles de usar.
                         </p>

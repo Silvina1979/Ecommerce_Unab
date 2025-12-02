@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
-import './MainStyles.css'
+import '../../Frontend/src/MainStyles.css'
 
 /**
 * Punto de entrada principal de la aplicación React
