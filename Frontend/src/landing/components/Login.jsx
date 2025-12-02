@@ -2,7 +2,10 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import { useAuth } from "../../tienda/contexts/AuthContext.jsx";
 import { useNotifications } from "../../contexts/NotificationContext.jsx";
-import "../styles/Login.css";
+//import "../styles/Login.css";//
+import "/src/MainStyles.css";
+
+
 
 import { IoPerson } from "react-icons/io5";
 import { FaLock } from "react-icons/fa";

@@ -73,7 +73,7 @@ function Landing() {
                         <h1 className="hero-title">Plataforma Multitienda para Vendedores</h1>
                         <p className="hero-subtitle">
                             Crea tu propia tienda online y vende tus productos. 
-                            Descubre productos increíbles de múltiples tiendas en un solo lugar.
+                            Descubrí productos increíbles de múltiples tiendas en un solo lugar.
                             Gestiona tu negocio de manera eficiente y profesional.
                         </p>
                         <div className="hero-actions">
@@ -119,7 +119,7 @@ function Landing() {
                     <div className="features-container">
                         <h2 className="section-title">¿Por qué elegir nuestra plataforma?</h2>
                         <p className="section-subtitle">
-                            Nuestra plataforma está diseñada para vendedores y compradores,
+                            Nuestra plataforma está diseñada para vendedores y compradores 
                             ofreciendo herramientas poderosas y fáciles de usar.
                         </p>
                         <div className="features-grid">
@@ -192,7 +192,7 @@ function Landing() {
                     <div className="cta-container">
                         <h2 className="cta-title">¿Listo para comenzar a vender?</h2>
                         <p className="cta-description">
-                            Únete a cientos de vendedores que ya confían en nuestra plataforma
+                            Unite a cientos de vendedores que ya confían en nuestra plataforma
                             para gestionar sus tiendas online de manera eficiente.
                         </p>
                         <div className="cta-actions">
@@ -216,7 +216,7 @@ function Landing() {
                         <h3>E-commerce Multitienda</h3>
                         <p>
                             La solución integral para crear y gestionar tu tienda online.
-                            Diseñada para vendedores, para vendedores.
+                            Diseñada para vendedores y para compradores.
                         </p>
                     </div>
                     <div className="footer-section">

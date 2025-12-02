@@ -1,37 +1,37 @@
+
+
+
 /* --- contenedor principal --- */
 .main-login {
-    /* border: 1px solid red; */
     margin: 0 auto;
-    background: var(--text-white);
+    background: var(--gradient-sky);
     height: 100vh;
     min-height: 100vh;
     width: 100vw;
-    padding: 0;
-    margin: 0;
+    /*padding: 0;
+    margin: 0;*/
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden
+    overflow: hidden;
 
 }
 
 .all-login-container {
-    /* border: 1px solid red; */
     position: relative;
     width: 90%;
     max-width: 1100px;
     height: 85vh;
     margin: 0 auto;
     overflow: hidden;
-    border-radius: var(--border-radius-xlg);
-    box-shadow: var(--shadow-lg);
-    background: var(--bg-secondary); 
+    border-radius: var(--border-radius-2xl);
+    box-shadow: var(--shadow-2xl);
+    background: var(--bg-light-primary); 
 }
 
 /* --- cajas de formulario (posicionadas) --- */
 .login-box, 
 .register-box {
-    /* border: 1px solid red; */
     position: absolute;
     top: 0;
     width: 50%;
@@ -39,8 +39,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: transform 0.7s cubic-bezier(.2,.8,.2,1), opacity 0.5s;
+    transition: transform 0.7s cubic-bezier(.2,.8,.2,1), opacity var(--transition-slow);
     z-index: 3; /* formularios encima del panel de bienvenida */
+    background-color: var(--bg-light-primary);
 }
 
 /* login a la izquierda por defecto */
@@ -72,7 +73,6 @@
 
 /* --- form interno --- */
 .all-login-container form {
-    /* border: 1px solid red; */
     width: 80%;
     max-width: 420px;
     display: flex;
@@ -80,19 +80,20 @@
 }
 
 .all-login-container h2 {
-    margin: 0 0 12px 0;
-    font-size: var(--font-size-2xl);
-    margin-bottom: 22px;
-    color: var(--text-primary);
+    /*margin: 0 0 12px 0;*/
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--margin-lg);
+    color: var(--text-gray-1);
+    text-align: center;
 }
 
 /* --- inputs --- */
 .input-box {
-    /* border: 1px solid red; */
     width: 100%;
-    margin-bottom: 22px;
+    margin-bottom: var(--margin-lg);
     position: relative;
-    border-bottom: 1px solid rgba(140, 140, 140, 0.321);
+    border-bottom: 1px solid var(--gray-200);
 }
 
 .input-box input {
@@ -101,9 +102,10 @@
     background: transparent;
     border: none;
     outline: none;
-    color: var(--text-primary);
+    color: var(--text-gray-1);
     padding: 0 46px 0 6px;
     font-size: var(--font-size-base);
+    font-family: var(--font-family);
 }
 
 .input-box label {
@@ -112,15 +114,21 @@
     top: 50%;
     transform: translateY(-50%);
     font-size: var(--font-size-sm);
-    color: var(--text-primary);
+    color: var(--text-gray-3);
     pointer-events: none;
-    transition: all 0.25s;
+    transition: var(--main-transition-fast);
 }
 
 .input-box input:focus + label,
 .input-box input:not(:placeholder-shown) + label {
     top: -8px;
-    font-size: 0.75rem;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--blue-600);
+}
+
+.input-box input:focus ~ .icon {
+    color: var(--blue-600);
 }
 
 /* icon */
@@ -129,67 +137,91 @@
     right: 6%;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--text-primary);
+    color: var(--text-gray-4);
+    font-size: var(--icon-size-md);
+    transition: var(--main-transition-fast);
 }
 
-inpu::placeholder{
-    color: var(--text-muted);
-}
+/*input::placeholder{
+    color: var(--text-muted);*/
+
 
 /* Mostrar contraseña */
 .password-details {
-    /* border: 1px solid red; */
-    color: var(--text-primary);
+    color: var(--text-gray-2);
     display: flex;
     justify-content: space-between;
+    font-size: var(--font-size-sm);
+    align-items: center;
+    margin-bottom: var(--margin);
+}
+
+.password-details label {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-xs);
+    cursor: pointer;
 }
 
 /* Recuperar contraseña */
 .password-forgot {
-    /* border: 1px solid red; */
-    color: var(--text-primary);
-    position: absolute;
+    color: var(--blue-600);
+    position: relative;
     display: block;
-    justify-content: center;
-    bottom: 40px;
-    text-align: right;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    color: var(--primary-dark-color);
+    width:100%;
+    margin-bottom: var(--margin-sm);
+    right: 0;
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-sm);
+    transition: var(--main-transition-fast);
+    text-align: center;
+    margin-top: var(--margin-md);
     text-decoration: none;
-    font-weight: 600;
 }
 .password-forgot:hover {
+    color: var(--blue-800);
     text-decoration: underline;
 }
 
 /* --- botones --- */
 .submit-button-contenedor { 
-    margin-top: 18px; 
+    margin-top: var(--margin-md); 
 }
 
 .submit-button-contenedor button { 
-    background: var(--primary-dark-color);
+    background: var(--blue-800);
     color: var(--text-white);
     width: 100%;
-    margin-bottom: 10px;
-    padding: 10px 28px;
-    border-radius: 20px;
+    margin-bottom: var(--margin-sm);
+    padding: 12px 28px;
+    border-radius: var(--border-radius-full);
     border: none;
     cursor: pointer;
-    font-weight: 700;
-    transition: var(--transition-normal);
+    font-weight: var(--font-weight-bold);
+    font-size:var(--font-size-base);
+    box-shadow: var(--shadow-blue);
+    transition: var(--margin-transition-normal);
 }
 .submit-button-contenedor button:hover {
-    background: var(--primary-color);
+    background: var(--blue-500);
+    transform: translateY(-2px);
+    box-shadow:var(--shadow-blue);
 }
 
-.submit-button-contenedor button, .welcome-btn {
+/*.submit-button-contenedor button, 
+.welcome-btn {
     padding: 10px 28px;
     border-radius: 20px;
     border: none;
     cursor: pointer;
     font-weight: 700;
+}*/
+
+.submit-button-contenedor button:disabled {
+    background: var(--gray-400);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
 /* --- panel de bienvenida (ocupa la mitad derecha inicialmente) --- */
@@ -201,23 +233,26 @@ inpu::placeholder{
     height: 100%;
     z-index: 2; /* por debajo de los formularios */
     overflow: hidden;
-    background: linear-gradient(150deg,var(--primary-light-color), var(--primary-dark-color));
+    background: var(--gradient-blue);
     display: flex;
     align-items: center;
     justify-content: center;
     transition: transform 0.7s cubic-bezier(.2,.8,.2,1);
+    border-top-right-radius: var(--border-radius-2xl);
+    border-bottom-right-radius: var(--border-radius-2xl);
 }
 
 /* mover panel de bienvenida a la izquierda cuando active */
 .all-login-container.active .container-welcome {
     transform: translateX(-100%);
+    border-radius: var(--border-radius-2xl) 0 0 var(--border-radius-2xl);
 }
 
 /* --- paneles internos de bienvenida --- */
 .welcome-panel {
     position: absolute;
     width: 100%;
-    padding: 24px;
+    padding: var(--padding-xl);
     text-align: center;
     color: var(--text-white);
     transition: opacity .45s ease, transform .45s ease;
@@ -235,14 +270,15 @@ inpu::placeholder{
 .welcome-login {
     transform: translateX(-20%);
     opacity: 0;
-    pointer-events: none;
+    /*pointer-events: none;*/
 }
 
 /* cuando active: invertimos visibilidad */
-.all-login-container.active .welcome-register {
+.all-login-container.active 
+.welcome-register {
     transform: translateX(20%);
     opacity: 0;
-    pointer-events: none;
+    /*pointer-events: none;*/
 }
 
 .all-login-container.active .welcome-login {
@@ -253,11 +289,58 @@ inpu::placeholder{
 
 /* --- pequeños ajustes visuales --- */
 .welcome-panel h2 { 
-    margin-bottom: 10px; 
-    font-size: var(--font-size-2xl);
+    margin-bottom: var(--margin-md); 
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--white);
 }
 
 .welcome-panel p { 
-    margin: 0 0 16px 0; 
-    color: rgba(255,255,255,0.95);
+    margin: 0 0 var(--margin-xl) 0; 
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-relaxed);
+    color: var(--blue-50);
+
+}
+
+
+/* Botón "Ghost" (Transparente) dentro del panel */
+.welcome-btn {
+    padding: 10px 36px;
+    border-radius: var(--border-radius-full);
+    border: 2px solid var(--white);
+    background: transparent;
+    color: var(--white);
+    cursor: pointer;
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-base);
+    transition: var(--main-transition-fast);
+}
+
+.welcome-btn:hover {
+    background: var(--white);
+    color: var(--blue-600);
+}
+
+/* --- Responsive --- */
+@media (max-width: 880px) {
+    .login-box,
+    .register-box {
+        width: 100%;
+        position: relative; /* Cambia a relativo para apilar si es necesario */
+    }
+
+    .container-welcome {
+        display: none; /* Ocultamos el panel lateral en móviles */
+    }
+
+    .all-login-container {
+        height: auto;
+        padding: var(--padding-xl) 0;
+        max-width: 500px;
+    }
+    
+    .all-login-container.active .login-box {
+        display: none; /* Ocultar manualmente en móvil */
+    }
 }

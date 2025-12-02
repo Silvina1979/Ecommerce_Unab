@@ -117,6 +117,13 @@
     /* max-width: 1200px; */
     margin: 0 auto;
     background: var(--gradient-blue-vertical-soft);
+    padding-top: 120px;
+}
+@media (max-width: 768px) {
+    .hero-section {
+        padding-top: 100px;
+    }
+    
 }
 
 .hero-content {
@@ -403,3 +410,55 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* FIX — BOTONES DEL HEADER TAPANDO EL CONTENIDO */
+@media (max-width: 768px) {
+
+    /* El header deja de ser sticky en móvil */
+    .landing-header {
+        position: relative;
+        height: auto;
+    }
+
+    /* Nav vertical */
+    .landing-nav {
+        flex-direction: column;
+        height: auto;
+        padding: var(--padding-md);
+        gap: var(--gap-md);
+    }
+
+    /* Acciones (botones) apiladas */
+    .landing-nav-actions {
+        flex-direction: column;
+        width: 100%;
+        justify-content: center;
+        gap: var(--gap-sm);
+    }
+
+    /* Botones 100% ancho */
+    .landing-nav-actions .btn-primary,
+    .landing-nav-actions .btn-secondary {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Ajustar espacio del hero porque ya no hay header sticky */
+    .hero-section {
+        padding-top: 40px;
+    }
+}
+
+/* Footer desktop: distribuir columnas con space-between */
+@media (min-width: 768px) {
+    .footer-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .footer-section {
+        max-width: 250px;
+    }
+}
+
