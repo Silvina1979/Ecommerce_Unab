@@ -9,7 +9,7 @@ import axios from "axios";
  */
 
 const baseURL = import.meta.env.VITE_API_URL 
-    || (import.meta.env.DEV ? '' : 'https://ecommerce-back-2uxy.onrender.com');
+    || 'https://ecommerce-back-1018928649112.us-central1.run.app/';
 
 const api = axios.create({
     baseURL: baseURL,
