@@ -7,11 +7,11 @@ import { useNotifications } from "../../contexts/NotificationContext";
 import "../styles/AdminProductos.css";
 
 /**
- * Página de gestión de productos
+ * Página de creación de productos
  * 
  * Permite crear productos para la tienda del vendedor autenticado
  */
-function AdminProductos() {
+function AdminCrearProductos() {
     const { usuario, tiendaUsuario, loading: authLoading, isAuthenticated } = useAuth();
     const { nombreTienda } = useParams();
     const navigate = useNavigate();
@@ -317,8 +317,8 @@ function AdminProductos() {
                     <p>Debes crear al menos una categoría antes de poder agregar productos.</p>
                     <button
                         onClick={() => {
-                            // TODO: Navegar a página de categorías cuando esté implementada
-                            showError("Próximamente", "La gestión de categorías estará disponible próximamente");
+                            const tiendaActual = nombreTienda || tiendaUsuario?.nombreUrl || "tienda";
+                            navigate(`/admin/${tiendaActual}/categorias`);
                         }}
                         className="productos-btn productos-btn-secondary"
                     >
@@ -450,6 +450,9 @@ function AdminProductos() {
                         <small className="productos-help-text">
                             Formato: JPG, PNG, GIF. Tamaño máximo: 5MB. La imagen es obligatoria.
                         </small>
+                        <div className="productos-alert productos-alert-warning" style={{ marginTop: '10px' }}>
+                            <strong>⚠️ Importante:</strong> La imagen no se puede editar una vez creado el producto. Asegúrate de seleccionar la imagen correcta.
+                        </div>
                     </div>
 
                     <div className="productos-form-actions">
@@ -478,4 +481,4 @@ function AdminProductos() {
     );
 }
 
-export default AdminProductos;
+export default AdminCrearProductos;

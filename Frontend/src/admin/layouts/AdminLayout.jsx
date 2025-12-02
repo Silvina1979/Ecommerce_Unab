@@ -1,4 +1,5 @@
-import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
+import { Link, Outlet, useNavigate, useParams, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../tienda/contexts/AuthContext";
 import "../styles/AdminLayout.css";
 
@@ -11,10 +12,21 @@ import "../styles/AdminLayout.css";
 function AdminLayout() {
     const { usuario, logout, tiendaUsuario } = useAuth();
     const { nombreTienda } = useParams();
+    const location = useLocation();
     const navigate = useNavigate();
 
     // Obtener el nombreTienda de los params o de la tienda del usuario
     const tiendaActual = nombreTienda || tiendaUsuario?.nombreUrl || tiendaUsuario?.nombreTienda || 'tienda';
+
+    // Estado para controlar si el menú de productos está abierto
+    const [productosMenuAbierto, setProductosMenuAbierto] = useState(false);
+
+    // Verificar si estamos en alguna ruta de productos
+    useEffect(() => {
+        const rutaActual = location.pathname;
+        const estaEnProductos = rutaActual.includes('/productos/crear') || rutaActual.includes('/productos/editar');
+        setProductosMenuAbierto(estaEnProductos);
+    }, [location.pathname]);
 
     const handleLogout = () => {
         logout();
@@ -44,12 +56,33 @@ function AdminLayout() {
                     >
                         🏪 Mi Tienda
                     </Link>
-                    <Link 
-                        to={`/admin/${tiendaActual}/productos`}
-                        className="admin-sidebar-link"
-                    >
-                        📦 Productos
-                    </Link>
+                    <div className="admin-sidebar-submenu">
+                        <div 
+                            className="admin-sidebar-submenu-title"
+                            onClick={() => setProductosMenuAbierto(!productosMenuAbierto)}
+                            style={{ cursor: 'pointer' }}
+                        >
+                            📦 Productos {productosMenuAbierto ? '▼' : '▶'}
+                        </div>
+                        <div 
+                            className={`admin-sidebar-submenu-items ${productosMenuAbierto ? 'open' : 'closed'}`}
+                        >
+                            <Link 
+                                to={`/admin/${tiendaActual}/productos/crear`}
+                                className="admin-sidebar-link admin-sidebar-sublink"
+                                onClick={() => setProductosMenuAbierto(true)}
+                            >
+                                ➕ Crear Productos
+                            </Link>
+                            <Link 
+                                to={`/admin/${tiendaActual}/productos/editar`}
+                                className="admin-sidebar-link admin-sidebar-sublink"
+                                onClick={() => setProductosMenuAbierto(true)}
+                            >
+                                ✏️ Editar Productos
+                            </Link>
+                        </div>
+                    </div>
                     <Link 
                         to={`/admin/${tiendaActual}/pedidos`}
                         className="admin-sidebar-link"

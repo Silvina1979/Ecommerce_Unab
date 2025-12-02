@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import Header from "../components/Header.jsx";
-import { getProductos } from "../services/productos.js";
+import { getProductosByTienda } from "../services/productos.js";
 import "../styles/Productos.css";
 
 /**
@@ -11,14 +12,21 @@ import "../styles/Productos.css";
 */
 
 function Catalogo() {
+    const { nombreTienda } = useParams();
     // Estado para almacenar los productos obtenidos de la API
     const [productos, setProductos] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        if (!nombreTienda) {
+            setError("Nombre de tienda no disponible");
+            setLoading(false);
+            return;
+        }
+
         setLoading(true);
-        getProductos()
+        getProductosByTienda(nombreTienda)
             .then((data) => {
                 // Si la API envía un objeto con propiedad 'content' u otra,
                 // intentar normalizar y tomar el arreglo de productos.
@@ -36,7 +44,7 @@ function Catalogo() {
                 setError(`Error cargando productos: ${err.response?.status} ${err.response?.statusText || err.message}`);
             })
             .finally(() => setLoading(false));
-    }, []);
+    }, [nombreTienda]);
 
     return (
         <div>

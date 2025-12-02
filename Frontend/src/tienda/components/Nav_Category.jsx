@@ -1,11 +1,24 @@
 import { useEffect, useState } from "react";
-import { getCategorias } from "../services/categorias";
+import { getCategoriasByTienda } from "../services/categorias";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import "../styles/Nav_Category.css";
 import "../styles/Header.css";
 
 import { FaBars } from "react-icons/fa6";
+
+/**
+ * Convierte un nombre de categoría a un slug para la URL
+ * Reemplaza espacios con guiones y normaliza el texto
+ */
+function categoriaToSlug(nombre) {
+    return nombre
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "") // Eliminar acentos
+        .replace(/[^a-z0-9]+/g, "-") // Reemplazar espacios y caracteres especiales con guiones
+        .replace(/^-+|-+$/g, ""); // Eliminar guiones al inicio y final
+}
 
 /**
 * Componente Nav_Categories
@@ -23,7 +36,12 @@ function Nav_Categories() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        getCategorias()
+        if (!nombreTienda) {
+            setError("Nombre de tienda no disponible");
+            return;
+        }
+
+        getCategoriasByTienda(nombreTienda)
             .then(data => {
                 if (Array.isArray(data)) {
                     setCategorias(data);
@@ -37,7 +55,7 @@ function Nav_Categories() {
                 console.error("Error cargando categorías:", err);
                 setError("Error cargando categorías");
             });
-    }, []);
+    }, [nombreTienda]);
 
         const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -58,14 +76,15 @@ function Nav_Categories() {
                             <div className="menu-desplegable">
                                 <Link to={`/tienda/${nombreTienda}/catalogo`} className="menu-item" onClick={() => setIsMenuOpen(false)}>Todas las categorías ⮞</Link>
                                 {categorias.map((categoria) => (
-                                    <div key={categoria.id} className="menu-item categoria">{categoria.nombre}</div>
+                                    <Link 
+                                        key={categoria.id} 
+                                        to={`/tienda/${nombreTienda}/home/categoria/${categoriaToSlug(categoria.nombre)}`}
+                                        className="menu-item categoria"
+                                        onClick={() => setIsMenuOpen(false)}
+                                    >
+                                        {categoria.nombre}
+                                    </Link>
                                 ))}
-
-                                {/* Categorias Temporales */}
-                                <div className="menu-item categoria">Herramientas</div>
-                                <div className="menu-item categoria">Belleza</div>
-                                <div className="menu-item categoria">Tecnología</div>
-                                <div className="menu-item categoria">Deportes</div>
 
                                 {error && <p className="menu-error">{error}</p>}
 
@@ -75,7 +94,12 @@ function Nav_Categories() {
 
                     {/* Renderiza las categorías obtenidas de la API */}
                     {categorias.map((cat) => (
-                        <li key={cat.id}>{cat.nombre}</li>
+                        <Link 
+                            key={cat.id} 
+                            to={`/tienda/${nombreTienda}/home/categoria/${categoriaToSlug(cat.nombre)}`}
+                        >
+                            <li>{cat.nombre}</li>
+                        </Link>
                     ))}
                     {/* Categorías estáticas temporales */}
                 </div>

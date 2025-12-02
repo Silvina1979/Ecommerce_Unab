@@ -1,6 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../tienda/contexts/AuthContext.jsx";
+import { FaStore, FaShoppingBag, FaUser, FaSignOutAlt, FaSignInAlt, FaRocket, FaBox, FaShoppingCart, FaChartLine, FaCreditCard, FaShieldAlt, FaUserPlus } from "react-icons/fa";
 import "../styles/Landing.css";
+
 
 /**
  * Componente Landing
@@ -32,7 +34,7 @@ function Landing() {
             <header className="landing-header">
                 <nav className="landing-nav">
                     <Link to="/" className="landing-logo">
-                        <i className="fas fa-store"></i>
+                        <FaStore />
                         <h1>TradioGlobal</h1>
                     </Link>
                     <div className="landing-nav-actions">
@@ -42,23 +44,23 @@ function Landing() {
                         <a href="#" className="landing-nav-link">Acerca de</a>
                         <a href="#" className="landing-nav-link">Soporte</a>
                         <Link to="/tiendas" className="btn-secondary">
-                            <i className="fas fa-shopping-bag"></i>
+                            <FaShoppingBag />
                             Explorar Tiendas
                         </Link>
                         {isAuthenticated ? (
                             <>
                                 <Link to="/login" className="btn-primary">
-                                    <i className="fas fa-user"></i>
+                                    <FaUser />
                                     Mi Cuenta
                                 </Link>
                                 <button onClick={handleLogout} className="btn-logout">
-                                    <i className="fas fa-sign-out-alt"></i>
+                                    <FaSignOutAlt />
                                     Cerrar Sesión
                                 </button>
                             </>
                         ) : (
                             <Link to="/login" className="btn-primary">
-                                <i className="fas fa-sign-in-alt"></i>
+                                <FaSignInAlt />
                                 Iniciar Sesión
                             </Link>
                         )}
@@ -73,16 +75,16 @@ function Landing() {
                         <h1 className="hero-title">Plataforma Multitienda para Vendedores</h1>
                         <p className="hero-subtitle">
                             Crea tu propia tienda online y vende tus productos. 
-                            Descubre productos increíbles de múltiples tiendas en un solo lugar.
+                            Descubrí productos increíbles de múltiples tiendas en un solo lugar.
                             Gestiona tu negocio de manera eficiente y profesional.
                         </p>
                         <div className="hero-actions">
                             <Link to="/tiendas" className="btn-primary">
-                                <i className="fas fa-shopping-bag"></i>
+                                <FaShoppingBag />
                                 Explorar Tiendas
                             </Link>
                             <Link to="/login" className="btn-secondary">
-                                <i className={isAuthenticated ? "fas fa-user" : "fas fa-rocket"}></i>
+                                {isAuthenticated ? <FaUser /> : <FaRocket />}
                                 {isAuthenticated ? "Mi Cuenta" : "Comenzar Gratis"}
                             </Link>
                         </div>
@@ -90,7 +92,7 @@ function Landing() {
                             <div className="hero-dashboard-preview">
                                 <div className="preview-header">
                                     <div className="preview-logo">
-                                        <i className="fas fa-store"></i>
+                                        <FaStore />
                                         <span>Mi Tienda</span>
                                     </div>
                                     <span>Dashboard</span>
@@ -119,13 +121,13 @@ function Landing() {
                     <div className="features-container">
                         <h2 className="section-title">¿Por qué elegir nuestra plataforma?</h2>
                         <p className="section-subtitle">
-                            Nuestra plataforma está diseñada para vendedores y compradores,
+                            Nuestra plataforma está diseñada para vendedores y compradores
                             ofreciendo herramientas poderosas y fáciles de usar.
                         </p>
                         <div className="features-grid">
                             <div className="feature-card">
                                 <div className="feature-icon">
-                                    <i className="fas fa-store"></i>
+                                    <FaStore />
                                 </div>
                                 <h3 className="feature-title">Tu Propia Tienda</h3>
                                 <p className="feature-description">
@@ -135,7 +137,7 @@ function Landing() {
                             </div>
                             <div className="feature-card">
                                 <div className="feature-icon">
-                                    <i className="fas fa-box"></i>
+                                    <FaBox />
                                 </div>
                                 <h3 className="feature-title">Gestión de Productos</h3>
                                 <p className="feature-description">
@@ -145,7 +147,7 @@ function Landing() {
                             </div>
                             <div className="feature-card">
                                 <div className="feature-icon">
-                                    <i className="fas fa-shopping-cart"></i>
+                                    <FaShoppingCart />
                                 </div>
                                 <h3 className="feature-title">Gestión de Pedidos</h3>
                                 <p className="feature-description">
@@ -155,7 +157,7 @@ function Landing() {
                             </div>
                             <div className="feature-card">
                                 <div className="feature-icon">
-                                    <i className="fas fa-chart-line"></i>
+                                    <FaChartLine />
                                 </div>
                                 <h3 className="feature-title">Estadísticas y Reportes</h3>
                                 <p className="feature-description">
@@ -165,7 +167,7 @@ function Landing() {
                             </div>
                             <div className="feature-card">
                                 <div className="feature-icon">
-                                    <i className="fas fa-credit-card"></i>
+                                    <FaCreditCard />
                                 </div>
                                 <h3 className="feature-title">Pagos Integrados</h3>
                                 <p className="feature-description">
@@ -175,7 +177,7 @@ function Landing() {
                             </div>
                             <div className="feature-card">
                                 <div className="feature-icon">
-                                    <i className="fas fa-shield-alt"></i>
+                                    <FaShieldAlt />
                                 </div>
                                 <h3 className="feature-title">Seguridad</h3>
                                 <p className="feature-description">
@@ -192,16 +194,16 @@ function Landing() {
                     <div className="cta-container">
                         <h2 className="cta-title">¿Listo para comenzar a vender?</h2>
                         <p className="cta-description">
-                            Únete a cientos de vendedores que ya confían en nuestra plataforma
+                            Unite a cientos de vendedores que ya confían en nuestra plataforma
                             para gestionar sus tiendas online de manera eficiente.
                         </p>
                         <div className="cta-actions">
                             <Link to="/tiendas" className="btn-primary-inverse">
-                                <i className="fas fa-shopping-bag"></i>
+                                <FaShoppingBag />
                                 Explorar Tiendas
                             </Link>
                             <Link to="/login" className="btn-secundary-inverse">
-                                <i className={isAuthenticated ? "fas fa-user" : "fas fa-user-plus"}></i>
+                                {isAuthenticated ? <FaUser /> : <FaUserPlus />}
                                 {isAuthenticated ? "Mi Cuenta" : "Crear Cuenta Gratis"}
                             </Link>
                         </div>
@@ -216,7 +218,7 @@ function Landing() {
                         <h3>E-commerce Multitienda</h3>
                         <p>
                             La solución integral para crear y gestionar tu tienda online.
-                            Diseñada para vendedores, para vendedores.
+                            Diseñada para vendedores y para compradores.
                         </p>
                     </div>
                     <div className="footer-section">

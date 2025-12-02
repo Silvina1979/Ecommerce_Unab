@@ -38,6 +38,12 @@
     font-weight: var(--font-weight-bold);
 }
 
+.landing-logo svg {
+    font-size: var(--icon-size-lg);
+    color: var(--icon-color-blue);
+    flex-shrink: 0;
+}
+
 .landing-logo i {
     font-size: var(--icon-size-lg);
     color: var(--icon-color-blue);
@@ -74,6 +80,12 @@
     gap: var(--gap-sm);
     transition: var(--main-transition-all-normal);
     text-decoration: none;
+}
+
+.btn-primary svg, .btn-secondary svg, .btn-logout svg, .btn-primary-inverse svg, .btn-secundary-inverse svg {
+    flex-shrink: 0;
+    width: 1em;
+    height: 1em;
 }
 
 .btn-primary {
@@ -117,6 +129,13 @@
     /* max-width: 1200px; */
     margin: 0 auto;
     background: var(--gradient-blue-vertical-soft);
+    padding-top: 120px;
+}
+@media (max-width: 768px) {
+    .hero-section {
+        padding-top: 100px;
+    }
+    
 }
 
 .hero-content {
@@ -180,6 +199,13 @@
     gap: var(--gap-sm);
     font-weight: var(--font-weight-semibold);
     color: var(--text-gray-1);
+}
+
+.preview-logo svg {
+    flex-shrink: 0;
+    width: 1.2em;
+    height: 1.2em;
+    color: var(--icon-color-blue);
 }
 
 .preview-stats {
@@ -269,7 +295,17 @@
     font-size: var(--icon-size-3xl);
     color: var(--icon-color-blue);
     margin-bottom: var(--margin);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+
+.feature-icon svg {
+    width: 1em;
+    height: 1em;
+    color: var(--icon-color-blue);
+}
+
 
 .feature-title {
     font-size: var(--font-size-2xl);
@@ -401,5 +437,56 @@
     
     .preview-stats {
         grid-template-columns: 1fr;
+    }
+}
+
+/* FIX — BOTONES DEL HEADER TAPANDO EL CONTENIDO */
+@media (max-width: 768px) {
+
+    /* El header deja de ser sticky en móvil */
+    .landing-header {
+        position: relative;
+        height: auto;
+    }
+
+    /* Nav vertical */
+    .landing-nav {
+        flex-direction: column;
+        height: auto;
+        padding: var(--padding-md);
+        gap: var(--gap-md);
+    }
+
+    /* Acciones (botones) apiladas */
+    .landing-nav-actions {
+        flex-direction: column;
+        width: 100%;
+        justify-content: center;
+        gap: var(--gap-sm);
+    }
+
+    /* Botones 100% ancho */
+    .landing-nav-actions .btn-primary,
+    .landing-nav-actions .btn-secondary {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Ajustar espacio del hero porque ya no hay header sticky */
+    .hero-section {
+        padding-top: 40px;
+    }
+}
+
+/* Footer desktop: distribuir columnas con space-between */
+@media (min-width: 768px) {
+    .footer-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .footer-section {
+        max-width: 250px;
     }
 }

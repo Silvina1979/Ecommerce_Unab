@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import { useAuth } from "../../tienda/contexts/AuthContext.jsx";
 import { useNotifications } from "../../contexts/NotificationContext.jsx";
-import "../styles/Login.css";
+// import "../styles/Login.css";
+import "../../MainStyles.css";
 
+import { FaStore, FaShoppingBag } from "react-icons/fa";
 import { IoPerson } from "react-icons/io5";
 import { FaLock } from "react-icons/fa";
 import { IoMail } from "react-icons/io5";
@@ -358,14 +360,14 @@ function Login() {
             <header className="landing-header">
                 <nav className="landing-nav">
                     <Link to="/" className="landing-logo">
-                        <i className="fas fa-store"></i>
+                        <FaStore />
                         <h1>TradioGlobal</h1>
                     </Link>
                     <div className="landing-nav-actions">
                         <a href="#" className="landing-nav-link">Acerca de</a>
                         <a href="#" className="landing-nav-link">Soporte</a>
-                        <Link to="/tiendas" className="btn-secondary">
-                            <i className="fas fa-shopping-bag"></i>
+                        <Link to="/tiendas" className="btn-primary">
+                            <FaShoppingBag />
                             Explorar Tiendas
                         </Link>
                     </div>

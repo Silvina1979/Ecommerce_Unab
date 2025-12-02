@@ -2,28 +2,90 @@ import api from "./api";
 
 /**
  * Servicios para interactuar con el endpoint de productos de la API
+ * 
+ * Todas las operaciones de productos requieren el nombreUrl (slug) de la tienda
  */
 
-export async function getProductos() {
-    const res = await api.get("/api/productos");
+/**
+ * Obtiene todos los productos de una tienda
+ * @param {string} nombreTienda - El slug o identificador único de la tienda
+ * @param {string} sort - Ordenamiento opcional (ej: "precio", "nombre")
+ * @returns {Promise} Promesa que resuelve con la lista de productos
+ */
+export async function getProductosByTienda(nombreTienda, sort = null) {
+    const params = sort ? { sort } : {};
+    const res = await api.get(`/api/tiendas/${nombreTienda}/productos`, { params });
     return res.data;
 }
 
-export async function getProductoById(id) {
-    const res = await api.get(`/api/productos/${id}`);
+/**
+ * Obtiene un producto por su ID
+ * @param {string} nombreTienda - El slug de la tienda
+ * @param {number} id - ID del producto
+ * @returns {Promise} Promesa que resuelve con los datos del producto
+ */
+export async function getProductoById(nombreTienda, id) {
+    const res = await api.get(`/api/tiendas/${nombreTienda}/productos/${id}`);
     return res.data;
 }
 
-export async function createProducto(data) {
-    const res = await api.post("/api/productos", data);
+/**
+ * Crea un nuevo producto (requiere multipart/form-data)
+ * @param {string} nombreTienda - El slug de la tienda
+ * @param {FormData} formData - FormData con los campos 'producto' (JSON string) y 'file' (imagen opcional)
+ * @returns {Promise} Promesa que resuelve con los datos del producto creado
+ */
+export async function createProducto(nombreTienda, formData) {
+    const res = await api.post(`/api/tiendas/${nombreTienda}/productos`, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
     return res.data;
 }
 
-export async function updateProducto(id, data) {
-    const res = await api.patch(`/api/productos/${id}`, data);
+/**
+ * Actualiza un producto existente
+ * @param {string} nombreTienda - El slug de la tienda
+ * @param {number} id - ID del producto a actualizar
+ * @param {Object} data - Datos del producto a actualizar
+ * @returns {Promise} Promesa que resuelve con los datos del producto actualizado
+ */
+export async function updateProducto(nombreTienda, id, data) {
+    const res = await api.patch(`/api/tiendas/${nombreTienda}/productos/${id}`, data);
     return res.data;
 }
 
-export async function deleteProducto(id) {
-    await api.delete(`/api/productos/${id}`);
+/**
+ * Elimina un producto
+ * @param {string} nombreTienda - El slug de la tienda
+ * @param {number} id - ID del producto a eliminar
+ * @returns {Promise} Promesa que se resuelve cuando el producto es eliminado
+ */
+export async function deleteProducto(nombreTienda, id) {
+    await api.delete(`/api/tiendas/${nombreTienda}/productos/${id}`);
+}
+
+/**
+ * Busca productos por nombre
+ * @param {string} nombreTienda - El slug de la tienda
+ * @param {string} termino - Término de búsqueda
+ * @returns {Promise} Promesa que resuelve con la lista de productos encontrados
+ */
+export async function buscarProductos(nombreTienda, termino) {
+    const res = await api.get(`/api/tiendas/${nombreTienda}/productos/buscar`, {
+        params: { q: termino }
+    });
+    return res.data;
+}
+
+/**
+ * Obtiene productos por categoría
+ * @param {string} nombreTienda - El slug de la tienda
+ * @param {number} categoriaId - ID de la categoría
+ * @returns {Promise} Promesa que resuelve con la lista de productos de la categoría
+ */
+export async function getProductosByCategoria(nombreTienda, categoriaId) {
+    const res = await api.get(`/api/tiendas/${nombreTienda}/productos/categoria/${categoriaId}`);
+    return res.data;
 }

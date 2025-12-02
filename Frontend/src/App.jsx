@@ -14,12 +14,14 @@ import Login from "./landing/components/Login.jsx";
 import AdminLayout from "./admin/layouts/AdminLayout.jsx";
 import AdminDashboard from "./admin/pages/AdminDashboard.jsx";
 import AdminConfiguracion from "./admin/pages/AdminConfiguracion.jsx";
-import AdminProductos from "./admin/pages/AdminProductos.jsx";
+import AdminCrearProductos from "./admin/pages/AdminCrearProductos.jsx";
+import AdminEditarProductos from "./admin/pages/AdminEditarProductos.jsx";
 import AdminPedidos from "./admin/pages/AdminPedidos.jsx";
 import AdminCategorias from "./admin/pages/AdminCategorias.jsx";
 
 // Rutas de tienda
 import Home from "./tienda/pages/Home.jsx";
+import HomeCategoria from "./tienda/pages/HomeCategoria.jsx";
 import Catalogo from "./tienda/pages/Catalogo.jsx";
 import Carrito from "./tienda/pages/Carrito.jsx";
 import Checkout from "./tienda/pages/Checkout.jsx";
@@ -67,6 +69,7 @@ function App() {
 
               {/* Rutas de tienda con nombreTienda (para compradores) */}
               <Route path="/tienda/:nombreTienda/home" element={<Home />} />
+              <Route path="/tienda/:nombreTienda/home/categoria/:categoriaNombre" element={<HomeCategoria />} />
               <Route path="/tienda/:nombreTienda/login" element={<LoginComprador />} />
               <Route path="/tienda/:nombreTienda/catalogo" element={<Catalogo />} />
               <Route path="/tienda/:nombreTienda/carrito" element={<Carrito />} />
@@ -85,7 +88,8 @@ function App() {
                 <Route index element={<AdminDashboard />} />
                 <Route path="dashboard" element={<AdminDashboard />} />
                 <Route path="configuracion" element={<AdminConfiguracion />} />
-                <Route path="productos" element={<AdminProductos />} />
+                <Route path="productos/crear" element={<AdminCrearProductos />} />
+                <Route path="productos/editar" element={<AdminEditarProductos />} />
                 <Route path="pedidos" element={<AdminPedidos />} />
                 <Route path="categorias" element={<AdminCategorias />} />
                 {/* Más rutas del admin se agregarán aquí */}
