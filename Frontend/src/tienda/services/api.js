@@ -27,42 +27,37 @@ function normalizeBaseURL(url) {
     return url + '/api/';
 }
 
+// URL de producción por defecto
+const PROD_API_URL = 'https://ecommerce-back-1018928649112.us-central1.run.app/';
+
 let baseURL;
 if (import.meta.env.VITE_API_URL) {
-    // Si hay VITE_API_URL definida, usarla
+    // Si hay VITE_API_URL definida, usarla (tiene prioridad)
     baseURL = normalizeBaseURL(import.meta.env.VITE_API_URL);
 } else if (import.meta.env.DEV) {
-    // En desarrollo, detectar si estamos accediendo desde otra máquina
-    // El proxy solo funciona cuando accedes desde localhost en la misma máquina
-    // Si accedes desde otra máquina (usando IP), el proxy intentará conectarse a localhost:8080
-    // en la máquina del servidor, lo cual puede fallar si el backend no está corriendo ahí
-    let useProxy = false;
-    
-    if (typeof window !== 'undefined') {
-        const hostname = window.location.hostname;
-        // Solo usar proxy si es exactamente localhost o 127.0.0.1
-        // Cualquier otra cosa (IPs locales, nombres de dominio, etc.) usa producción
-        useProxy = (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '');
-    }
+    // En desarrollo, por defecto usar la URL de producción
+    // El proxy solo se usa si VITE_USE_PROXY=true está configurado
+    // Esto permite trabajar sin necesidad de tener el backend corriendo localmente
+    const useProxy = import.meta.env.VITE_USE_PROXY === 'true';
     
     if (useProxy) {
-        // Misma máquina (localhost): usar el proxy de Vite
+        // Solo usar proxy si está explícitamente configurado
+        // Requiere que el backend esté corriendo en localhost:8080
         baseURL = '/api/';
-    } else {
-        // Otra máquina o IP: usar la URL de producción directamente
-        // NOTA: Si el backend está corriendo en otra IP local y quieres usarlo,
-        // configura VITE_API_URL con esa IP. Ejemplo:
-        // VITE_API_URL=http://192.168.1.100:8080/api/
-        const prodURL = 'https://ecommerce-back-1018928649112.us-central1.run.app/';
-        baseURL = normalizeBaseURL(prodURL);
         if (typeof window !== 'undefined') {
-            console.log('[API] Accediendo desde otra máquina (' + window.location.hostname + '), usando URL de producción:', baseURL);
+            console.log('[API] Usando proxy local (requiere backend en localhost:8080)');
+        }
+    } else {
+        // Por defecto, usar la URL de producción
+        // No requiere backend local corriendo
+        baseURL = normalizeBaseURL(PROD_API_URL);
+        if (typeof window !== 'undefined') {
+            console.log('[API] Usando URL de producción:', baseURL);
         }
     }
 } else {
     // En producción, usar la URL de producción
-    const prodURL = 'https://ecommerce-back-1018928649112.us-central1.run.app/';
-    baseURL = normalizeBaseURL(prodURL);
+    baseURL = normalizeBaseURL(PROD_API_URL);
 }
 
 const api = axios.create({
