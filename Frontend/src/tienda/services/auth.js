@@ -18,7 +18,7 @@ import api from "./api";
  * @returns {Promise<Object>} Promesa que resuelve con { token: string }
  */
 export async function register(datos) {
-    const res = await api.post("/api/auth/register", datos);
+    const res = await api.post("auth/register", datos);
     return res.data; // Devuelve { token: "..." }
 }
 
@@ -30,7 +30,7 @@ export async function register(datos) {
  * @returns {Promise<Object>} Promesa que resuelve con { token: string }
  */
 export async function login(credenciales) {
-    const res = await api.post("/api/auth/login", credenciales);
+    const res = await api.post("auth/login", credenciales);
     return res.data; // Devuelve { token: "..." }
 }
 
@@ -40,7 +40,7 @@ export async function login(credenciales) {
  * @returns {Promise<string>} Promesa que resuelve con un mensaje de confirmación
  */
 export async function verifyAccount(codigo) {
-    const res = await api.get(`/api/auth/verify?code=${codigo}`);
+    const res = await api.get(`auth/verify?code=${codigo}`);
     return res.data;
 }
 

@@ -5,26 +5,26 @@ import api from "./api";
  */
 
 export async function createPedido(data) {
-    const res = await api.post("/api/pedidos", data);
+    const res = await api.post("pedidos", data);
     return res.data;
 }
 
 export async function getPedidoById(id) {
-    const res = await api.get(`/api/pedidos/${id}`);
+    const res = await api.get(`pedidos/${id}`);
     return res.data;
 }
 
 export async function updatePedido(id, data) {
-    const res = await api.patch(`/api/pedidos/${id}`, data);
+    const res = await api.patch(`pedidos/${id}`, data);
     return res.data;
 }
 
 export async function deletePedido(id) {
-    await api.delete(`/api/pedidos/${id}`);
+    await api.delete(`pedidos/${id}`);
 }
 
 export async function getPedidosByUsuario(dni) {
-    const res = await api.get(`/api/pedidos/usuario/${dni}`);
+    const res = await api.get(`pedidos/usuario/${dni}`);
     return res.data;
 }
 

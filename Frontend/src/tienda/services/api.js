@@ -14,9 +14,28 @@ import axios from "axios";
 // URLs disponibles según documentación:
 // - Google Cloud (Producción): https://ecommerce-back-1018928649112.us-central1.run.app/
 // - Render (Alternativa): https://ecommerce-back-2uxy.onrender.com
+//
+// IMPORTANTE: El baseURL debe terminar con /api/ para que las rutas en los servicios
+// funcionen correctamente tanto en desarrollo (proxy) como en producción
 
-const baseURL = import.meta.env.VITE_API_URL 
-    || (import.meta.env.DEV ? '/api' : 'https://ecommerce-back-1018928649112.us-central1.run.app/');
+let baseURL;
+if (import.meta.env.VITE_API_URL) {
+    // Si hay VITE_API_URL definida, usarla (asegurar que termine en /api/)
+    baseURL = import.meta.env.VITE_API_URL.endsWith('/api/') 
+        ? import.meta.env.VITE_API_URL 
+        : import.meta.env.VITE_API_URL.endsWith('/api')
+            ? import.meta.env.VITE_API_URL + '/'
+            : import.meta.env.VITE_API_URL.endsWith('/')
+                ? import.meta.env.VITE_API_URL + 'api/'
+                : import.meta.env.VITE_API_URL + '/api/';
+} else if (import.meta.env.DEV) {
+    // En desarrollo, usar el proxy de Vite
+    baseURL = '/api/';
+} else {
+    // En producción, usar la URL de producción (asegurar que termine en /api/)
+    const prodURL = 'https://ecommerce-back-1018928649112.us-central1.run.app/';
+    baseURL = prodURL.endsWith('/api/') ? prodURL : prodURL + 'api/';
+}
 
 const api = axios.create({
     baseURL: baseURL,

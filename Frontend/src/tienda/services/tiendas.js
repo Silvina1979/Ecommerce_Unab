@@ -12,7 +12,7 @@ import api from "./api";
  * @returns {Promise} Promesa que resuelve con los datos de la tienda
  */
 export async function getTiendaBySlug(nombreUrl) {
-    const res = await api.get(`/api/tiendas/${nombreUrl}`);
+    const res = await api.get(`tiendas/${nombreUrl}`);
     return res.data;
 }
 
@@ -22,7 +22,7 @@ export async function getTiendaBySlug(nombreUrl) {
  * @returns {Promise} Promesa que resuelve con los datos de la tienda creada
  */
 export async function createTienda(formData) {
-    const res = await api.post("/api/tiendas", formData, {
+    const res = await api.post("tiendas", formData, {
         headers: {
             "Content-Type": "multipart/form-data",
         },
@@ -37,7 +37,7 @@ export async function createTienda(formData) {
  * @returns {Promise} Promesa que resuelve con los datos de la tienda actualizada
  */
 export async function updateTienda(nombreUrl, formData) {
-    const res = await api.patch(`/api/tiendas/${nombreUrl}`, formData, {
+    const res = await api.patch(`tiendas/${nombreUrl}`, formData, {
         headers: {
             "Content-Type": "multipart/form-data",
         },
@@ -55,7 +55,7 @@ export async function getTiendaByVendedor(vendedorDni) {
     try {
         // Nota: Este endpoint puede no existir en la API actual
         // Si no existe, se puede implementar en el backend o usar otra estrategia
-        const res = await api.get(`/api/tiendas/vendedor/${vendedorDni}`);
+        const res = await api.get(`tiendas/vendedor/${vendedorDni}`);
         return res.data;
     } catch (error) {
         // Si el endpoint no existe o el usuario no tiene tienda, retornar null

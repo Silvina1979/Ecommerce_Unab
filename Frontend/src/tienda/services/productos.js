@@ -14,7 +14,7 @@ import api from "./api";
  */
 export async function getProductosByTienda(nombreTienda, sort = null) {
     const params = sort ? { sort } : {};
-    const res = await api.get(`/api/tiendas/${nombreTienda}/productos`, { params });
+    const res = await api.get(`tiendas/${nombreTienda}/productos`, { params });
     return res.data;
 }
 
@@ -25,7 +25,7 @@ export async function getProductosByTienda(nombreTienda, sort = null) {
  * @returns {Promise} Promesa que resuelve con los datos del producto
  */
 export async function getProductoById(nombreTienda, id) {
-    const res = await api.get(`/api/tiendas/${nombreTienda}/productos/${id}`);
+    const res = await api.get(`tiendas/${nombreTienda}/productos/${id}`);
     return res.data;
 }
 
@@ -36,7 +36,7 @@ export async function getProductoById(nombreTienda, id) {
  * @returns {Promise} Promesa que resuelve con los datos del producto creado
  */
 export async function createProducto(nombreTienda, formData) {
-    const res = await api.post(`/api/tiendas/${nombreTienda}/productos`, formData, {
+    const res = await api.post(`tiendas/${nombreTienda}/productos`, formData, {
         headers: {
             "Content-Type": "multipart/form-data",
         },
@@ -52,7 +52,7 @@ export async function createProducto(nombreTienda, formData) {
  * @returns {Promise} Promesa que resuelve con los datos del producto actualizado
  */
 export async function updateProducto(nombreTienda, id, data) {
-    const res = await api.patch(`/api/tiendas/${nombreTienda}/productos/${id}`, data);
+    const res = await api.patch(`tiendas/${nombreTienda}/productos/${id}`, data);
     return res.data;
 }
 
@@ -63,7 +63,7 @@ export async function updateProducto(nombreTienda, id, data) {
  * @returns {Promise} Promesa que se resuelve cuando el producto es eliminado
  */
 export async function deleteProducto(nombreTienda, id) {
-    await api.delete(`/api/tiendas/${nombreTienda}/productos/${id}`);
+    await api.delete(`tiendas/${nombreTienda}/productos/${id}`);
 }
 
 /**
@@ -73,7 +73,7 @@ export async function deleteProducto(nombreTienda, id) {
  * @returns {Promise} Promesa que resuelve con la lista de productos encontrados
  */
 export async function buscarProductos(nombreTienda, termino) {
-    const res = await api.get(`/api/tiendas/${nombreTienda}/productos/buscar`, {
+    const res = await api.get(`tiendas/${nombreTienda}/productos/buscar`, {
         params: { q: termino }
     });
     return res.data;
@@ -86,6 +86,6 @@ export async function buscarProductos(nombreTienda, termino) {
  * @returns {Promise} Promesa que resuelve con la lista de productos de la categoría
  */
 export async function getProductosByCategoria(nombreTienda, categoriaId) {
-    const res = await api.get(`/api/tiendas/${nombreTienda}/productos/categoria/${categoriaId}`);
+    const res = await api.get(`tiendas/${nombreTienda}/productos/categoria/${categoriaId}`);
     return res.data;
 }

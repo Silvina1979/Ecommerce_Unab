@@ -12,7 +12,7 @@ import api from "./api";
  * @returns {Promise} Promesa que resuelve con la lista de categorías
  */
 export async function getCategoriasByTienda(nombreTienda) {
-    const res = await api.get(`/api/tiendas/${nombreTienda}/categorias`);
+    const res = await api.get(`tiendas/${nombreTienda}/categorias`);
     return res.data;
 }
 
@@ -23,7 +23,7 @@ export async function getCategoriasByTienda(nombreTienda) {
  * @returns {Promise} Promesa que resuelve con los datos de la categoría
  */
 export async function getCategoriaById(nombreTienda, id) {
-    const res = await api.get(`/api/tiendas/${nombreTienda}/categorias/${id}`);
+    const res = await api.get(`tiendas/${nombreTienda}/categorias/${id}`);
     return res.data;
 }
 
@@ -34,7 +34,7 @@ export async function getCategoriaById(nombreTienda, id) {
  * @returns {Promise} Promesa que resuelve con los datos de la categoría creada
  */
 export async function createCategoria(nombreTienda, data) {
-    const res = await api.post(`/api/tiendas/${nombreTienda}/categorias`, data);
+    const res = await api.post(`tiendas/${nombreTienda}/categorias`, data);
     return res.data;
 }
 
@@ -46,7 +46,7 @@ export async function createCategoria(nombreTienda, data) {
  * @returns {Promise} Promesa que resuelve con los datos de la categoría actualizada
  */
 export async function updateCategoria(nombreTienda, id, data) {
-    const res = await api.patch(`/api/tiendas/${nombreTienda}/categorias/${id}`, data);
+    const res = await api.patch(`tiendas/${nombreTienda}/categorias/${id}`, data);
     return res.data;
 }
 
@@ -57,5 +57,5 @@ export async function updateCategoria(nombreTienda, id, data) {
  * @returns {Promise} Promesa que se resuelve cuando la categoría es eliminada
  */
 export async function deleteCategoria(nombreTienda, id) {
-    await api.delete(`/api/tiendas/${nombreTienda}/categorias/${id}`);
+    await api.delete(`tiendas/${nombreTienda}/categorias/${id}`);
 }

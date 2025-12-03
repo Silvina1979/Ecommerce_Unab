@@ -5,25 +5,25 @@ import api from "./api";
  */
 
 export async function getUsuarios() {
-    const res = await api.get("/api/usuarios");
+    const res = await api.get("usuarios");
     return res.data;
 }
 
 export async function getUsuarioByDni(dni) {
-    const res = await api.get(`/api/usuarios/${dni}`);
+    const res = await api.get(`usuarios/${dni}`);
     return res.data;
 }
 
 export async function createUsuario(data) {
-    const res = await api.post("/api/usuarios", data);
+    const res = await api.post("usuarios", data);
     return res.data;
 }
 
 export async function updateUsuario(dni, data) {
-    const res = await api.patch(`/api/usuarios/${dni}`, data);
+    const res = await api.patch(`usuarios/${dni}`, data);
     return res.data;
 }
 
 export async function deleteUsuario(dni) {
-    await api.delete(`/api/usuarios/${dni}`);
+    await api.delete(`usuarios/${dni}`);
 }
