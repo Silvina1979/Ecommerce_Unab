@@ -10,8 +10,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -37,8 +35,4 @@ public class ProductosRequest {
     @NotNull(message = "El stock es obligatorio")
     @Min(value = 0, message = "El stock no puede ser negativo")
     private Integer stock;
-
-    
-
-    
 }

@@ -16,13 +16,12 @@ Para ejecutar este proyecto en un entorno local, es necesario configurar las var
 Descargue el código fuente utilizando el siguiente comando en su terminal:
 
 ```bash
-git clone <https://github.com/Silvina1979/Ecommerce_Unab>
-cd Ecommerce_Unab
-cd Backend
+git clone <URL_DEL_REPOSITORIO>
+cd ecommerce
 ```
 
 **2. Configuración de Variables de Entorno (.env)**
-Por motivos de seguridad, las credenciales sensibles no se incluyen en el repositorio. Para ejecutar la aplicación, debe crear un archivo llamado `.env` dentro de la carpeta backend (al mismo nivel que el archivo `pom.xml`).
+Por motivos de seguridad, las credenciales sensibles no se incluyen en el repositorio. Para ejecutar la aplicación, debe crear un archivo llamado `.env` en la raíz del proyecto (al mismo nivel que el archivo `pom.xml`).
 
 Copie el siguiente contenido en su archivo `.env`. Este ejemplo está preconfigurado para utilizar una base de datos en memoria (H2) para facilitar la corrección sin necesidad de instalar MySQL localmente:
 
@@ -73,8 +72,6 @@ Si la aplicación inició correctamente, podrá acceder a:
 
 * **URL Base (Render)(Producción):** `https://ecommerce-back-2uxy.onrender.com`
 * **Documentación Swagger UI(Render):** `https://ecommerce-back-2uxy.onrender.com/swagger-ui/index.html`
-
-* **Repositorio backend con commits completos:** `https://github.com/poeticstew40/ecommerce-back`
 
 > **Nota para el equipo de Frontend:** Se recomienda utilizar Swagger UI para probar los endpoints y comprender la estructura de los objetos JSON requeridos antes de la integración.
 

@@ -10,8 +10,9 @@ public class EnvConfig {
         // Bloque estático: Se ejecuta apenas carga la clase, antes que Spring lea el properties
         try {
             Dotenv dotenv = Dotenv.configure()
-                    .directory("./Backend") 
-                    .ignoreIfMissing() 
+                    .directory("./") // Busca en la raíz del proyecto
+                    .directory("./Backend")
+                    .ignoreIfMissing() // En prod (Render/Google) no existe el archivo, así que no falla
                     .load();
 
             dotenv.entries().forEach(entry -> {

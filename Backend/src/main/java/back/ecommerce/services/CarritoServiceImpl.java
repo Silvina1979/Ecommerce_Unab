@@ -35,8 +35,8 @@ public class CarritoServiceImpl implements CarritoService {
         // Validación: El producto debe pertenecer a la tienda actual
         if (!producto.getTienda().getNombreUrl().equals(nombreTienda)) {
             throw new IllegalArgumentException("Error de Seguridad: El producto '" + producto.getNombre() + 
-                                            "' pertenece a la tienda '" + producto.getTienda().getNombreUrl() + 
-                                            "' y no a '" + nombreTienda + "'.");
+                                               "' pertenece a la tienda '" + producto.getTienda().getNombreUrl() + 
+                                               "' y no a '" + nombreTienda + "'.");
         }
 
         if (producto.getStock() < request.getCantidad()) {

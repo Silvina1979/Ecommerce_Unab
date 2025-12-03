@@ -21,5 +21,4 @@ jobs:
         cache: maven
         
     - name: Compilar con Maven
-      working-directory: ./Backend
       run: mvn -B package --file pom.xml -DskipTests
