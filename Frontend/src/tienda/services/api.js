@@ -33,19 +33,31 @@ if (import.meta.env.VITE_API_URL) {
     baseURL = normalizeBaseURL(import.meta.env.VITE_API_URL);
 } else if (import.meta.env.DEV) {
     // En desarrollo, detectar si estamos accediendo desde otra máquina
-    // Si el hostname no es localhost o 127.0.0.1, usar la URL de producción
-    // porque el proxy solo funciona cuando cliente y servidor están en la misma máquina
-    const hostname = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
-    const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '';
+    // El proxy solo funciona cuando accedes desde localhost en la misma máquina
+    // Si accedes desde otra máquina (usando IP), el proxy intentará conectarse a localhost:8080
+    // en la máquina del servidor, lo cual puede fallar si el backend no está corriendo ahí
+    let useProxy = false;
     
-    if (isLocalhost) {
-        // Misma máquina: usar el proxy de Vite
+    if (typeof window !== 'undefined') {
+        const hostname = window.location.hostname;
+        // Solo usar proxy si es exactamente localhost o 127.0.0.1
+        // Cualquier otra cosa (IPs locales, nombres de dominio, etc.) usa producción
+        useProxy = (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '');
+    }
+    
+    if (useProxy) {
+        // Misma máquina (localhost): usar el proxy de Vite
         baseURL = '/api/';
     } else {
-        // Otra máquina: usar la URL de producción directamente
-        // NOTA: Si el backend está en otra IP, configurar VITE_API_URL con esa IP
+        // Otra máquina o IP: usar la URL de producción directamente
+        // NOTA: Si el backend está corriendo en otra IP local y quieres usarlo,
+        // configura VITE_API_URL con esa IP. Ejemplo:
+        // VITE_API_URL=http://192.168.1.100:8080/api/
         const prodURL = 'https://ecommerce-back-1018928649112.us-central1.run.app/';
         baseURL = normalizeBaseURL(prodURL);
+        if (typeof window !== 'undefined') {
+            console.log('[API] Accediendo desde otra máquina (' + window.location.hostname + '), usando URL de producción:', baseURL);
+        }
     }
 } else {
     // En producción, usar la URL de producción
