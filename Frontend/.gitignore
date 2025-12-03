@@ -23,3 +23,10 @@ dist-ssr
 *.sln
 *.sw?
 .env*
+
+# Ignorar imágenes temporales de demo/local
+# Si deseas commitear imágenes, elimina estas reglas
+**/logo.png
+**/logo_new.png
+**/prod.png
+*.png~
