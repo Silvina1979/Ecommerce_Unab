@@ -26,7 +26,7 @@ function categoriaToSlug(nombre) {
  */
 function HomeCategoria() {
     const { nombreTienda, categoriaNombre } = useParams();
-    const { tienda, loading: tiendaLoading } = useTienda();
+    const {tienda, loading: tiendaLoading } = useTienda();
     const [productos, setProductos] = useState([]);
     const [categorias, setCategorias] = useState([]);
     const [categoriaActual, setCategoriaActual] = useState(null);

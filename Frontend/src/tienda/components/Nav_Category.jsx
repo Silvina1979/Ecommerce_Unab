@@ -92,7 +92,7 @@ function Nav_Categories() {
                         )}
                     </div>
 
-                    {/* Renderiza las categorías obtenidas de la API */}
+                    {/* Renderiza las categorías obtenidas de la API
                     {categorias.map((cat) => (
                         <Link 
                             key={cat.id} 
@@ -100,7 +100,7 @@ function Nav_Categories() {
                         >
                             <li>{cat.nombre}</li>
                         </Link>
-                    ))}
+                    ))} */}
                     {/* Categorías estáticas temporales */}
                 </div>
         </div>
