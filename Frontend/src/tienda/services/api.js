@@ -18,23 +18,39 @@ import axios from "axios";
 // IMPORTANTE: El baseURL debe terminar con /api/ para que las rutas en los servicios
 // funcionen correctamente tanto en desarrollo (proxy) como en producción
 
+// Función para normalizar la URL y asegurar que termine en /api/
+function normalizeBaseURL(url) {
+    if (!url) return null;
+    if (url.endsWith('/api/')) return url;
+    if (url.endsWith('/api')) return url + '/';
+    if (url.endsWith('/')) return url + 'api/';
+    return url + '/api/';
+}
+
 let baseURL;
 if (import.meta.env.VITE_API_URL) {
-    // Si hay VITE_API_URL definida, usarla (asegurar que termine en /api/)
-    baseURL = import.meta.env.VITE_API_URL.endsWith('/api/') 
-        ? import.meta.env.VITE_API_URL 
-        : import.meta.env.VITE_API_URL.endsWith('/api')
-            ? import.meta.env.VITE_API_URL + '/'
-            : import.meta.env.VITE_API_URL.endsWith('/')
-                ? import.meta.env.VITE_API_URL + 'api/'
-                : import.meta.env.VITE_API_URL + '/api/';
+    // Si hay VITE_API_URL definida, usarla
+    baseURL = normalizeBaseURL(import.meta.env.VITE_API_URL);
 } else if (import.meta.env.DEV) {
-    // En desarrollo, usar el proxy de Vite
-    baseURL = '/api/';
+    // En desarrollo, detectar si estamos accediendo desde otra máquina
+    // Si el hostname no es localhost o 127.0.0.1, usar la URL de producción
+    // porque el proxy solo funciona cuando cliente y servidor están en la misma máquina
+    const hostname = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
+    const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '';
+    
+    if (isLocalhost) {
+        // Misma máquina: usar el proxy de Vite
+        baseURL = '/api/';
+    } else {
+        // Otra máquina: usar la URL de producción directamente
+        // NOTA: Si el backend está en otra IP, configurar VITE_API_URL con esa IP
+        const prodURL = 'https://ecommerce-back-1018928649112.us-central1.run.app/';
+        baseURL = normalizeBaseURL(prodURL);
+    }
 } else {
-    // En producción, usar la URL de producción (asegurar que termine en /api/)
+    // En producción, usar la URL de producción
     const prodURL = 'https://ecommerce-back-1018928649112.us-central1.run.app/';
-    baseURL = prodURL.endsWith('/api/') ? prodURL : prodURL + 'api/';
+    baseURL = normalizeBaseURL(prodURL);
 }
 
 const api = axios.create({
