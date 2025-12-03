@@ -2,21 +2,11 @@ import axios from "axios";
 
 /**
  * Configuración base de Axios para la API
-* 
+ * 
  * Incluye interceptores para:
  * - Agregar automáticamente el token JWT en el header Authorization
  * - Manejar errores 401/403 (token inválido o expirado)
  */
-
-// En desarrollo, si no hay VITE_API_URL definida, usa el proxy de Vite (/api)
-// En producción o si VITE_API_URL está definida, usa esa URL
-// 
-// URLs disponibles según documentación:
-// - Google Cloud (Producción): https://ecommerce-back-1018928649112.us-central1.run.app/
-// - Render (Alternativa): https://ecommerce-back-2uxy.onrender.com
-//
-// IMPORTANTE: El baseURL debe terminar con /api/ para que las rutas en los servicios
-// funcionen correctamente tanto en desarrollo (proxy) como en producción
 
 // Función para normalizar la URL y asegurar que termine en /api/
 function normalizeBaseURL(url) {
@@ -35,28 +25,11 @@ if (import.meta.env.VITE_API_URL) {
     // Si hay VITE_API_URL definida, usarla (tiene prioridad)
     baseURL = normalizeBaseURL(import.meta.env.VITE_API_URL);
 } else if (import.meta.env.DEV) {
-    // En desarrollo, por defecto usar la URL de producción
-    // El proxy solo se usa si VITE_USE_PROXY=true está configurado
-    // Esto permite trabajar sin necesidad de tener el backend corriendo localmente
+    // En desarrollo: usar proxy solo si VITE_USE_PROXY=true, sino usar producción
     const useProxy = import.meta.env.VITE_USE_PROXY === 'true';
-    
-    if (useProxy) {
-        // Solo usar proxy si está explícitamente configurado
-        // Requiere que el backend esté corriendo en localhost:8080
-        baseURL = '/api/';
-        if (typeof window !== 'undefined') {
-            console.log('[API] Usando proxy local (requiere backend en localhost:8080)');
-        }
-    } else {
-        // Por defecto, usar la URL de producción
-        // No requiere backend local corriendo
-        baseURL = normalizeBaseURL(PROD_API_URL);
-        if (typeof window !== 'undefined') {
-            console.log('[API] Usando URL de producción:', baseURL);
-        }
-    }
+    baseURL = useProxy ? '/api/' : normalizeBaseURL(PROD_API_URL);
 } else {
-    // En producción, usar la URL de producción
+    // En producción: usar URL de producción
     baseURL = normalizeBaseURL(PROD_API_URL);
 }
 

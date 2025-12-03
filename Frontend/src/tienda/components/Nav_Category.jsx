@@ -78,7 +78,7 @@ function Nav_Categories() {
                                 {categorias.map((categoria) => (
                                     <Link 
                                         key={categoria.id} 
-                                        to={`/tienda/${nombreTienda}/home/categoria/${categoriaToSlug(categoria.nombre)}`}
+                                        to={`/tienda/${nombreTienda}/categoria/${categoriaToSlug(categoria.nombre)}`}
                                         className="menu-item categoria"
                                         onClick={() => setIsMenuOpen(false)}
                                     >
@@ -96,7 +96,7 @@ function Nav_Categories() {
                     {categorias.map((cat) => (
                         <Link 
                             key={cat.id} 
-                            to={`/tienda/${nombreTienda}/home/categoria/${categoriaToSlug(cat.nombre)}`}
+                            to={`/tienda/${nombreTienda}/categoria/${categoriaToSlug(cat.nombre)}`}
                         >
                             <li>{cat.nombre}</li>
                         </Link>
