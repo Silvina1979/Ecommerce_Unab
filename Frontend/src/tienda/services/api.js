@@ -8,8 +8,15 @@ import axios from "axios";
  * - Manejar errores 401/403 (token inválido o expirado)
  */
 
+// En desarrollo, si no hay VITE_API_URL definida, usa el proxy de Vite (/api)
+// En producción o si VITE_API_URL está definida, usa esa URL
+// 
+// URLs disponibles según documentación:
+// - Google Cloud (Producción): https://ecommerce-back-1018928649112.us-central1.run.app/
+// - Render (Alternativa): https://ecommerce-back-2uxy.onrender.com
+
 const baseURL = import.meta.env.VITE_API_URL 
-    || 'https://ecommerce-back-1018928649112.us-central1.run.app/';
+    || (import.meta.env.DEV ? '/api' : 'https://ecommerce-back-1018928649112.us-central1.run.app/');
 
 const api = axios.create({
     baseURL: baseURL,

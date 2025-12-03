@@ -5,7 +5,6 @@ import { useNotifications } from "../../contexts/NotificationContext.jsx";
 // import "../styles/Login.css";
 import "../../MainStyles.css";
 
-
 import { FaStore, FaShoppingBag } from "react-icons/fa";
 import { IoPerson } from "react-icons/io5";
 import { FaLock } from "react-icons/fa";

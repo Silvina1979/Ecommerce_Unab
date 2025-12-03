@@ -9,10 +9,12 @@ export default defineConfig({
     globals: true
   },
   server: {
+    host: '0.0.0.0', // Permite conexiones desde otras máquinas en la red
+    port: 5173,
     proxy: {
       // Redirige todas las peticiones que empiecen con /api al backend
       '/api': {
-        target: 'http://localhost:8080',
+        target: process.env.VITE_BACKEND_URL || 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path, // Mantiene la ruta original /api/...

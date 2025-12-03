@@ -69,7 +69,7 @@ function App() {
 
               {/* Rutas de tienda con nombreTienda (para compradores) */}
               <Route path="/tienda/:nombreTienda/home" element={<Home />} />
-              <Route path="/tienda/:nombreTienda/home/categoria/:categoriaNombre" element={<HomeCategoria />} />
+              <Route path="/tienda/:nombreTienda/categoria/:categoriaNombre" element={<HomeCategoria />} />
               <Route path="/tienda/:nombreTienda/login" element={<LoginComprador />} />
               <Route path="/tienda/:nombreTienda/catalogo" element={<Catalogo />} />
               <Route path="/tienda/:nombreTienda/carrito" element={<Carrito />} />

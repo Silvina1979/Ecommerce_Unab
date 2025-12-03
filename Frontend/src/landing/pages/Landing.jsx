@@ -9,7 +9,7 @@ import "../styles/Landing.css";
  * 
  * Página inicial de la aplicación. Muestra información general
  * y permite navegar a las tiendas o iniciar sesión.
- * Diseño basado en landing.html
+ * Diseño basado en landing
  */
 function Landing() {
     const { isAuthenticated, usuario, logout } = useAuth();
@@ -121,7 +121,6 @@ function Landing() {
                     <div className="features-container">
                         <h2 className="section-title">¿Por qué elegir nuestra plataforma?</h2>
                         <p className="section-subtitle">
-
                             Nuestra plataforma está diseñada para vendedores y compradores
                             ofreciendo herramientas poderosas y fáciles de usar.
                         </p>
