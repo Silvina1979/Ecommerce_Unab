@@ -1,10 +1,25 @@
+/* ----------------------------Container especfico de Home---------------------------- */
 .main-home-contenedor {
     /* border: 1px solid blue; */
     display: flex;
     justify-content: center;
     margin-top: 50px;
+    min-height: 100vh;
 }
 
+/* ----------------------------Container especifico de HomeCategoria---------------------------- */
+
+.main-catalogo {
+    /* border: 1px solid green; */
+    max-width: 1270px;
+    margin: 0 auto;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+}
+
+
+/* ----------------------------Productos en general---------------------------- */
 .grid-home-prod {
     /* border: 1px solid red; */
     width: 100%;
@@ -35,7 +50,7 @@
     flex-direction: column;
     padding: var(--padding-md);
     transition: transform var(--transition-normal), box-shadow var(--transition-normal);
-    /*max-width: 250px;*/
+    max-width: 350px;
     flex: 1 1 250px;
     cursor: pointer;
 }
@@ -52,7 +67,7 @@
     border: 1px solid rgb(220, 220, 220);
     width: 100%;
     height: 200px;
-    object-fit: cover;
+    object-fit: contain;
     border-radius: var(--border-radius);
     margin-bottom: var(--margin-md);
 }

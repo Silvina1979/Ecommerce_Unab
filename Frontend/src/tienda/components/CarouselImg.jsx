@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import "../styles/CarouselImg.css";
 
 function CarouselImg({ images = [] }) {
@@ -31,14 +32,14 @@ function CarouselImg({ images = [] }) {
                 className="carousel-btn left"
                 onClick={() => setIndex((index - 1 + images.length) % images.length)}
             >
-                ❮
+                <FaChevronLeft />
             </button>
 
             <button
                 className="carousel-btn right"
                 onClick={() => setIndex((index + 1) % images.length)}
             >
-                ❯
+                <FaChevronRight />
             </button>
         </div>
     );
