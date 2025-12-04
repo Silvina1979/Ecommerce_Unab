@@ -353,11 +353,13 @@ Ecommerce_Unab/
 
 ## 🔌 Endpoints de API
 
-Listado completo de endpoints: [API_ENDPOINTS_FOR_UNAB.txt](./API_ENDPOINTS_FOR_UNAB.txt)
+La API está documentada automáticamente por **springdoc-openapi**. Una vez que el backend esté en ejecución, abrí la **Swagger UI** para ver el listado completo de endpoints, parámetros y esquemas:
 
-Ejemplos curl: [CURL_EXAMPLES.md](./CURL_EXAMPLES.md)
+- Swagger UI: `http://localhost:8080/swagger-ui.html`
 
-### Ejemplos rápidos
+Si preferís ejemplos curl exportables o un listado en texto, puedo generarlos desde los controladores y agregarlos al repositorio bajo petición.
+
+### Ejemplos rápidos (mínimos)
 
 **Registro:**
 ```bash
