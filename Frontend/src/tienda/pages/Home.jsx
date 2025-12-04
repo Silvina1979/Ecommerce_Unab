@@ -7,6 +7,12 @@ import { useState, useEffect } from "react";
 import "../styles/Productos.css";
 import Footer_Landing from "../../landing/components/Footer_Landing.jsx";
 
+// --- Imports nuevos para la lógica del carrito ---
+import { agregarAlCarrito } from "../services/carrito";
+import { useAuth } from "../contexts/AuthContext.jsx";
+import { useNotifications } from "../../contexts/NotificationContext.jsx";
+import { useNavigate, useLocation } from "react-router-dom";
+
 /**
 * Componente Home
 * Renderiza la página principal del ecommerce.
@@ -28,6 +34,12 @@ function Home() {
     const [cargandoProductos, setCargandoProductos] = useState(true);
     const [errorProductos, setErrorProductos] = useState(null);
 
+    // Hooks para autenticación, navegación y notificaciones
+    const { usuario, isAuthenticated } = useAuth();
+    const { success: showSuccess, error: showError } = useNotifications();
+    const navigate = useNavigate();
+    const location = useLocation();
+
     // --- FIX BACKEND: Función para obtener la imagen principal ---
     const obtenerImagen = (prod) => {
         // 1. Si viene una lista (nueva logica Java: List<String>)
@@ -42,6 +54,33 @@ function Home() {
         return "/default-product.png";
     };
     // -------------------------------------------------------------
+
+    // Función para manejar la acción de agregar al carrito
+    const handleAgregarAlCarrito = async (productoId) => {
+        // Verificar si el usuario está autenticado
+        if (!isAuthenticated || !usuario) {
+            showError("Atención", "Debes iniciar sesión para comprar");
+            // Redirigir al login de la tienda actual guardando la ubicación
+            navigate(`/tienda/${tienda.nombreUrl}/login`, { state: { from: location.pathname } });
+            return;
+        }
+
+        try {
+            // Preparar datos para el backend
+            const requestData = {
+                usuarioDni: usuario.dni,
+                productoId: productoId,
+                cantidad: 1 
+            };
+
+            await agregarAlCarrito(tienda.nombreUrl, requestData);
+            showSuccess("¡Listo!", "Producto agregado al carrito");
+        } catch (err) {
+            console.error(err);
+            const msg = err.response?.data?.message || "No se pudo agregar al carrito";
+            showError("Error", msg);
+        }
+    };
 
     // Cargar productos de la tienda
     useEffect(() => {
@@ -64,7 +103,6 @@ function Home() {
             } catch (err) {
                 console.error("Error cargando productos:", err);
                 setErrorProductos(err.message || "Error al cargar productos");
-       
             } finally {
                 setCargandoProductos(false);
             }
@@ -80,7 +118,6 @@ function Home() {
                 <Header />
                 <main className="main-home-contenedor">
                     <p>Cargando tienda...</p>
-         
                 </main>
             </>
         );
@@ -93,13 +130,11 @@ function Home() {
                 <Header />
                 <main className="main-home-contenedor">
                     <div style={{ textAlign: "center", padding: "40px" }}>
- 
                         <h2>Tienda no encontrada</h2>
                         <p>{error}</p>
                     </div>
                 </main>
             </>
-   
         );
     }
 
@@ -109,13 +144,11 @@ function Home() {
             <>
                 <Header />
                 <main className="main-home-contenedor">
-                    <div style={{ 
-                        textAlign: "center", padding: "40px" }}>
+                    <div style={{ textAlign: "center", padding: "40px" }}>
                         <h2>Tienda no encontrada</h2>
                         <p>La tienda que buscas no existe o no está disponible.</p>
                     </div>
                 </main>
- 
             </>
         );
     }
@@ -133,31 +166,25 @@ function Home() {
             {/*Carousel*/}
             <CarouselImg images={bannersAMostrar} />
             
-     
             {/* Grid principal que contiene todos los productos */}
             <main className="main-home-contenedor">
                 {cargandoProductos ? (
                     <p>Cargando productos...</p>
                 ) : errorProductos ? (
-        
                     <p style={{ color: "red" }}>Error: {errorProductos}</p>
                 ) : productos.length === 0 ? (
                     <p>No hay productos disponibles en esta tienda.</p>
                 ) : (
                     <div className="grid-home-prod">
- 
                         {productos.map((prod) => (
                             <div key={prod.id} className="prod-home-container">
                                 {/* Imagen del producto */}
-         
                                 <img 
                                     src={obtenerImagen(prod)} 
                                     alt={prod.nombre} 
                                     className="prod-home-image"
-                        
                                     onError={(e) => {
                                         // Si la imagen falla al cargar, evitar bucle infinito
-                           
                                         if (!e.target.dataset.fallback) {
                                             e.target.dataset.fallback = "true";
                                             // Usar una imagen placeholder SVG
@@ -170,24 +197,27 @@ function Home() {
                                 <h2 className="prod-home-nombre">{prod.nombre}</h2>
                                
                                 {/* Precio del producto */}
-                           
                                 <p className="prod-home-precio">Precio: ${prod.precio}</p>
+   
                                 {/* Stock disponible del producto */}
                                 <p className="prod-home-stock">Stock: {prod.stock}</p>
                       
                                 {/* Descripción del producto */}
-                                <p className="prod-home-descripcion">Descripción: {prod.descripcion ||
-                                "Sin descripción"}</p>
+                                <p className="prod-home-descripcion">Descripción: {prod.descripcion || "Sin descripción"}</p>
+                                
                                 {/* Botón para agregar el producto al carrito */}
-                                <button className="prod-home-btn-carrito">Agregar al carrito</button>
-                        
+                                <button 
+                                    className="prod-home-btn-carrito"
+                                    onClick={() => handleAgregarAlCarrito(prod.id)}
+                                >
+                                    Agregar al carrito
+                                </button>
                             </div>
                         ))}
                     </div>
                 )}
             </main>
             {/* Footer de la página */}
-       
             <Footer_Landing />
         </>
     );

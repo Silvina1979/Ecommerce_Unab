@@ -27,20 +27,18 @@ import Carrito from "./tienda/pages/Carrito.jsx";
 import Checkout from "./tienda/pages/Checkout.jsx";
 import VerUsuarios from "./tienda/pages/VerUsuarios.jsx";
 import LoginComprador from "./tienda/pages/LoginComprador.jsx";
+import EstadoPago from "./tienda/pages/EstadoPago.jsx"; // <--- IMPORTADO AQUÍ
 
 
 /**
 * Componente App
-* 
-* Componente principal de la aplicación que configura el enrutamiento.
+* * Componente principal de la aplicación que configura el enrutamiento.
 * Define todas las rutas disponibles en la aplicación utilizando React Router.
 * Cada ruta está asociada a un componente de página específico.
-* 
-* Contextos proporcionados:
+* * Contextos proporcionados:
 * - AuthProvider: Gestiona la autenticación y el token JWT
 * - TiendaWrapper: Proporciona el contexto de tienda, detectando automáticamente el nombreTienda de la URL
-* 
-* Rutas disponibles:
+* * Rutas disponibles:
 * - "/" - Página principal (Home)
 * - "/login" - Página de inicio de sesión
 * - "/catalogo" - Catálogo de productos
@@ -74,7 +72,12 @@ function App() {
               <Route path="/tienda/:nombreTienda/catalogo" element={<Catalogo />} />
               <Route path="/tienda/:nombreTienda/carrito" element={<Carrito />} />
               <Route path="/tienda/:nombreTienda/checkout" element={<Checkout />} />
-              <Route path="/tienda/:nombreTienda/checkout" element={<VerUsuarios />} />
+              <Route path="/tienda/:nombreTienda/usuarios" element={<VerUsuarios />} />
+
+              {/* NUEVAS RUTAS DE RETORNO DE MERCADO PAGO */}
+              <Route path="/compra-exitosa" element={<EstadoPago estado="exito" />} />
+              <Route path="/compra-fallida" element={<EstadoPago estado="fallo" />} />
+              <Route path="/compra-pendiente" element={<EstadoPago estado="pendiente" />} />
 
               {/* Rutas del panel administrativo (requieren autenticación y ser vendedor) */}
               <Route 

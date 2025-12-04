@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../tienda/contexts/AuthContext";
-import { createTienda, updateTienda, getTiendaByVendedor } from "../../tienda/services/tiendas";
+import { createTienda, updateTienda } from "../../tienda/services/tiendas";
 import NotificationModal from "../../components/NotificationModal.jsx";
 import "../styles/AdminConfiguracion.css";
 
@@ -30,6 +30,8 @@ function AdminConfiguracion() {
     const [nombreFantasia, setNombreFantasia] = useState("");
     const [nombreUrl, setNombreUrl] = useState("");
     const [descripcion, setDescripcion] = useState("");
+    // AÑADIDO: Estado para el costo de envío
+    const [costoEnvio, setCostoEnvio] = useState(0); 
     
     // Estados de Logo
     const [logo, setLogo] = useState(null);
@@ -55,6 +57,10 @@ function AdminConfiguracion() {
             setNombreFantasia(tiendaUsuario.nombreFantasia || "");
             setNombreUrl(tiendaUsuario.nombreUrl || "");
             setDescripcion(tiendaUsuario.descripcion || "");
+            
+            // AÑADIDO: Cargar costo de envío
+            setCostoEnvio(tiendaUsuario.costoEnvio || 0);
+            
             if (tiendaUsuario.logo) {
                 setLogoPreview(tiendaUsuario.logo);
             }
@@ -114,7 +120,6 @@ function AdminConfiguracion() {
         const files = Array.from(e.target.files);
         if (files.length > 0) {
             const validFiles = [];
-            
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
                 if (!file.type.startsWith("image/")) continue;
@@ -176,14 +181,16 @@ function AdminConfiguracion() {
         try {
             // Crear FormData para multipart/form-data
             const formData = new FormData();
-            
             // Crear objeto JSON con los datos de la tienda
             const tiendaData = {
                 nombreUrl: nombreUrl.trim(),
                 nombreFantasia: nombreFantasia.trim(),
                 descripcion: descripcion.trim() || null,
                 vendedorDni: typeof usuario.dni === 'number' ? usuario.dni : parseInt(usuario.dni),
-                banners: bannersExistentes // Enviamos los banners viejos que quedan
+                banners: bannersExistentes, // Enviamos los banners viejos que quedan
+                
+                // AÑADIDO: Agregar costo de envío al objeto de datos
+                costoEnvio: parseFloat(costoEnvio) || 0,
             };
 
             // Validar que el DNI sea un número válido
@@ -195,7 +202,6 @@ function AdminConfiguracion() {
             
             // Agregar el JSON como string en el campo "tienda"
             formData.append("tienda", JSON.stringify(tiendaData));
-            
             // Agregar el archivo del logo si se seleccionó uno
             if (logo) {
                 formData.append("file", logo);
@@ -231,11 +237,9 @@ function AdminConfiguracion() {
                     ? 'Los cambios se han guardado correctamente.' 
                     : '¡Tu tienda ha sido creada exitosamente!'
             });
-            
             // Limpiar estados de banners nuevos
             setNuevosBanners([]);
             setNuevosBannersPreview([]);
-
         } catch (error) {
             console.error("Error al guardar tienda:", error);
             console.error("Error completo:", {
@@ -244,7 +248,6 @@ function AdminConfiguracion() {
                 data: error.response?.data,
                 message: error.message
             });
-            
             // Mensajes de error más específicos
             let mensajeError = "Error al guardar la tienda. Intenta nuevamente.";
             if (error.response?.status === 500) {
@@ -261,10 +264,7 @@ function AdminConfiguracion() {
                         mensajeError = `Error del servidor: ${serverError}`;
                     }
                 } else {
-                    mensajeError = "Error interno del servidor. Posibles causas:\n" +
-                        "• Tu email no está verificado\n" +
-                        "• El nombre de URL ya está en uso\n" +
-                        "• Problema con la autenticación";
+                    mensajeError = "Error interno del servidor. Posibles causas: Tu email no está verificado, el nombre de URL ya está en uso o hay un problema con la autenticación.";
                 }
             } else if (error.response?.status === 400) {
                 const serverError = error.response?.data?.message || error.response?.data?.error || "";
@@ -296,12 +296,8 @@ function AdminConfiguracion() {
         return (
             <div className="configuracion-loading">
                 <div className="configuracion-loading-content">
-                    <div className="configuracion-loading-title">
-                        Cargando...
-                    </div>
-                    <div className="configuracion-loading-text">
-                        Obteniendo información del usuario
-                    </div>
+                    <div className="configuracion-loading-title">Cargando...</div>
+                    <div className="configuracion-loading-text">Obteniendo información del usuario</div>
                 </div>
             </div>
         );
@@ -316,9 +312,7 @@ function AdminConfiguracion() {
                     <div className="configuracion-error-alert">
                         <strong>No se pudo obtener la información del usuario.</strong>
                         <br />
-                        <small className="configuracion-error-text">
-                            Por favor, inicia sesión nuevamente.
-                        </small>
+                        <small className="configuracion-error-text">Por favor, inicia sesión nuevamente.</small>
                     </div>
                     <div className="configuracion-error-actions">
                         <button
@@ -362,9 +356,7 @@ function AdminConfiguracion() {
                 )}
 
                 <div className="configuracion-form-group">
-                    <label className="configuracion-label">
-                        Nombre de la Tienda *
-                    </label>
+                    <label className="configuracion-label">Nombre de la Tienda *</label>
                     <input
                         type="text"
                         value={nombreFantasia}
@@ -396,15 +388,12 @@ function AdminConfiguracion() {
                         className="configuracion-input"
                     />
                     <small className="configuracion-help-text">
-                        Solo letras minúsculas, números y guiones.
-                        Tu tienda estará disponible en: /tienda/{nombreUrl || "nombre-url"}
+                        Solo letras minúsculas, números y guiones. Tu tienda estará disponible en: /tienda/{nombreUrl || "nombre-url"}
                     </small>
                 </div>
 
                 <div className="configuracion-form-group">
-                    <label className="configuracion-label">
-                        Descripción
-                    </label>
+                    <label className="configuracion-label">Descripción</label>
                     <textarea
                         value={descripcion}
                         onChange={(e) => setDescripcion(e.target.value)}
@@ -414,17 +403,30 @@ function AdminConfiguracion() {
                         className="configuracion-textarea"
                     />
                 </div>
+                
+                {/* INICIO NUEVO CAMPO: Costo de Envío Estándar */}
+                <div className="configuracion-form-group">
+                    <label className="configuracion-label">Costo de Envío Estándar ($)</label>
+                    <input
+                        type="number"
+                        min="0"
+                        value={costoEnvio}
+                        onChange={(e) => setCostoEnvio(e.target.value)}
+                        placeholder="0"
+                        disabled={loading}
+                        className="configuracion-input"
+                    />
+                    <small className="configuracion-help-text">
+                        Costo fijo por envío que se aplicará al comprador en el checkout. Ingresa 0 para envío gratis o retiro en persona.
+                    </small>
+                </div>
+                {/* FIN NUEVO CAMPO */}
 
                 <div className="configuracion-form-group">
-                    <label className="configuracion-label">
-                        Logo de la Tienda
-                    </label>
+                    <label className="configuracion-label">Logo de la Tienda</label>
                     {logoPreview && (
                         <div className="configuracion-logo-preview">
-                            <img
-                                src={logoPreview}
-                                alt="Preview del logo"
-                            />
+                            <img src={logoPreview} alt="Preview del logo" />
                         </div>
                     )}
                     <input
@@ -436,8 +438,7 @@ function AdminConfiguracion() {
                         key={isEditMode ? `logo-${tiendaUsuario?.nombreUrl}` : 'logo-new'}
                     />
                     <small className="configuracion-help-text">
-                        Formato: JPG, PNG, GIF. Tamaño máximo: 5MB
-                        {isEditMode && " Puedes seleccionar un nuevo logo para reemplazar el actual."}
+                        Formato: JPG, PNG, GIF. Tamaño máximo: 5MB. {isEditMode && "Puedes seleccionar un nuevo logo para reemplazar el actual."}
                     </small>
                 </div>
 

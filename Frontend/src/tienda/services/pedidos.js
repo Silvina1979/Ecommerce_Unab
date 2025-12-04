@@ -4,27 +4,49 @@ import api from "./api";
  * Servicios para interactuar con el endpoint de pedidos de la API
  */
 
-export async function createPedido(data) {
-    const res = await api.post("pedidos", data);
+/**
+ * Crea un nuevo pedido
+ * @param {string} nombreTienda - Slug de la tienda
+ * @param {Object} data - Datos del pedido (usuarioDni, direccionEnvio, items, etc)
+ */
+export async function createPedido(nombreTienda, data) {
+    // MODIFICADO: Se agrega nombreTienda a la URL para coincidir con el backend
+    const res = await api.post(`tiendas/${nombreTienda}/pedidos`, data);
     return res.data;
 }
 
-export async function getPedidoById(id) {
-    const res = await api.get(`pedidos/${id}`);
+/**
+ * Obtiene todos los pedidos de una tienda
+ * @param {string} nombreTienda - Slug de la tienda
+ * @returns {Promise<Array>} Lista de pedidos
+ */
+export async function getPedidosByTienda(nombreTienda) {
+    const res = await api.get(`tiendas/${nombreTienda}/pedidos`);
     return res.data;
 }
 
-export async function updatePedido(id, data) {
-    const res = await api.patch(`pedidos/${id}`, data);
+export async function getPedidoById(nombreTienda, id) {
+    const res = await api.get(`tiendas/${nombreTienda}/pedidos/${id}`);
     return res.data;
 }
 
-export async function deletePedido(id) {
-    await api.delete(`pedidos/${id}`);
-}
-
-export async function getPedidosByUsuario(dni) {
-    const res = await api.get(`pedidos/usuario/${dni}`);
+/**
+ * Actualiza un pedido existente
+ * @param {string} nombreTienda - Slug de la tienda
+ * @param {number} id - ID del pedido
+ * @param {Object} data - Datos del pedido a actualizar (ej: { estado: 'NUEVO_ESTADO' })
+ * @returns {Promise<Object>} Pedido actualizado
+ */
+export async function updatePedido(nombreTienda, id, data) {
+    const res = await api.patch(`tiendas/${nombreTienda}/pedidos/${id}`, data);
     return res.data;
 }
 
+export async function deletePedido(nombreTienda, id) {
+    await api.delete(`tiendas/${nombreTienda}/pedidos/${id}`);
+}
+
+export async function getPedidosByUsuario(nombreTienda, dni) {
+    const res = await api.get(`tiendas/${nombreTienda}/pedidos/usuario/${dni}`);
+    return res.data;
+}
