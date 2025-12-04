@@ -2,8 +2,7 @@ import api from "./api";
 
 /**
  * Servicios para interactuar con el endpoint de tiendas de la API
- * 
- * Todas las operaciones de tiendas requieren el nombreUrl (slug) de la tienda
+ * * Todas las operaciones de tiendas requieren el nombreUrl (slug) de la tienda
  */
 
 /**
@@ -18,7 +17,7 @@ export async function getTiendaBySlug(nombreUrl) {
 
 /**
  * Crea una nueva tienda (requiere multipart/form-data)
- * @param {FormData} formData - FormData con los campos 'tienda' (JSON string) y 'file' (imagen opcional)
+ * @param {FormData} formData - FormData con los campos 'tienda' (JSON string), 'file' (logo) y 'banners' (lista)
  * @returns {Promise} Promesa que resuelve con los datos de la tienda creada
  */
 export async function createTienda(formData) {
@@ -33,7 +32,7 @@ export async function createTienda(formData) {
 /**
  * Actualiza una tienda existente (requiere multipart/form-data)
  * @param {string} nombreUrl - El slug de la tienda a actualizar
- * @param {FormData} formData - FormData con los campos 'tienda' (JSON string) y 'file' (imagen opcional)
+ * @param {FormData} formData - FormData con los campos 'tienda', 'file', 'banners'
  * @returns {Promise} Promesa que resuelve con los datos de la tienda actualizada
  */
 export async function updateTienda(nombreUrl, formData) {
@@ -77,4 +76,3 @@ export async function getTiendaByVendedor(vendedorDni) {
 export async function deleteTienda(nombreUrl) {
     await api.delete(`tiendas/${nombreUrl}`);
 }
-

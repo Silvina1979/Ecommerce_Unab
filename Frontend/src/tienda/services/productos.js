@@ -2,8 +2,7 @@ import api from "./api";
 
 /**
  * Servicios para interactuar con el endpoint de productos de la API
- * 
- * Todas las operaciones de productos requieren el nombreUrl (slug) de la tienda
+ * * Todas las operaciones de productos requieren el nombreUrl (slug) de la tienda
  */
 
 /**
@@ -32,7 +31,7 @@ export async function getProductoById(nombreTienda, id) {
 /**
  * Crea un nuevo producto (requiere multipart/form-data)
  * @param {string} nombreTienda - El slug de la tienda
- * @param {FormData} formData - FormData con los campos 'producto' (JSON string) y 'file' (imagen opcional)
+ * @param {FormData} formData - FormData con los campos 'producto' (JSON string) y 'files' (lista de imagenes)
  * @returns {Promise} Promesa que resuelve con los datos del producto creado
  */
 export async function createProducto(nombreTienda, formData) {
@@ -48,11 +47,15 @@ export async function createProducto(nombreTienda, formData) {
  * Actualiza un producto existente
  * @param {string} nombreTienda - El slug de la tienda
  * @param {number} id - ID del producto a actualizar
- * @param {Object} data - Datos del producto a actualizar
+ * @param {FormData} formData - Datos del producto a actualizar (FormData para soportar imágenes)
  * @returns {Promise} Promesa que resuelve con los datos del producto actualizado
  */
-export async function updateProducto(nombreTienda, id, data) {
-    const res = await api.patch(`tiendas/${nombreTienda}/productos/${id}`, data);
+export async function updateProducto(nombreTienda, id, formData) {
+    const res = await api.patch(`tiendas/${nombreTienda}/productos/${id}`, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
     return res.data;
 }
 

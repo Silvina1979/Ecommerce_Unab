@@ -1,22 +1,20 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../tienda/contexts/AuthContext";
-import { getProductosByTienda, getProductoById, updateProducto, buscarProductos, getProductosByCategoria, deleteProducto } from "../../tienda/services/productos";
+import { getProductosByTienda, getProductoById, updateProducto, deleteProducto } from "../../tienda/services/productos";
 import { getCategoriasByTienda } from "../../tienda/services/categorias";
 import { useNotifications } from "../../contexts/NotificationContext";
 import "../styles/AdminEditarProductos.css";
 
 /**
  * Página de edición de productos
- * 
- * Permite ver, filtrar, buscar y editar productos de la tienda
+ * * Permite ver, filtrar, buscar y editar productos de la tienda
  */
 function AdminEditarProductos() {
     const { usuario, tiendaUsuario, loading: authLoading, isAuthenticated } = useAuth();
     const { nombreTienda } = useParams();
     const navigate = useNavigate();
     const { success: showSuccess, error: showError } = useNotifications();
-    
     const [loading, setLoading] = useState(false);
     const [cargandoProductos, setCargandoProductos] = useState(true);
     const [productos, setProductos] = useState([]);
@@ -31,15 +29,18 @@ function AdminEditarProductos() {
     const [modalAbierto, setModalAbierto] = useState(false);
     const [productoEditando, setProductoEditando] = useState(null);
     const [editando, setEditando] = useState(false);
-    
+
     // Estados del formulario de edición
     const [nombreEdit, setNombreEdit] = useState("");
     const [descripcionEdit, setDescripcionEdit] = useState("");
     const [precioEdit, setPrecioEdit] = useState("");
     const [stockEdit, setStockEdit] = useState("");
     const [categoriaIdEdit, setCategoriaIdEdit] = useState("");
-    const [imagenEdit, setImagenEdit] = useState(null);
-    const [imagenPreviewEdit, setImagenPreviewEdit] = useState(null);
+    
+    // Estados de Imágenes
+    const [imagenesExistentes, setImagenesExistentes] = useState([]);
+    const [nuevosArchivos, setNuevosArchivos] = useState([]);
+    const [nuevosArchivosPreview, setNuevosArchivosPreview] = useState([]);
     
     // Redirigir si no está autenticado
     useEffect(() => {
@@ -114,18 +115,36 @@ function AdminEditarProductos() {
         setProductosFiltrados(productosFiltrados);
     }, [filtroCategoria, busquedaNombre, productos]);
 
+    // Helper para imagen principal
+    const obtenerImagenPrincipal = (prod) => {
+        if (prod.imagenes && Array.isArray(prod.imagenes) && prod.imagenes.length > 0) return prod.imagenes[0];
+        if (prod.imagen) return prod.imagen;
+        return "/default-product.png";
+    };
+
     const abrirModal = async (producto) => {
         try {
             // Cargar datos completos del producto
             const productoCompleto = await getProductoById(tiendaUsuario.nombreUrl, producto.id);
             setProductoEditando(productoCompleto);
+            
             setNombreEdit(productoCompleto.nombre || "");
             setDescripcionEdit(productoCompleto.descripcion || "");
             setPrecioEdit(productoCompleto.precio?.toString() || "");
             setStockEdit(productoCompleto.stock?.toString() || "");
             setCategoriaIdEdit(productoCompleto.categoriaId?.toString() || "");
-            setImagenPreviewEdit(productoCompleto.imagen || null);
-            setImagenEdit(null);
+            
+            // Cargar imágenes
+            let imgs = [];
+            if (productoCompleto.imagenes && Array.isArray(productoCompleto.imagenes)) {
+                imgs = productoCompleto.imagenes;
+            } else if (productoCompleto.imagen) {
+                imgs = [productoCompleto.imagen];
+            }
+            setImagenesExistentes(imgs);
+            setNuevosArchivos([]);
+            setNuevosArchivosPreview([]);
+            
             setModalAbierto(true);
         } catch (error) {
             console.error("Error cargando producto:", error);
@@ -142,8 +161,9 @@ function AdminEditarProductos() {
         setPrecioEdit("");
         setStockEdit("");
         setCategoriaIdEdit("");
-        setImagenEdit(null);
-        setImagenPreviewEdit(null);
+        setImagenesExistentes([]);
+        setNuevosArchivos([]);
+        setNuevosArchivosPreview([]);
     };
 
     const iniciarEdicion = () => {
@@ -157,33 +177,42 @@ function AdminEditarProductos() {
             setPrecioEdit(productoEditando.precio?.toString() || "");
             setStockEdit(productoEditando.stock?.toString() || "");
             setCategoriaIdEdit(productoEditando.categoriaId?.toString() || "");
-            setImagenPreviewEdit(productoEditando.imagen || null);
-            setImagenEdit(null);
+            
+            let imgs = [];
+            if (productoEditando.imagenes && Array.isArray(productoEditando.imagenes)) {
+                imgs = productoEditando.imagenes;
+            } else if (productoEditando.imagen) {
+                imgs = [productoEditando.imagen];
+            }
+            setImagenesExistentes(imgs);
+            setNuevosArchivos([]);
+            setNuevosArchivosPreview([]);
         }
         setEditando(false);
     };
 
-    const handleImagenChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            if (!file.type.startsWith("image/")) {
-                showError("Error", "El archivo debe ser una imagen");
-                return;
+    const handleNuevasImagenesChange = (e) => {
+        const files = Array.from(e.target.files);
+        if (files.length > 0) {
+            const validFiles = [];
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (!file.type.startsWith("image/")) continue;
+                if (file.size > 5 * 1024 * 1024) continue;
+                validFiles.push(file);
+                
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    setNuevosArchivosPreview(prev => [...prev, reader.result]);
+                };
+                reader.readAsDataURL(file);
             }
-            
-            if (file.size > 5 * 1024 * 1024) {
-                showError("Error", "La imagen no debe superar los 5MB");
-                return;
-            }
-            
-            setImagenEdit(file);
-            
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImagenPreviewEdit(reader.result);
-            };
-            reader.readAsDataURL(file);
+            setNuevosArchivos(prev => [...prev, ...validFiles]);
         }
+    };
+
+    const removerImagenExistente = (index) => {
+        setImagenesExistentes(prev => prev.filter((_, i) => i !== index));
     };
 
     const handleGuardar = async () => {
@@ -207,13 +236,8 @@ function AdminEditarProductos() {
         }
 
         const stockNum = parseInt(stockEdit);
-        if (stockEdit === "" || isNaN(stockNum) || stockNum < 1) {
-            showError("Error", "El stock debe ser un número mayor o igual a 1");
-            return;
-        }
-
-        if (descripcionEdit && descripcionEdit.length > 500) {
-            showError("Error", "La descripción no puede superar los 500 caracteres");
+        if (stockEdit === "" || isNaN(stockNum) || stockNum < 0) {
+            showError("Error", "El stock debe ser un número mayor o igual a 0");
             return;
         }
 
@@ -225,22 +249,36 @@ function AdminEditarProductos() {
         setLoading(true);
 
         try {
+            const formData = new FormData();
+            
             const datosActualizacion = {
                 nombre: nombreEdit.trim(),
                 descripcion: descripcionEdit.trim() || null,
                 precio: precioNum,
                 stock: stockNum,
-                categoriaId: parseInt(categoriaIdEdit)
+                categoriaId: parseInt(categoriaIdEdit),
+                imagenes: imagenesExistentes // Lista de imágenes que se conservan
             };
+            
+            formData.append("producto", JSON.stringify(datosActualizacion));
+            
+            // Agregar archivos nuevos
+            nuevosArchivos.forEach(file => {
+                formData.append("files", file);
+            });
 
             const productoActualizado = await updateProducto(
                 tiendaUsuario.nombreUrl,
                 productoEditando.id,
-                datosActualizacion
+                formData
             );
 
             // Actualizar la lista de productos
             setProductos(productos.map(p => 
+                p.id === productoActualizado.id ? productoActualizado : p
+            ));
+            
+            setProductosFiltrados(prev => prev.map(p => 
                 p.id === productoActualizado.id ? productoActualizado : p
             ));
 
@@ -249,15 +287,12 @@ function AdminEditarProductos() {
             cerrarModal();
         } catch (error) {
             console.error("Error al actualizar producto:", error);
-            
             let mensajeError = "Error al actualizar el producto. Intenta nuevamente.";
-            
             if (error.response?.status === 400) {
                 mensajeError = error.response?.data?.message || "Los datos enviados no son válidos.";
             } else if (error.response?.data?.message) {
                 mensajeError = error.response.data.message;
             }
-            
             showError("Error al actualizar producto", mensajeError);
         } finally {
             setLoading(false);
@@ -276,23 +311,20 @@ function AdminEditarProductos() {
 
         try {
             await deleteProducto(tiendaUsuario.nombreUrl, productoEditando.id);
-
             // Remover el producto de la lista
             setProductos(productos.filter(p => p.id !== productoEditando.id));
-
+            setProductosFiltrados(productosFiltrados.filter(p => p.id !== productoEditando.id));
+            
             showSuccess("Producto Eliminado", `El producto "${productoEditando.nombre}" ha sido eliminado exitosamente`);
             cerrarModal();
         } catch (error) {
             console.error("Error al eliminar producto:", error);
-            
             let mensajeError = "Error al eliminar el producto. Intenta nuevamente.";
-            
             if (error.response?.status === 404) {
                 mensajeError = "El producto no fue encontrado.";
             } else if (error.response?.data?.message) {
                 mensajeError = error.response.data.message;
             }
-            
             showError("Error al eliminar producto", mensajeError);
         } finally {
             setLoading(false);
@@ -380,16 +412,12 @@ function AdminEditarProductos() {
                         >
                             <div className="editar-productos-card-imagen">
                                 <img
-                                    src={producto.imagen && producto.imagen.trim() !== "" 
-                                        ? producto.imagen 
-                                        : "/default-product.png"}
+                                    src={obtenerImagenPrincipal(producto)}
                                     alt={producto.nombre}
                                     onError={(e) => {
-                                        // Si la imagen falla al cargar, evitar bucle infinito
                                         if (!e.target.dataset.fallback) {
                                             e.target.dataset.fallback = "true";
-                                            // Intentar con una imagen placeholder genérica
-                                            e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%23ddd' width='200' height='200'/%3E%3Ctext fill='%23999' font-family='sans-serif' font-size='14' dy='10.5' font-weight='bold' x='50%25' y='50%25' text-anchor='middle'%3ESin imagen%3C/text%3E%3C/svg%3E";
+                                            e.target.src = "/default-product.png";
                                         }
                                     }}
                                 />
@@ -413,7 +441,7 @@ function AdminEditarProductos() {
                                 className="editar-productos-modal-cerrar"
                                 onClick={cerrarModal}
                             >
-                                ✕
+                                ×
                             </button>
                         </div>
 
@@ -458,7 +486,7 @@ function AdminEditarProductos() {
                                             <label className="editar-productos-label">Stock *</label>
                                             <input
                                                 type="number"
-                                                min="1"
+                                                min="0"
                                                 value={stockEdit}
                                                 onChange={(e) => setStockEdit(e.target.value)}
                                                 className="editar-productos-input"
@@ -483,14 +511,33 @@ function AdminEditarProductos() {
                                     </div>
 
                                     <div className="editar-productos-form-group">
-                                        <label className="editar-productos-label">Imagen</label>
-                                        {imagenPreviewEdit && (
-                                            <div className="editar-productos-imagen-preview">
-                                                <img src={imagenPreviewEdit} alt="Preview" />
-                                            </div>
-                                        )}
+                                        <label className="editar-productos-label">Imágenes</label>
+                                        
+                                        {/* Lista de imágenes editables */}
+                                        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '10px' }}>
+                                            {imagenesExistentes.map((imgUrl, index) => (
+                                                <div key={`old-${index}`} style={{ position: 'relative', width: '80px', height: '80px' }}>
+                                                    <img src={imgUrl} alt="Existente" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '5px' }} />
+                                                    <button type="button" onClick={() => removerImagenExistente(index)} style={{ position: 'absolute', top: '-5px', right: '-5px', background: 'red', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '12px' }}>X</button>
+                                                </div>
+                                            ))}
+                                            {nuevosArchivosPreview.map((preview, index) => (
+                                                <div key={`new-${index}`} style={{ position: 'relative', width: '80px', height: '80px' }}>
+                                                    <img src={preview} alt="Nueva" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '5px', border: '2px solid #27ae60' }} />
+                                                    <button type="button" onClick={() => setNuevosArchivos(prev => prev.filter((_, i) => i !== index))} style={{ position: 'absolute', top: '-5px', right: '-5px', background: 'red', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '12px' }}>X</button>
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            multiple
+                                            onChange={handleNuevasImagenesChange}
+                                            className="editar-productos-file-input"
+                                        />
                                         <small className="editar-productos-help-text">
-                                            La imagen no se puede editar desde aquí. Para cambiar la imagen, elimina y crea el producto nuevamente.
+                                            Agrega nuevas imágenes. Elimina las que no quieras mantener.
                                         </small>
                                     </div>
                                 </>
@@ -498,16 +545,12 @@ function AdminEditarProductos() {
                                 <>
                                     <div className="editar-productos-detalle-imagen">
                                         <img
-                                            src={productoEditando.imagen && productoEditando.imagen.trim() !== "" 
-                                                ? productoEditando.imagen 
-                                                : "/default-product.png"}
+                                            src={obtenerImagenPrincipal(productoEditando)}
                                             alt={productoEditando.nombre}
                                             onError={(e) => {
-                                                // Si la imagen falla al cargar, evitar bucle infinito
                                                 if (!e.target.dataset.fallback) {
                                                     e.target.dataset.fallback = "true";
-                                                    // Intentar con una imagen placeholder genérica
-                                                    e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%23ddd' width='200' height='200'/%3E%3Ctext fill='%23999' font-family='sans-serif' font-size='14' dy='10.5' font-weight='bold' x='50%25' y='50%25' text-anchor='middle'%3ESin imagen%3C/text%3E%3C/svg%3E";
+                                                    e.target.src = "/default-product.png";
                                                 }
                                             }}
                                         />
@@ -519,6 +562,10 @@ function AdminEditarProductos() {
                                         <p><strong>Descripción:</strong> {productoEditando.descripcion || "Sin descripción"}</p>
                                         <p><strong>Categoría:</strong> {
                                             categorias.find(c => c.id === productoEditando.categoriaId)?.nombre || "Sin categoría"
+                                        }</p>
+                                        {/* Mostrar cuántas imágenes tiene */}
+                                        <p><strong>Imágenes:</strong> {
+                                            (productoEditando.imagenes?.length || (productoEditando.imagen ? 1 : 0))
                                         }</p>
                                     </div>
                                 </>
@@ -569,4 +616,3 @@ function AdminEditarProductos() {
 }
 
 export default AdminEditarProductos;
-

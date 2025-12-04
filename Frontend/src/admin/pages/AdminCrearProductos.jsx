@@ -8,15 +8,13 @@ import "../styles/AdminProductos.css";
 
 /**
  * Página de creación de productos
- * 
- * Permite crear productos para la tienda del vendedor autenticado
+ * * Permite crear productos para la tienda del vendedor autenticado
  */
 function AdminCrearProductos() {
     const { usuario, tiendaUsuario, loading: authLoading, isAuthenticated } = useAuth();
     const { nombreTienda } = useParams();
     const navigate = useNavigate();
     const { success: showSuccess, error: showError } = useNotifications();
-    
     const [loading, setLoading] = useState(false);
     const [cargandoCategorias, setCargandoCategorias] = useState(true);
     const [categorias, setCategorias] = useState([]);
@@ -27,8 +25,10 @@ function AdminCrearProductos() {
     const [precio, setPrecio] = useState("");
     const [stock, setStock] = useState("");
     const [categoriaId, setCategoriaId] = useState("");
-    const [imagen, setImagen] = useState(null);
-    const [imagenPreview, setImagenPreview] = useState(null);
+    
+    // Modificado para soportar múltiples imágenes
+    const [imagenes, setImagenes] = useState([]);
+    const [imagenesPreview, setImagenesPreview] = useState([]);
     
     // Redirigir si no está autenticado o si aún está cargando
     useEffect(() => {
@@ -70,30 +70,46 @@ function AdminCrearProductos() {
         }
     }, [tiendaUsuario, showError]);
 
-    const handleImagenChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            // Validar tipo de archivo
-            if (!file.type.startsWith("image/")) {
-                showError("Error", "El archivo debe ser una imagen");
-                return;
+    const handleImagenesChange = (e) => {
+        const files = Array.from(e.target.files);
+        
+        if (files.length > 0) {
+            const validFiles = [];
+
+            // Validar cada archivo
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                
+                // Validar tipo de archivo
+                if (!file.type.startsWith("image/")) {
+                    showError("Error", `El archivo ${file.name} no es una imagen`);
+                    continue;
+                }
+                
+                // Validar tamaño (máximo 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    showError("Error", `La imagen ${file.name} supera los 5MB`);
+                    continue;
+                }
+
+                validFiles.push(file);
+                
+                // Crear preview
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    setImagenesPreview(prev => [...prev, reader.result]);
+                };
+                reader.readAsDataURL(file);
             }
-            
-            // Validar tamaño (máximo 5MB)
-            if (file.size > 5 * 1024 * 1024) {
-                showError("Error", "La imagen no debe superar los 5MB");
-                return;
-            }
-            
-            setImagen(file);
-            
-            // Crear preview
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImagenPreview(reader.result);
-            };
-            reader.readAsDataURL(file);
+
+            setImagenes(prev => [...prev, ...validFiles]);
         }
+    };
+
+    // Función para remover una imagen seleccionada antes de subir
+    const removeImagen = (index) => {
+        setImagenes(prev => prev.filter((_, i) => i !== index));
+        setImagenesPreview(prev => prev.filter((_, i) => i !== index));
     };
 
     const handleSubmit = async (e) => {
@@ -127,8 +143,8 @@ function AdminCrearProductos() {
             return;
         }
 
-        // Validar que la imagen sea obligatoria
-        if (!imagen) {
+        // Validar que al menos una imagen sea obligatoria
+        if (imagenes.length === 0) {
             showError("Error", "La imagen del producto es obligatoria");
             setLoading(false);
             return;
@@ -162,7 +178,6 @@ function AdminCrearProductos() {
 
             // Crear FormData para multipart/form-data
             const formData = new FormData();
-            
             // Crear objeto JSON con los datos del producto
             const productoData = {
                 categoriaId: parseInt(categoriaIdFinal),
@@ -171,25 +186,24 @@ function AdminCrearProductos() {
                 precio: precioNum,
                 stock: stockNum
             };
-            
             // Agregar el JSON como string en el campo "producto"
             formData.append("producto", JSON.stringify(productoData));
             
-            // Agregar el archivo de imagen si se seleccionó uno
-            if (imagen) {
-                formData.append("file", imagen);
-            }
+            // Agregar los archivos de imagen a la lista "files" que espera el backend
+            imagenes.forEach((file) => {
+                formData.append("files", file);
+            });
 
             const productoCreado = await createProducto(tiendaUsuario.nombreUrl, formData);
-
+            
             // Limpiar formulario
             setNombre("");
             setDescripcion("");
             setPrecio("");
             setStock("");
             setCategoriaId("");
-            setImagen(null);
-            setImagenPreview(null);
+            setImagenes([]);
+            setImagenesPreview([]);
             
             // Limpiar el input de archivo
             const fileInput = document.querySelector('input[type="file"]');
@@ -198,13 +212,10 @@ function AdminCrearProductos() {
             }
 
             showSuccess("Producto Creado", `El producto "${productoCreado.nombre}" ha sido creado exitosamente`);
-            
         } catch (error) {
             console.error("Error al crear producto:", error);
-            
             // Mensajes de error más específicos
             let mensajeError = "Error al crear el producto. Intenta nuevamente.";
-            
             if (error.response?.status === 400) {
                 mensajeError = error.response?.data?.message || "Los datos enviados no son válidos. Verifica todos los campos.";
             } else if (error.response?.status === 404) {
@@ -400,7 +411,8 @@ function AdminCrearProductos() {
                                 className="productos-input"
                             />
                             <small className="productos-help-text">
-                                Cantidad disponible (mínimo 1). Se descontará automáticamente al realizar una compra.
+                                Cantidad disponible (mínimo 1).
+                                Se descontará automáticamente al realizar una compra.
                             </small>
                         </div>
                     </div>
@@ -429,29 +441,61 @@ function AdminCrearProductos() {
 
                     <div className="productos-form-group">
                         <label className="productos-label">
-                            Imagen del Producto *
+                            Imágenes del Producto *
                         </label>
-                        {imagenPreview && (
-                            <div className="productos-imagen-preview">
-                                <img
-                                    src={imagenPreview}
-                                    alt="Preview del producto"
-                                />
+                        
+                        {/* Preview de imágenes múltiples */}
+                        {imagenesPreview.length > 0 && (
+                            <div className="productos-imagen-preview" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '10px' }}>
+                                {imagenesPreview.map((src, index) => (
+                                    <div key={index} style={{ position: 'relative', width: '100px', height: '100px' }}>
+                                        <img
+                                            src={src}
+                                            alt={`Preview ${index}`}
+                                            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '5px', border: '1px solid #ddd' }}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => removeImagen(index)}
+                                            style={{
+                                                position: 'absolute',
+                                                top: '-5px',
+                                                right: '-5px',
+                                                background: 'red',
+                                                color: 'white',
+                                                border: 'none',
+                                                borderRadius: '50%',
+                                                width: '20px',
+                                                height: '20px',
+                                                cursor: 'pointer',
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                                fontSize: '12px'
+                                            }}
+                                        >
+                                            X
+                                        </button>
+                                    </div>
+                                ))}
                             </div>
                         )}
+                        
                         <input
                             type="file"
                             accept="image/*"
-                            onChange={handleImagenChange}
-                            required
+                            multiple // Permite seleccionar múltiples archivos
+                            onChange={handleImagenesChange}
                             disabled={loading}
                             className="productos-file-input"
                         />
                         <small className="productos-help-text">
-                            Formato: JPG, PNG, GIF. Tamaño máximo: 5MB. La imagen es obligatoria.
+                            Formato: JPG, PNG, GIF.
+                            Tamaño máximo por imagen: 5MB. La imagen es obligatoria.
                         </small>
                         <div className="productos-alert productos-alert-warning" style={{ marginTop: '10px' }}>
-                            <strong>⚠️ Importante:</strong> La imagen no se puede editar una vez creado el producto. Asegúrate de seleccionar la imagen correcta.
+                            <strong>⚠️ Importante:</strong> Las imágenes no se pueden editar una vez creado el producto.
+                            Asegúrate de seleccionar las imágenes correctas.
                         </div>
                     </div>
 
@@ -461,12 +505,14 @@ function AdminCrearProductos() {
                             disabled={loading || cargandoCategorias}
                             className="productos-btn productos-btn-submit"
                         >
-                            {loading ? "Creando..." : "Crear Producto"}
+                            {loading ?
+                                "Creando..." : "Crear Producto"}
                         </button>
                         <button
                             type="button"
                             onClick={() => {
-                                const tiendaActual = nombreTienda || tiendaUsuario?.nombreUrl || "tienda";
+                                const tiendaActual = nombreTienda ||
+                                    tiendaUsuario?.nombreUrl || "tienda";
                                 navigate(`/admin/${tiendaActual}/dashboard`);
                             }}
                             disabled={loading}
