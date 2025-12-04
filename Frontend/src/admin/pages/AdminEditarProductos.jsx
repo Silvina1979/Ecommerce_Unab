@@ -380,8 +380,18 @@ function AdminEditarProductos() {
                         >
                             <div className="editar-productos-card-imagen">
                                 <img
-                                    src={producto.imagen || "https://res.cloudinary.com/dacnqinsu/image/upload/v1/default-product.png"}
+                                    src={producto.imagen && producto.imagen.trim() !== "" 
+                                        ? producto.imagen 
+                                        : "/default-product.png"}
                                     alt={producto.nombre}
+                                    onError={(e) => {
+                                        // Si la imagen falla al cargar, evitar bucle infinito
+                                        if (!e.target.dataset.fallback) {
+                                            e.target.dataset.fallback = "true";
+                                            // Intentar con una imagen placeholder genérica
+                                            e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%23ddd' width='200' height='200'/%3E%3Ctext fill='%23999' font-family='sans-serif' font-size='14' dy='10.5' font-weight='bold' x='50%25' y='50%25' text-anchor='middle'%3ESin imagen%3C/text%3E%3C/svg%3E";
+                                        }
+                                    }}
                                 />
                             </div>
                             <div className="editar-productos-card-info">
@@ -488,8 +498,18 @@ function AdminEditarProductos() {
                                 <>
                                     <div className="editar-productos-detalle-imagen">
                                         <img
-                                            src={productoEditando.imagen || "https://res.cloudinary.com/dacnqinsu/image/upload/v1/default-product.png"}
+                                            src={productoEditando.imagen && productoEditando.imagen.trim() !== "" 
+                                                ? productoEditando.imagen 
+                                                : "/default-product.png"}
                                             alt={productoEditando.nombre}
+                                            onError={(e) => {
+                                                // Si la imagen falla al cargar, evitar bucle infinito
+                                                if (!e.target.dataset.fallback) {
+                                                    e.target.dataset.fallback = "true";
+                                                    // Intentar con una imagen placeholder genérica
+                                                    e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%23ddd' width='200' height='200'/%3E%3Ctext fill='%23999' font-family='sans-serif' font-size='14' dy='10.5' font-weight='bold' x='50%25' y='50%25' text-anchor='middle'%3ESin imagen%3C/text%3E%3C/svg%3E";
+                                                }
+                                            }}
                                         />
                                     </div>
                                     <div className="editar-productos-detalle-info">

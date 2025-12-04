@@ -46,15 +46,13 @@ export async function updateTienda(nombreUrl, formData) {
 }
 
 /**
- * Verifica si un usuario tiene una tienda (es vendedor)
- * Intenta obtener la tienda del usuario. Si existe, retorna la tienda, sino null
+ * Obtiene la tienda de un vendedor por su DNI
+ * Requiere estar autenticado y que el DNI coincida con el usuario logueado
  * @param {number} vendedorDni - DNI del vendedor
  * @returns {Promise<Object|null>} Promesa que resuelve con la tienda o null
  */
 export async function getTiendaByVendedor(vendedorDni) {
     try {
-        // Nota: Este endpoint puede no existir en la API actual
-        // Si no existe, se puede implementar en el backend o usar otra estrategia
         const res = await api.get(`tiendas/vendedor/${vendedorDni}`);
         return res.data;
     } catch (error) {
@@ -69,5 +67,14 @@ export async function getTiendaByVendedor(vendedorDni) {
         }
         throw error;
     }
+}
+
+/**
+ * Elimina una tienda y todo su contenido (productos, categorías, etc.)
+ * @param {string} nombreUrl - El slug de la tienda a eliminar
+ * @returns {Promise<void>} Promesa que se resuelve cuando la tienda es eliminada
+ */
+export async function deleteTienda(nombreUrl) {
+    await api.delete(`tiendas/${nombreUrl}`);
 }
 

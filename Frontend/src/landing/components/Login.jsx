@@ -45,13 +45,17 @@ function Login() {
     const [loginError, setLoginError] = useState(null);
     const [loginLoading, setLoginLoading] = useState(false);
     
+    // Determinar si se debe mostrar el campo DNI en el login
+    const mostrarDniEnLogin = userType === 'vendedor';
+    
     // Estados para el formulario de registro
     const [registerForm, setRegisterForm] = useState({
         dni: '',
         nombre: '',
         apellido: '',
         email: '',
-        password: ''
+        password: '',
+        confirmPassword: ''
     });
     const [registerError, setRegisterError] = useState(null);
     const [registerSuccess, setRegisterSuccess] = useState(false);
@@ -103,8 +107,11 @@ function Login() {
         
         try {
             // Validaciones básicas
-            if (!loginForm.dni || !/^[0-9]{7,8}$/.test(loginForm.dni)) {
-                throw new Error("DNI inválido (debe tener entre 7 y 8 dígitos)");
+            if (mostrarDniEnLogin) {
+                // Solo validar DNI si es vendedor
+                if (!loginForm.dni || !/^[0-9]{7,8}$/.test(loginForm.dni)) {
+                    throw new Error("DNI inválido (debe tener entre 7 y 8 dígitos)");
+                }
             }
             if (!loginForm.email || !loginForm.email.includes('@')) {
                 throw new Error("Email inválido");
@@ -125,8 +132,10 @@ function Login() {
                 password: loginForm.password
             };
             
-            // Llamada al contexto de autenticación con el DNI para obtener el usuario completo
-            await login(credencialesLogin, parseInt(loginForm.dni));
+            // Llamada al contexto de autenticación
+            // Si es vendedor, pasar el DNI; si es comprador, no pasar DNI
+            const dniParaLogin = mostrarDniEnLogin ? parseInt(loginForm.dni) : null;
+            await login(credencialesLogin, dniParaLogin);
             
             // Mostrar notificación de éxito (persistirá entre navegaciones)
             showSuccess('Inicio de sesión exitoso', '¡Bienvenido de nuevo!');
@@ -221,8 +230,21 @@ function Login() {
             if (!registerForm.email || !registerForm.email.includes('@')) {
                 throw new Error("Email inválido");
             }
-            if (registerForm.password.length < 6) {
-                throw new Error("La contraseña debe tener al menos 6 caracteres");
+            
+            // Validación de contraseña: mínimo 8 caracteres, al menos una mayúscula y un número
+            if (registerForm.password.length < 8) {
+                throw new Error("La contraseña debe tener al menos 8 caracteres");
+            }
+            if (!/[A-Z]/.test(registerForm.password)) {
+                throw new Error("La contraseña debe contener al menos una letra mayúscula");
+            }
+            if (!/[0-9]/.test(registerForm.password)) {
+                throw new Error("La contraseña debe contener al menos un número");
+            }
+            
+            // Validar que las contraseñas coincidan
+            if (registerForm.password !== registerForm.confirmPassword) {
+                throw new Error("Las contraseñas no coinciden");
             }
 
             // Convertir DNI a número
@@ -261,7 +283,8 @@ function Login() {
                     nombre: '',
                     apellido: '',
                     email: '',
-                    password: ''
+                    password: '',
+                    confirmPassword: ''
                 });
                 
                 setTimeout(() => {
@@ -277,7 +300,8 @@ function Login() {
                     nombre: '',
                     apellido: '',
                     email: '',
-                    password: ''
+                    password: '',
+                    confirmPassword: ''
                 });
                 
                 setTimeout(() => {
@@ -382,24 +406,26 @@ function Login() {
                     <div className="login-box">
                         <form onSubmit={handleLogin}>
                             <h2>Iniciar Sesión</h2>
-                            <div className="input-box">
-                                <span className="icon">
-                                    <FaAddressCard name="dni-outline" size={20}/>
-                                </span>
-                                <input 
-                                    type="text" 
-                                    name="dni"
-                                    value={loginForm.dni}
-                                    onChange={handleLoginChange}
-                                    pattern="^[0-9]{7,8}$" 
-                                    // ^\d{2}\.\d{3}\.\d{3}$
-                                    inputMode="numeric" 
-                                    maxLength="8"
-                                    title="Ingrese un DNI válido (solo números, entre 7 y 8 dígitos)"
-                                    required 
-                                />
-                                <label>DNI</label>
-                            </div>
+                            {mostrarDniEnLogin && (
+                                <div className="input-box">
+                                    <span className="icon">
+                                        <FaAddressCard name="dni-outline" size={20}/>
+                                    </span>
+                                    <input 
+                                        type="text" 
+                                        name="dni"
+                                        value={loginForm.dni}
+                                        onChange={handleLoginChange}
+                                        pattern="^[0-9]{7,8}$" 
+                                        // ^\d{2}\.\d{3}\.\d{3}$
+                                        inputMode="numeric" 
+                                        maxLength="8"
+                                        title="Ingrese un DNI válido (solo números, entre 7 y 8 dígitos)"
+                                        required 
+                                    />
+                                    <label>DNI</label>
+                                </div>
+                            )}
                             <div className="input-box">
                                 <span className="icon">
                                     <IoMail name="mail-outline" size={20}/>
@@ -524,6 +550,19 @@ function Login() {
                                     />
                                 <label>Contraseña</label>
                             </div>
+                            <div className="input-box">
+                                <span className="icon">
+                                    <FaLock name="lock-closed-outline" size={18}/>
+                                </span>
+                                <input 
+                                    type={showRegisterPassword ? "text" : "password"}
+                                    name="confirmPassword"
+                                    value={registerForm.confirmPassword}
+                                    onChange={handleRegisterChange}
+                                    required 
+                                    />
+                                <label>Confirmar Contraseña</label>
+                            </div>
                             <div className="password-details">
                                 <label>
                                     <input 
@@ -534,6 +573,9 @@ function Login() {
                                     Mostrar contraseña
                                 </label>
                             </div>
+                            <small style={{ color: '#666', fontSize: '0.85rem', marginTop: '-10px', marginBottom: '10px', display: 'block' }}>
+                                La contraseña debe tener mínimo 8 caracteres, al menos una letra mayúscula y un número.
+                            </small>
                             <div className="submit-button-contenedor">
                                 <button type="submit" disabled={registerLoading}>
                                     {registerLoading ? "Registrando..." : "Registrarse"}

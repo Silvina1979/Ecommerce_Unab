@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 import NotificationModal from "../components/NotificationModal";
 
@@ -12,6 +12,20 @@ const NotificationContext = createContext();
  */
 export function NotificationProvider({ children }) {
     const [notifications, setNotifications] = useState([]);
+    const timersRef = useRef({});
+
+    /**
+     * Cierra una notificación específica
+     */
+    const closeNotification = useCallback((id) => {
+        // Limpiar el timer si existe
+        if (timersRef.current[id]) {
+            clearTimeout(timersRef.current[id]);
+            delete timersRef.current[id];
+        }
+        
+        setNotifications(prev => prev.filter(n => n.id !== id));
+    }, []);
 
     /**
      * Muestra una notificación
@@ -20,7 +34,7 @@ export function NotificationProvider({ children }) {
      * @param {string} message - Mensaje de la notificación
      * @param {number} autoClose - Tiempo en ms para cerrar automáticamente (0 = no cerrar)
      */
-    const showNotification = (type, title, message, autoClose = null) => {
+    const showNotification = useCallback((type, title, message, autoClose = null) => {
         const id = Date.now() + Math.random();
         const notification = {
             id,
@@ -35,20 +49,14 @@ export function NotificationProvider({ children }) {
         
         // Si tiene autoClose, cerrar automáticamente
         if (notification.autoClose > 0) {
-            setTimeout(() => {
+            const timerId = setTimeout(() => {
                 closeNotification(id);
             }, notification.autoClose);
+            timersRef.current[id] = timerId;
         }
         
         return id;
-    };
-
-    /**
-     * Cierra una notificación específica
-     */
-    const closeNotification = (id) => {
-        setNotifications(prev => prev.filter(n => n.id !== id));
-    };
+    }, [closeNotification]);
 
     /**
      * Métodos de conveniencia
@@ -83,23 +91,28 @@ export function NotificationProvider({ children }) {
                     gap: '10px',
                     alignItems: 'flex-end'
                 }}>
-                    {notifications.map((notification) => (
-                        <div
-                            key={notification.id}
-                            style={{
-                                pointerEvents: 'auto'
-                            }}
-                        >
-                            <NotificationModal
-                                isOpen={notification.isOpen}
-                                type={notification.type}
-                                title={notification.title}
-                                message={notification.message}
-                                onClose={() => closeNotification(notification.id)}
-                                autoClose={0} // Ya manejamos el autoClose en el contexto
-                            />
-                        </div>
-                    ))}
+                    {notifications.map((notification) => {
+                        // Crear una función estable para onClose usando useCallback implícito
+                        const handleClose = () => closeNotification(notification.id);
+                        
+                        return (
+                            <div
+                                key={notification.id}
+                                style={{
+                                    pointerEvents: 'auto'
+                                }}
+                            >
+                                <NotificationModal
+                                    isOpen={notification.isOpen}
+                                    type={notification.type}
+                                    title={notification.title}
+                                    message={notification.message}
+                                    onClose={handleClose}
+                                    autoClose={0} // Ya manejamos el autoClose en el contexto
+                                />
+                            </div>
+                        );
+                    })}
                 </div>,
                 document.body
             )}

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import "../styles/NotificationModal.css";
 
 /**
@@ -15,27 +15,69 @@ import "../styles/NotificationModal.css";
  * @param {number} autoClose - Tiempo en milisegundos para cerrar automáticamente (por defecto 3000ms)
  */
 function NotificationModal({ isOpen, type = 'info', title, message, onClose, autoClose = 3000 }) {
+    const [isClosing, setIsClosing] = useState(false);
+    const [shouldRender, setShouldRender] = useState(isOpen);
+    const onCloseRef = useRef(onClose);
+    const timeoutRef = useRef(null);
+    const prevIsOpenRef = useRef(isOpen);
+    
+    // Mantener la referencia actualizada sin causar re-renders
+    useEffect(() => {
+        onCloseRef.current = onClose;
+    }, [onClose]);
+
+    // Manejar cuando isOpen cambia
+    useEffect(() => {
+        const prevIsOpen = prevIsOpenRef.current;
+        prevIsOpenRef.current = isOpen;
+        
+        if (isOpen && !prevIsOpen) {
+            // Se está abriendo
+            setShouldRender(true);
+            setIsClosing(false);
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+                timeoutRef.current = null;
+            }
+        } else if (!isOpen && prevIsOpen && shouldRender) {
+            // Se está cerrando - iniciar animación de salida
+            setIsClosing(true);
+            // Después de la animación, dejar de renderizar
+            timeoutRef.current = setTimeout(() => {
+                setShouldRender(false);
+                setIsClosing(false);
+            }, 300); // Duración de la animación
+        }
+        
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+                timeoutRef.current = null;
+            }
+        };
+    }, [isOpen, shouldRender]);
+
     useEffect(() => {
         if (isOpen && autoClose > 0) {
             const timer = setTimeout(() => {
-                if (onClose) onClose();
+                if (onCloseRef.current) onCloseRef.current();
             }, autoClose);
             return () => clearTimeout(timer);
         }
-    }, [isOpen, autoClose, onClose]);
+    }, [isOpen, autoClose]); // Removido onClose de las dependencias
 
     useEffect(() => {
         // Cerrar con ESC
         const handleEscape = (e) => {
-            if (e.key === 'Escape' && isOpen && onClose) {
-                onClose();
+            if (e.key === 'Escape' && isOpen && onCloseRef.current) {
+                onCloseRef.current();
             }
         };
         document.addEventListener('keydown', handleEscape);
         return () => document.removeEventListener('keydown', handleEscape);
-    }, [isOpen, onClose]);
+    }, [isOpen]); // Removido onClose de las dependencias
 
-    if (!isOpen) return null;
+    if (!shouldRender) return null;
 
     const icons = {
         success: '✓',
@@ -48,8 +90,10 @@ function NotificationModal({ isOpen, type = 'info', title, message, onClose, aut
 
     return (
         <div 
-            className={`notification-toast ${typeClass}`}
-            onClick={onClose}
+            className={`notification-toast ${typeClass} ${isClosing ? 'closing' : ''}`}
+            onClick={() => {
+                if (onCloseRef.current) onCloseRef.current();
+            }}
         >
             <div className="notification-toast-content">
                 <div className={`notification-toast-icon ${typeClass}`}>
@@ -65,7 +109,7 @@ function NotificationModal({ isOpen, type = 'info', title, message, onClose, aut
                     className="notification-toast-close"
                     onClick={(e) => {
                         e.stopPropagation();
-                        if (onClose) onClose();
+                        if (onCloseRef.current) onCloseRef.current();
                     }}
                     aria-label="Cerrar"
                 >

@@ -44,3 +44,39 @@ export async function verifyAccount(codigo) {
     return res.data;
 }
 
+/**
+ * Solicita la recuperación de contraseña
+ * @param {Object} datos - Datos para recuperar contraseña
+ * @param {number} datos.dni - DNI del usuario
+ * @param {string} datos.email - Email del usuario
+ * @returns {Promise<Object>} Promesa que resuelve con un mensaje de confirmación
+ */
+export async function forgotPassword(datos) {
+    const res = await api.post("auth/forgot-password", datos);
+    return res.data;
+}
+
+/**
+ * Restablece la contraseña usando un token
+ * @param {Object} datos - Datos para restablecer contraseña
+ * @param {string} datos.token - Token de recuperación
+ * @param {string} datos.newPassword - Nueva contraseña
+ * @returns {Promise<Object>} Promesa que resuelve con un mensaje de confirmación
+ */
+export async function resetPassword(datos) {
+    const res = await api.post("auth/reset-password", datos);
+    return res.data;
+}
+
+/**
+ * Cambia la contraseña desde el perfil (requiere contraseña actual)
+ * @param {Object} datos - Datos para cambiar contraseña
+ * @param {string} datos.currentPassword - Contraseña actual
+ * @param {string} datos.newPassword - Nueva contraseña
+ * @returns {Promise<Object>} Promesa que resuelve con un mensaje de confirmación
+ */
+export async function changePassword(datos) {
+    const res = await api.post("auth/change-password", datos);
+    return res.data;
+}
+

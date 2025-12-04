@@ -173,9 +173,8 @@ export function AuthProvider({ children }) {
                             localStorage.removeItem("auth_tienda");
                             setTiendaUsuario(null);
                         }
-                    } else if (dniParaTienda && !tiendaGuardada) {
-                        // Si no hay tienda en localStorage, intentar obtenerla del servidor
-                        // Nota: Este endpoint puede no existir, pero lo intentamos
+                    } else if (dniParaTienda) {
+                        // Siempre intentar obtener la tienda del servidor para tener la versión más actualizada
                         getTiendaByVendedor(dniParaTienda)
                             .then(tienda => {
                                 if (tienda) {
@@ -185,18 +184,55 @@ export function AuthProvider({ children }) {
                                     localStorage.setItem("auth_userType", "vendedor");
                                 } else {
                                     // Si no tiene tienda y no hay tipo guardado, puede ser comprador
+                                    setTiendaUsuario(null);
+                                    localStorage.removeItem("auth_tienda");
                                     if (!userTypeGuardado) {
                                         setUserType('comprador');
                                         localStorage.setItem("auth_userType", "comprador");
                                     }
                                 }
                             })
-                            .catch(() => {
-                                // Si el endpoint no existe, el usuario no tiene tienda
-                                setTiendaUsuario(null);
-                                if (!userTypeGuardado) {
-                                    setUserType('comprador');
-                                    localStorage.setItem("auth_userType", "comprador");
+                            .catch((error) => {
+                                // Si el endpoint devuelve 404 o 403, el usuario no tiene tienda
+                                if (error.response?.status === 404 || error.response?.status === 403) {
+                                    setTiendaUsuario(null);
+                                    localStorage.removeItem("auth_tienda");
+                                    if (!userTypeGuardado) {
+                                        setUserType('comprador');
+                                        localStorage.setItem("auth_userType", "comprador");
+                                    }
+                                } else {
+                                    // Para otros errores, mantener la tienda de localStorage si existe
+                                    if (tiendaGuardada) {
+                                        try {
+                                            const tienda = JSON.parse(tiendaGuardada);
+                                            const tiendaVendedorDni = typeof tienda.vendedorDni === 'string' 
+                                                ? parseInt(tienda.vendedorDni) 
+                                                : tienda.vendedorDni;
+                                            const usuarioDni = typeof dniParaTienda === 'string' 
+                                                ? parseInt(dniParaTienda) 
+                                                : dniParaTienda;
+                                            
+                                            if (tiendaVendedorDni === usuarioDni) {
+                                                setTiendaUsuario(tienda);
+                                                setUserType('vendedor');
+                                                localStorage.setItem("auth_userType", "vendedor");
+                                            } else {
+                                                setTiendaUsuario(null);
+                                                localStorage.removeItem("auth_tienda");
+                                            }
+                                        } catch (e) {
+                                            console.error("Error parseando tienda guardada:", e);
+                                            setTiendaUsuario(null);
+                                            localStorage.removeItem("auth_tienda");
+                                        }
+                                    } else {
+                                        setTiendaUsuario(null);
+                                        if (!userTypeGuardado) {
+                                            setUserType('comprador');
+                                            localStorage.setItem("auth_userType", "comprador");
+                                        }
+                                    }
                                 }
                             });
                     }
@@ -213,81 +249,9 @@ export function AuthProvider({ children }) {
         localStorage.setItem("auth_user", JSON.stringify(usuarioData));
         setUsuario(usuarioData);
         
-        // Primero verificar si hay una tienda guardada en localStorage
-        const tiendaGuardada = localStorage.getItem("auth_tienda");
-        if (tiendaGuardada && usuarioData?.dni) {
-            try {
-                const tienda = JSON.parse(tiendaGuardada);
-                // Normalizar DNIs para comparar
-                const tiendaVendedorDni = typeof tienda.vendedorDni === 'string' 
-                    ? parseInt(tienda.vendedorDni) 
-                    : tienda.vendedorDni;
-                const usuarioDni = typeof usuarioData.dni === 'string' 
-                    ? parseInt(usuarioData.dni) 
-                    : usuarioData.dni;
-                
-                // Verificar que la tienda pertenezca al usuario actual
-                if (tiendaVendedorDni === usuarioDni || 
-                    (tienda.vendedor && tienda.vendedor.dni === usuarioDni)) {
-                    // Si la tienda tiene nombreUrl, obtener la versión actualizada del servidor
-                    if (tienda.nombreUrl) {
-                        getTiendaBySlug(tienda.nombreUrl)
-                            .then(tiendaActualizada => {
-                                // Verificar que la tienda actualizada pertenezca al usuario
-                                const tiendaActualizadaVendedorDni = typeof tiendaActualizada.vendedorDni === 'string'
-                                    ? parseInt(tiendaActualizada.vendedorDni)
-                                    : tiendaActualizada.vendedorDni;
-                                
-                                if (tiendaActualizadaVendedorDni === usuarioDni) {
-                                    setTiendaUsuario(tiendaActualizada);
-                                    localStorage.setItem("auth_tienda", JSON.stringify(tiendaActualizada));
-                                    setUserType('vendedor');
-                                    localStorage.setItem("auth_userType", "vendedor");
-                                } else {
-                                    // La tienda no pertenece a este usuario, limpiar
-                                    console.warn("Tienda actualizada no pertenece al usuario actual");
-                                    setTiendaUsuario(null);
-                                    localStorage.removeItem("auth_tienda");
-                                    const tipoGuardado = localStorage.getItem("auth_userType");
-                                    if (!tipoGuardado) {
-                                        setUserType('comprador');
-                                        localStorage.setItem("auth_userType", "comprador");
-                                    }
-                                }
-                            })
-                            .catch((error) => {
-                                // Si falla obtener la tienda del servidor (404, etc.), usar la de localStorage
-                                console.warn("No se pudo obtener la tienda actualizada del servidor, usando la de localStorage:", error);
-                                // Asegurarse de que la tienda de localStorage se mantenga
-                                if (tienda) {
-                                    setTiendaUsuario(tienda);
-                                    localStorage.setItem("auth_tienda", JSON.stringify(tienda));
-                                    setUserType('vendedor');
-                                    localStorage.setItem("auth_userType", "vendedor");
-                                }
-                            });
-                    } else {
-                        // Si no tiene nombreUrl, usar la tienda de localStorage directamente
-                        setTiendaUsuario(tienda);
-                        setUserType('vendedor');
-                        localStorage.setItem("auth_userType", "vendedor");
-                    }
-                    return; // Salir temprano si encontramos la tienda
-                } else {
-                    // La tienda no pertenece a este usuario, limpiar
-                    console.warn("Tienda en localStorage no pertenece al usuario actual, limpiando...");
-                    localStorage.removeItem("auth_tienda");
-                }
-            } catch (e) {
-                console.error("Error parseando tienda guardada:", e);
-                localStorage.removeItem("auth_tienda");
-            }
-        }
-        
-        // Si no hay tienda en localStorage, intentar obtenerla del servidor
-        // NOTA: Este endpoint NO existe actualmente en el backend, pero lo intentamos
-        // Si el backend implementa GET /api/tiendas/vendedor/{dni}, funcionará automáticamente
-        if (usuarioData?.dni && !tiendaGuardada) {
+        // Siempre intentar obtener la tienda del servidor usando el DNI del vendedor
+        // Esto asegura que siempre tengamos la versión más actualizada
+        if (usuarioData?.dni) {
             getTiendaByVendedor(usuarioData.dni)
                 .then(tienda => {
                     if (tienda) {
@@ -298,6 +262,7 @@ export function AuthProvider({ children }) {
                     } else {
                         // El usuario no tiene tienda
                         setTiendaUsuario(null);
+                        localStorage.removeItem("auth_tienda");
                         const tipoGuardado = localStorage.getItem("auth_userType");
                         if (!tipoGuardado) {
                             setUserType('comprador');
@@ -305,17 +270,55 @@ export function AuthProvider({ children }) {
                         }
                     }
                 })
-                .catch(() => {
-                    // El endpoint no existe o el usuario no tiene tienda
-                    setTiendaUsuario(null);
-                    const tipoGuardado = localStorage.getItem("auth_userType");
-                    if (!tipoGuardado) {
-                        setUserType('comprador');
-                        localStorage.setItem("auth_userType", "comprador");
+                .catch((error) => {
+                    // Si el endpoint devuelve 404 o 403, el usuario no tiene tienda
+                    if (error.response?.status === 404 || error.response?.status === 403) {
+                        setTiendaUsuario(null);
+                        localStorage.removeItem("auth_tienda");
+                        const tipoGuardado = localStorage.getItem("auth_userType");
+                        if (!tipoGuardado) {
+                            setUserType('comprador');
+                            localStorage.setItem("auth_userType", "comprador");
+                        }
+                    } else {
+                        // Para otros errores (red, timeout, etc.), mantener el estado actual
+                        // pero intentar usar localStorage como respaldo
+                        const tiendaGuardada = localStorage.getItem("auth_tienda");
+                        if (tiendaGuardada) {
+                            try {
+                                const tienda = JSON.parse(tiendaGuardada);
+                                const tiendaVendedorDni = typeof tienda.vendedorDni === 'string' 
+                                    ? parseInt(tienda.vendedorDni) 
+                                    : tienda.vendedorDni;
+                                const usuarioDni = typeof usuarioData.dni === 'string' 
+                                    ? parseInt(usuarioData.dni) 
+                                    : usuarioData.dni;
+                                
+                                if (tiendaVendedorDni === usuarioDni) {
+                                    setTiendaUsuario(tienda);
+                                    setUserType('vendedor');
+                                    localStorage.setItem("auth_userType", "vendedor");
+                                } else {
+                                    setTiendaUsuario(null);
+                                    localStorage.removeItem("auth_tienda");
+                                }
+                            } catch (e) {
+                                console.error("Error parseando tienda guardada:", e);
+                                setTiendaUsuario(null);
+                                localStorage.removeItem("auth_tienda");
+                            }
+                        } else {
+                            setTiendaUsuario(null);
+                            const tipoGuardado = localStorage.getItem("auth_userType");
+                            if (!tipoGuardado) {
+                                setUserType('comprador');
+                                localStorage.setItem("auth_userType", "comprador");
+                            }
+                        }
                     }
                 });
-        } else if (!tiendaGuardada) {
-            // Si no hay tienda en localStorage y no hay DNI, el usuario no tiene tienda
+        } else {
+            // Si no hay DNI, el usuario no puede tener tienda
             setTiendaUsuario(null);
             const tipoGuardado = localStorage.getItem("auth_userType");
             if (!tipoGuardado) {

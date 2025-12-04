@@ -229,7 +229,14 @@ function AdminConfiguracion() {
                     console.error("Request config:", error.config);
                 }
             } else if (error.response?.status === 400) {
-                mensajeError = error.response?.data?.message || "Los datos enviados no son válidos. Verifica todos los campos.";
+                // Error 400: puede ser email no verificado u otros errores de validación
+                const serverError = error.response?.data?.message || error.response?.data?.error || "";
+                
+                if (serverError.includes("verificar") || serverError.includes("email") || serverError.includes("verificado")) {
+                    mensajeError = "Debes verificar tu email antes de crear una tienda. Revisa tu correo electrónico para el código de verificación y verifica tu cuenta.";
+                } else {
+                    mensajeError = serverError || "Los datos enviados no son válidos. Verifica todos los campos.";
+                }
             } else if (error.response?.status === 404) {
                 mensajeError = "El endpoint de tiendas no está disponible. Contacta al administrador.";
             } else if (error.response?.data?.message) {

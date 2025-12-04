@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../tienda/contexts/AuthContext";
-import { getCategoriasByTienda, createCategoria, updateCategoria } from "../../tienda/services/categorias";
+import { getCategoriasByTienda, createCategoria, updateCategoria, deleteCategoria } from "../../tienda/services/categorias";
+import { getProductosByCategoria } from "../../tienda/services/productos";
 import { useNotifications } from "../../contexts/NotificationContext";
 import "../styles/AdminCategorias.css";
 
@@ -211,6 +212,72 @@ function AdminCategorias() {
         setEditandoId(null);
         setNombreEditando("");
         setNombre("");
+    };
+
+    const eliminarCategoria = async (categoriaId, nombreCategoria) => {
+        if (!tiendaUsuario?.nombreUrl) {
+            showError("Error", "No se pudo obtener la información de la tienda.");
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            // Primero verificar si la categoría tiene productos asociados
+            const productosAsociados = await getProductosByCategoria(tiendaUsuario.nombreUrl, categoriaId);
+            
+            if (productosAsociados && productosAsociados.length > 0) {
+                // Hay productos asociados, no se puede eliminar
+                const cantidadProductos = productosAsociados.length;
+                showError(
+                    "No se puede eliminar la categoría",
+                    `La categoría "${nombreCategoria}" tiene ${cantidadProductos} producto${cantidadProductos > 1 ? 's' : ''} asociado${cantidadProductos > 1 ? 's' : ''}. Para eliminar esta categoría, primero debes cambiar la categoría de esos productos a otra categoría.`
+                );
+                setLoading(false);
+                return;
+            }
+
+            // No hay productos asociados, proceder con la eliminación
+            if (!window.confirm(`¿Estás seguro de que deseas eliminar la categoría "${nombreCategoria}"?`)) {
+                setLoading(false);
+                return;
+            }
+
+            await deleteCategoria(tiendaUsuario.nombreUrl, categoriaId);
+            
+            // Recargar categorías desde el servidor
+            await cargarCategorias();
+            
+            showSuccess("Categoría Eliminada", `La categoría "${nombreCategoria}" ha sido eliminada exitosamente.`);
+        } catch (error) {
+            console.error("Error al eliminar categoría:", error);
+            console.error("Detalles del error:", {
+                status: error.response?.status,
+                statusText: error.response?.statusText,
+                data: error.response?.data,
+                message: error.message,
+                request: error.config
+            });
+            
+            let mensajeError = "Error al eliminar la categoría. Intenta nuevamente.";
+            
+            if (error.response?.status === 403) {
+                mensajeError = "No tienes permisos para realizar esta acción. Verifica que seas el dueño de la tienda.";
+            } else if (error.response?.status === 404) {
+                mensajeError = "La categoría no fue encontrada. Puede haber sido eliminada.";
+            } else if (error.response?.status === 500) {
+                const serverMessage = error.response?.data?.message || error.response?.data?.error || "";
+                mensajeError = `Error del servidor: ${serverMessage || "Ocurrió un error inesperado. Contacta al administrador."}`;
+            } else if (error.response?.data?.message) {
+                mensajeError = error.response.data.message;
+            } else if (error.message) {
+                mensajeError = error.message;
+            }
+            
+            showError("Error al eliminar categoría", mensajeError);
+        } finally {
+            setLoading(false);
+        }
     };
 
     // Mostrar carga mientras se obtiene el usuario
@@ -441,13 +508,23 @@ function AdminCategorias() {
                                                 </button>
                                             </>
                                         ) : (
-                                            <button
-                                                onClick={() => iniciarEdicion(categoria)}
-                                                disabled={loading || editandoId !== null}
-                                                className="categorias-btn categorias-btn-edit"
-                                            >
-                                                Editar
-                                            </button>
+                                            <>
+                                                <button
+                                                    onClick={() => iniciarEdicion(categoria)}
+                                                    disabled={loading || editandoId !== null}
+                                                    className="categorias-btn categorias-btn-edit"
+                                                >
+                                                    Editar
+                                                </button>
+                                                <button
+                                                    onClick={() => eliminarCategoria(categoria.id, categoria.nombre)}
+                                                    disabled={loading || editandoId !== null}
+                                                    className="categorias-btn categorias-btn-delete"
+                                                    style={{ marginLeft: '10px', backgroundColor: '#dc3545', color: 'white' }}
+                                                >
+                                                    Eliminar
+                                                </button>
+                                            </>
                                         )}
                                     </div>
                                 </div>
