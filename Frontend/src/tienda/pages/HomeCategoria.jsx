@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import Header from "../components/Header.jsx";
 import { getProductosByTienda, getProductosByCategoria } from "../services/productos";
 import { getCategoriasByTienda } from "../services/categorias";
 import { useTienda } from "../contexts/TiendaContext";
-import "../styles/Productos.css";
+import Header from "../components/Header.jsx";
 import Footer_Landing from "../../landing/components/Footer_Landing.jsx";
+import "../styles/Productos.css";
 
 /**
  * Convierte un nombre de categoría a un slug para la URL
@@ -34,6 +34,20 @@ function HomeCategoria() {
     const [categoriaActual, setCategoriaActual] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    // Función para obtener la imagen principal (misma lógica que en Home.jsx)
+    const obtenerImagen = (prod) => {
+        // 1. Si viene una lista (nueva logica Java: List<String>)
+        if (prod.imagenes && Array.isArray(prod.imagenes) && prod.imagenes.length > 0) {
+            return prod.imagenes[0];
+        }
+        // 2. Si viene un string (logica vieja: String)
+        if (prod.imagen && typeof prod.imagen === 'string' && prod.imagen.trim() !== "") {
+            return prod.imagen;
+        }
+        // 3. Fallback
+        return "/default-product.png";
+    };
 
     useEffect(() => {
         const cargarDatos = async () => {
@@ -101,7 +115,7 @@ function HomeCategoria() {
     return (
         <div>
             <Header />
-            <div className="main-catalogo" style={{ maxWidth: "1270px", margin: "0 auto", display: "flex", flexFlow: "column", alignItems: "center" }}>
+            <div className="main-catalogo">
                 <h2 style={{ maxWidth: "1200px", width: "100%" }}>
                     {categoriaActual ? `Categoría: ${categoriaActual.nombre}` : "Categoría no encontrada"}
                 </h2>
@@ -112,7 +126,7 @@ function HomeCategoria() {
                         {productos.map((prod) => (
                             <div key={prod.id} className="prod-home-container">
                                 <img 
-                                    src={prod.imagen && prod.imagen.trim() !== "" ? prod.imagen : "/default-product.png"} 
+                                    src={obtenerImagen(prod)} 
                                     alt={prod.nombre} 
                                     className="prod-home-image"
                                     onError={(e) => {

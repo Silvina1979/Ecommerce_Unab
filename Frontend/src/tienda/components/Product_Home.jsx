@@ -36,7 +36,6 @@ function ProductoHome({ id }) {
         
         <div className="prod-home-container">
             {/* Imagen del producto (O Carrusel si hay varias) */}
-            
             {listaImagenes.length > 1 ? (
                  <div style={{ width: '100%', marginBottom: '15px' }}>
                     <CarouselImg images={listaImagenes} />
@@ -64,7 +63,6 @@ function ProductoHome({ id }) {
             {/* Precio del producto */}
             <p className="prod-home-precio">Precio: ${producto.precio}</p>
             {/* Stock disponible del producto */}
-      
             <p className="prod-home-stock">Stock: {producto.stock}</p>
             {/* Descripción del producto */}
             <p className="prod-home-descripcion">Descripción: {producto.descripcion}</p>

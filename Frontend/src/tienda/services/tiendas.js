@@ -76,3 +76,4 @@ export async function getTiendaByVendedor(vendedorDni) {
 export async function deleteTienda(nombreUrl) {
     await api.delete(`tiendas/${nombreUrl}`);
 }
+

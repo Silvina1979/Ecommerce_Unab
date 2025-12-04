@@ -36,6 +36,17 @@ function Nav_Categories() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [error, setError] = useState(null);
 
+    // Función para ordenar categorías: "Otros" siempre al final
+    const ordenarCategorias = (categorias) => {
+        const otras = categorias.filter(cat => 
+            cat.nombre.toLowerCase().trim() === 'otros'
+        );
+        const resto = categorias.filter(cat => 
+            cat.nombre.toLowerCase().trim() !== 'otros'
+        );
+        return [...resto, ...otras];
+    };
+
     useEffect(() => {
         if (!nombreTienda) {
             setError("Nombre de tienda no disponible");
@@ -44,13 +55,14 @@ function Nav_Categories() {
 
         getCategoriasByTienda(nombreTienda)
             .then(data => {
+                let categoriasData = [];
                 if (Array.isArray(data)) {
-                    setCategorias(data);
+                    categoriasData = data;
                 } else if (data && Array.isArray(data.content)) {
-                    setCategorias(data.content);
-                } else {
-                    setCategorias([]);
+                    categoriasData = data.content;
                 }
+                // Ordenar categorías: "Otros" al final
+                setCategorias(ordenarCategorias(categoriasData));
             })
             .catch(err => {
                 console.error("Error cargando categorías:", err);

@@ -493,10 +493,6 @@ function AdminCrearProductos() {
                             Formato: JPG, PNG, GIF.
                             Tamaño máximo por imagen: 5MB. La imagen es obligatoria.
                         </small>
-                        <div className="productos-alert productos-alert-warning" style={{ marginTop: '10px' }}>
-                            <strong>⚠️ Importante:</strong> Las imágenes no se pueden editar una vez creado el producto.
-                            Asegúrate de seleccionar las imágenes correctas.
-                        </div>
                     </div>
 
                     <div className="productos-form-actions">

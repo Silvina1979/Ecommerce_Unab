@@ -21,12 +21,18 @@ import { FaSearch } from "react-icons/fa";
 function Header() {
     const { nombreTienda } = useParams();
     const location = useLocation();
-    const { isAuthenticated, userType } = useAuth();
+    const { isAuthenticated, userType, tiendaUsuario } = useAuth();
     const { tienda } = useTienda();
     
     // Si no hay nombreTienda en params, intentar extraerlo de la URL como fallback
     const tiendaSlug = nombreTienda || location.pathname.split("/")[2];
     const loginPath = tiendaSlug ? `/tienda/${tiendaSlug}/login` : "/login";
+    
+    // Determinar la ruta del botón "Mi Cuenta"
+    // Si es vendedor autenticado, ir al admin; si no, ir al login
+    const cuentaPath = (isAuthenticated && userType === 'vendedor' && tiendaUsuario) 
+        ? `/admin/${tiendaUsuario.nombreUrl || tiendaUsuario.nombreTienda || 'dashboard'}`
+        : loginPath;
     
     // Obtener el nombre de la tienda (nombreFantasia) o usar un valor por defecto
     const nombreTiendaDisplay = tienda?.nombreFantasia || "TradioGlobal";
@@ -83,7 +89,7 @@ function Header() {
                                 </div>
                             </Link>
                         ) : (
-                            <Link to={loginPath} className="link-login">
+                            <Link to={cuentaPath} className="link-login">
                                 <div className="cuenta-box">
                                     <VscAccount className="logo-cuenta" size={26}/>
                                     <span>Mi Cuenta</span>
