@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../tienda/contexts/AuthContext.jsx";
 import { FaStore, FaShoppingBag, FaUser, FaSignOutAlt, FaSignInAlt, FaRocket, FaBox, FaShoppingCart, FaChartLine, FaCreditCard, FaShieldAlt, FaUserPlus } from "react-icons/fa";
 import "../styles/Landing.css";
-
+import Footer_Landing from "../components/Footer_Landing.jsx";
 
 /**
  * Componente Landing
@@ -37,33 +37,37 @@ function Landing() {
                         <FaStore />
                         <h1>TradioGlobal</h1>
                     </Link>
-                    <div className="landing-nav-actions">
-                        <a href="#features" onClick={scrollToFeatures} className="landing-nav-link">
-                            Características
-                        </a>
-                        <a href="#" className="landing-nav-link">Acerca de</a>
-                        <a href="#" className="landing-nav-link">Soporte</a>
-                        <Link to="/tiendas" className="btn-secondary">
-                            <FaShoppingBag />
-                            Explorar Tiendas
-                        </Link>
-                        {isAuthenticated ? (
-                            <>
-                                <Link to="/login" className="btn-primary">
-                                    <FaUser />
-                                    Mi Cuenta
-                                </Link>
-                                <button onClick={handleLogout} className="btn-logout">
-                                    <FaSignOutAlt />
-                                    Cerrar Sesión
-                                </button>
-                            </>
-                        ) : (
-                            <Link to="/login" className="btn-primary">
-                                <FaSignInAlt />
-                                Iniciar Sesión
+                    <div className="landing-nav-container">
+                        <div className="landing-nav-links-container">
+                            <a href="#features" onClick={scrollToFeatures} className="landing-nav-link">
+                                Características
+                            </a>
+                            <a href="#" className="landing-nav-link">Acerca de</a>
+                            <a href="#" className="landing-nav-link">Soporte</a>
+                        </div>
+                        <div className="landing-nav-actions">
+                            <Link to="/tiendas" className="btn-secondary">
+                                <FaShoppingBag />
+                                Explorar Tiendas
                             </Link>
-                        )}
+                            {isAuthenticated ? (
+                                <>
+                                    <Link to="/login" className="btn-primary">
+                                        <FaUser />
+                                        Mi Cuenta
+                                    </Link>
+                                    <button onClick={handleLogout} className="btn-logout">
+                                        <FaSignOutAlt />
+                                        Cerrar Sesión
+                                    </button>
+                                </>
+                            ) : (
+                                <Link to="/login" className="btn-primary">
+                                    <FaSignInAlt />
+                                    Iniciar Sesión
+                                </Link>
+                            )}
+                        </div>
                     </div>
                 </nav>
             </header>
@@ -212,35 +216,7 @@ function Landing() {
             </main>
 
             {/* Footer */}
-            <footer className="footer">
-                <div className="footer-container">
-                    <div className="footer-section">
-                        <h3>E-commerce Multitienda</h3>
-                        <p>
-                            La solución integral para crear y gestionar tu tienda online.
-                            Diseñada para vendedores y para compradores.
-                        </p>
-                    </div>
-                    <div className="footer-section">
-                        <h3>Producto</h3>
-                        <p><a href="#features" onClick={scrollToFeatures}>Características</a></p>
-                        <p><a href="#">Precios</a></p>
-                    </div>
-                    <div className="footer-section">
-                        <h3>Soporte</h3>
-                        <p><a href="#">Centro de Ayuda</a></p>
-                        <p><a href="#">Contacto</a></p>
-                    </div>
-                    <div className="footer-section">
-                        <h3>Legal</h3>
-                        <p><a href="#">Política de Privacidad</a></p>
-                        <p><a href="#">Términos de Servicio</a></p>
-                    </div>
-                </div>
-                <div className="footer-bottom">
-                    <p>&copy; 2025 E-commerce Multitienda. Todos los derechos reservados.</p>
-                </div>
-            </footer>
+            <Footer_Landing />
         </div>
     );
 }

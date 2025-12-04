@@ -1,4 +1,6 @@
 import Header from "../components/Header";
+import Footer_Landing from "../../landing/components/Footer_Landing.jsx";
+
 // import BuscarUsuario from "../components/UsuarioID";
 
 /**
@@ -28,6 +30,8 @@ function Checkout() {
                 {/* Componente para buscar usuarios por DNI */}
                 {/* <BuscarUsuario /> */}
             </div>
+            {/* Footer de la página */}
+            <Footer_Landing />
         </div>
 
     );

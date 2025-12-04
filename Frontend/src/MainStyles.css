@@ -26,18 +26,19 @@
     --blue-950: #172554;
     
     /* --- VERDES --- */
-    --green-50: #f0fdf4;
-    --green-100: #dcfce7;
-    --green-200: #bbf7d0;
-    --green-300: #86efac;
-    --green-350: #66d48a;
-    --green-400: #4ade80;
-    --green-500: #22c55e;
-    --green-600: #16a34a;
-    --green-700: #15803d;
-    --green-800: #166534;
-    --green-900: #14532d;
-    --green-950: #052e16;
+    --green-50: #f0fcf0;
+    --green-100: #dcfcdd;
+    --green-200: #bbf7c1;
+    --green-300: #5ee86a;
+    --green-350: #66d48b;
+    --green-400: #42bb42;
+    --green-500: #33aa39;
+    --green-600: #16a31b;
+    --green-650: #29843b;
+    --green-700: #1a8015;
+    --green-800: #16651b;
+    --green-900: #14531a;
+    --green-950: #052e09;
     
     /* --- NARANJAS --- */
     --orange-50: #fff7ed;
@@ -358,10 +359,10 @@
     
     /* Colores de texto */
     --text-gray-1: var(--gray-900);
-    --text-gray-2: var(--gray-600);
-    --text-gray-3: var(--gray-500);
-    --text-gray-4: var(--gray-400);
-    --text-gray-5: var(--gray-350);
+    --text-gray-2: var(--gray-800);
+    --text-gray-3: var(--gray-700);
+    --text-gray-4: var(--gray-600);
+    --text-gray-5: var(--gray-500);
     --text-white: #ffffff;
     --text-black: #000000;
     
@@ -420,9 +421,13 @@
     --font-weight-black: 900;
     
     /* Estilos de fuente */
-    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    --font-family-mono: 'Fira Code', 'Courier New', Courier, monospace;
-    --font-family-serif: Georgia, 'Times New Roman', Times, serif;
+    --font-family-Inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-family-Orbitron: "Orbitron", sans-serif;
+    --font-family-Cinzel: "Cinzel", serif;
+    --font-family-CinzelDecorative: "Cinzel Decorative", serif;
+    --font-family-Graduate: "Graduate", serif;
+    --font-family-UnicaOne: "Unica One", sans-serif;
+    --font-family-Teachers: "Teachers", sans-serif;
     
     /* Altura de línea */
     --line-height-none: 1;
@@ -433,12 +438,12 @@
     --line-height-loose: 2;
     
     /* Espaciado de letras */
-    --letter-spacing-tighter: -0.05em;
-    --letter-spacing-tight: -0.025em;
-    --letter-spacing-normal: 0;
-    --letter-spacing-wide: 0.025em;
-    --letter-spacing-wider: 0.05em;
-    --letter-spacing-widest: 0.1em;
+    --letter-spacing-xs: -0.05em;
+    --letter-spacing-sm: -0.025em;
+    --letter-spacing-md: 0;
+    --letter-spacing-lg: 0.025em;
+    --letter-spacing-xl: 0.05em;
+    --letter-spacing-2xl: 0.1em;
     
     /* ============================================
        ICONOS
@@ -517,16 +522,16 @@
    ============================================ */
 
 * {
-    box-sizing: border-box;
+   box-sizing: border-box;
 }
 
 body {
-    font-family: var(--font-family);
-    color: var(--text-primary);
-    background-color: var(--bg-light-primary);
-    line-height: var(--line-height-normal);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+   font-family: var(--font-family);
+   color: var(--text-primary);
+   background-color: var(--bg-light-primary);
+   line-height: var(--line-height-normal);
+   -webkit-font-smoothing: antialiased;
+   -moz-osx-font-smoothing: grayscale;
 }
 
 /* Clases de utilidad para colores de texto */

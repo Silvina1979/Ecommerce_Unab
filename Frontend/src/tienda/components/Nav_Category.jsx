@@ -6,6 +6,7 @@ import "../styles/Nav_Category.css";
 import "../styles/Header.css";
 
 import { FaBars } from "react-icons/fa6";
+import { FaChevronRight } from "react-icons/fa";
 
 /**
  * Convierte un nombre de categoría a un slug para la URL
@@ -74,7 +75,7 @@ function Nav_Categories() {
                         {/* Menú desplegable */}
                         {isMenuOpen && (
                             <div className="menu-desplegable">
-                                <Link to={`/tienda/${nombreTienda}/catalogo`} className="menu-item" onClick={() => setIsMenuOpen(false)}>Todas las categorías ⮞</Link>
+                                <Link to={`/tienda/${nombreTienda}/catalogo`} className="menu-item" onClick={() => setIsMenuOpen(false)}>Todas las categorías <FaChevronRight /></Link>
                                 {categorias.map((categoria) => (
                                     <Link 
                                         key={categoria.id} 
@@ -92,15 +93,15 @@ function Nav_Categories() {
                         )}
                     </div>
 
-                    {/* Renderiza las categorías obtenidas de la API
+                    {/* Renderiza las categorías obtenidas de la API */}
                     {categorias.map((cat) => (
                         <Link 
                             key={cat.id} 
                             to={`/tienda/${nombreTienda}/categoria/${categoriaToSlug(cat.nombre)}`}
                         >
-                            <li>{cat.nombre}</li>
+                            <li className="categoria-item">{cat.nombre}</li>
                         </Link>
-                    ))} */}
+                    ))} 
                     {/* Categorías estáticas temporales */}
                 </div>
         </div>

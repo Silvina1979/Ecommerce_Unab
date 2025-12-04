@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import Header from "../components/Header.jsx";
 import { getProductosByTienda } from "../services/productos.js";
 import "../styles/Productos.css";
+import Footer_Landing from "../../landing/components/Footer_Landing.jsx";
 
 /**
 * Componente Catalogo
@@ -52,7 +53,10 @@ function Catalogo() {
             <Header />
 
             {/* Contenedor principal del catálogo */}
-            <div className="main-catalogo">
+            <div className="main-catalogo" style={{ maxWidth: "1270px", margin: "0 auto", display: "flex", flexFlow: "column", alignItems: "center" }}>
+                <h1 style={{ margin: "0 auto", marginTop: "10px", fontSize: "var(--font-size-4xl)", maxWidth: "1200px", width: "100%" }}>
+                    Catálogo
+                </h1>
                 <div className="grid-home-prod">
                     {loading && <p>Cargando productos...</p>}
                     {error && <p style={{ color: "red" }}>{error}</p>}
@@ -91,7 +95,8 @@ function Catalogo() {
                     ))}
                 </div>
             </div>
-
+            {/* Footer de la página */}
+            <Footer_Landing />
         </div>
     );
 }

@@ -75,7 +75,7 @@
 .cart-btn {
     width: 100%;
     padding: 12px 20px;
-    background-color: var(--primary-color);
+    background-color: var(--green-650);
     color: #fff;
     border: none;
     border-radius: var(--border-radius);
@@ -85,6 +85,6 @@
 }
 
 .cart-btn:hover {
-    background-color: var(--primary-dark-color);
+    background-color: var(--green-800);
     transform: scale(1.02);
 }

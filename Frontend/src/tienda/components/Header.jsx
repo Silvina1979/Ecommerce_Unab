@@ -1,5 +1,6 @@
 import { Link, useParams, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext.jsx";
+import { useTienda } from "../contexts/TiendaContext";
 import Nav_Categories from "./Nav_Category";
 
 import "../styles/Header.css";
@@ -7,6 +8,8 @@ import "../styles/Header.css";
 import { MdOutlineAddShoppingCart } from "react-icons/md";
 import { VscAccount } from "react-icons/vsc";
 import { FaSearch } from "react-icons/fa";
+
+
 
 /**
 * Componente Header
@@ -19,10 +22,14 @@ function Header() {
     const { nombreTienda } = useParams();
     const location = useLocation();
     const { isAuthenticated, userType } = useAuth();
+    const { tienda } = useTienda();
     
     // Si no hay nombreTienda en params, intentar extraerlo de la URL como fallback
     const tiendaSlug = nombreTienda || location.pathname.split("/")[2];
     const loginPath = tiendaSlug ? `/tienda/${tiendaSlug}/login` : "/login";
+    
+    // Obtener el nombre de la tienda (nombreFantasia) o usar un valor por defecto
+    const nombreTiendaDisplay = tienda?.nombreFantasia || "TradioGlobal";
 
     return (
         <>
@@ -33,7 +40,18 @@ function Header() {
                     {/* Logo de la aplicación con enlace a la página principal */}
                     <Link to={tiendaSlug ? `/tienda/${tiendaSlug}/home` : "/"} className="link-logo">
                         <div className="header-logo">
-                            <h1>TRADIOGLOBAL</h1>
+                            {tienda?.logo ? (
+                                <div className="header-logo-container">
+                                    <img 
+                                        src={tienda.logo} 
+                                        alt={nombreTiendaDisplay}
+                                        className="header-logo-img"
+                                    />
+                                    <h1 className="header-logo-text">{nombreTiendaDisplay}</h1>
+                                </div>
+                            ) : (
+                                <h1 className="header-logo-text">{nombreTiendaDisplay}</h1>
+                            )}
                         </div>
                     </Link>
 

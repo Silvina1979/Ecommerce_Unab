@@ -1,15 +1,19 @@
-.grid-home-prod, 
 .main-home-contenedor {
+    /* border: 1px solid blue; */
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+.grid-home-prod {
     /* border: 1px solid red; */
     width: 100%;
-    max-width: 1270px;
+    max-width: 1200px;
     display: flex;
-    gap: var(--spacing-lg);
-    margin:20px auto 0 auto;
+    gap: var(--gap-lg);
+    margin: 30px auto;
     flex-flow: row wrap;
     justify-content: center;
-    padding-top: 90px;
-        /*margin-top: 20px;*/
 }
 
 @media screen and (max-width: 768px) {
@@ -29,7 +33,7 @@
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    padding: var(--spacing-md);
+    padding: var(--padding-md);
     transition: transform var(--transition-normal), box-shadow var(--transition-normal);
     /*max-width: 250px;*/
     flex: 1 1 250px;
@@ -50,44 +54,46 @@
     height: 200px;
     object-fit: cover;
     border-radius: var(--border-radius);
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--margin-md);
 }
 
 .prod-home-nombre {
     font-size: var(--font-size-xl);
     font-weight: 600;
-    color: var(--text-secondary);
-    /*margin: 0 0 var(--spacing-sm) 0;*/
-    margin-bottom: var(--spacing-sm);
+    color: var(--text-gray-3);
+    /*margin: 0 0 var(--margin-sm) 0;*/
+    margin-bottom: var(--margin-sm);
 }
 
 .prod-home-precio {
     font-weight: 700;
     font-size: var(--font-size-2xl);
-    color: var(--primary-color);
-    margin: 0 0 var(--spacing-sm) 0;
+    color: var(--green-650);
+    margin: 0 0 var(--margin-sm) 0;
 }
 
 .prod-home-stock {
     font-size: var(--font-size-base);
-    color: var(--text-secondary);
-    margin: 0 0 var(--spacing-sm) 0;
+    color: var(--text-gray-5);
+    font-weight: 600;
+    margin: 0 0 var(--margin-sm) 0;
 }
 
 .prod-home-descripcion {
     font-size: var(--font-size-sm);
-    color: var(--text-secondary);
-    margin: 0 0 var(--spacing-md) 0;
+    color: var(--text-gray-5);
+    margin: 0 0 var(--margin-md) 0;
     flex-grow: 1;
     line-height: 1.5;
+    font-weight: 500;
 }
 
 .prod-home-btn-carrito {
-    background-color: var(--third-color);
+    background-color: var(--green-650);
     color: var(--text-white);
     border: 1px solid rgba(0, 0, 0, 0.15);
     border-radius: var(--border-radius-lg);
-    padding: var(--spacing-md);
+    padding: var(--padding-md);
     font-size: var(--font-size-base);
     font-weight: 600;
     cursor: pointer;

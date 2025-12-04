@@ -8,7 +8,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 // Rutas de landing
 import Landing from "./landing/pages/Landing.jsx";
-import Login from "./landing/components/Login.jsx";
+import Login from "./landing/pages/Login.jsx";
 
 // Rutas de admin
 import AdminLayout from "./admin/layouts/AdminLayout.jsx";

@@ -162,9 +162,9 @@
 
 .btn-tienda-link {
     padding: 5px 10px;
-    background-color: var(--primary-color);
+    background-color: var(--green-650);
     color: white;
-    border: var(--primary-color) 3px solid;
+    border: var(--green-650) 3px solid;
     border-radius: 5px;
     cursor: pointer;
     font-weight: var(--font-weight-bold);
@@ -172,8 +172,8 @@
 
 .btn-tienda-link:hover {
     background-color: var(--white);
-    border: var(--primary-color) 3px solid;
-    color: var(--primary-color);
+    border: var(--green-650) 3px solid;
+    color: var(--green-650);
     transition: var(--transition-normal);
     font-weight: var(--font-weight-bold);
 }

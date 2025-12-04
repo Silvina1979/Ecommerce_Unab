@@ -1,5 +1,6 @@
 import Header from "../components/Header.jsx";
 import "../styles/Carrito.css";
+import Footer_Landing from "../../landing/components/Footer_Landing.jsx";
 
 /**
 * Componente Carrito
@@ -37,6 +38,8 @@ function Carrito() {
                 </div>
             </div>
 
+            {/* Footer de la página */}
+            <Footer_Landing />
         </div>
     );
 };

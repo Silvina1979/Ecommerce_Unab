@@ -139,9 +139,6 @@
     transition: var(--main-transition-fast);
 }
 
-/*input::placeholder{
-    color: var(--text-muted);*/
-
 
 /* Mostrar contraseña */
 .password-details {

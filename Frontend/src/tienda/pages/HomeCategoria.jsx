@@ -5,11 +5,13 @@ import { getProductosByTienda, getProductosByCategoria } from "../services/produ
 import { getCategoriasByTienda } from "../services/categorias";
 import { useTienda } from "../contexts/TiendaContext";
 import "../styles/Productos.css";
+import Footer_Landing from "../../landing/components/Footer_Landing.jsx";
 
 /**
  * Convierte un nombre de categoría a un slug para la URL
  * Reemplaza espacios con guiones y normaliza el texto
  */
+
 function categoriaToSlug(nombre) {
     return nombre
         .toLowerCase()
@@ -78,7 +80,7 @@ function HomeCategoria() {
         return (
             <>
                 <Header />
-                <div className="main-catalogo">
+                <div className="main-catalogo" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                     <p>Cargando productos...</p>
                 </div>
             </>
@@ -99,8 +101,8 @@ function HomeCategoria() {
     return (
         <div>
             <Header />
-            <div className="main-catalogo">
-                <h2 style={{ marginBottom: "20px" }}>
+            <div className="main-catalogo" style={{ maxWidth: "1270px", margin: "0 auto", display: "flex", flexFlow: "column", alignItems: "center" }}>
+                <h2 style={{ maxWidth: "1200px", width: "100%" }}>
                     {categoriaActual ? `Categoría: ${categoriaActual.nombre}` : "Categoría no encontrada"}
                 </h2>
                 {productos.length === 0 ? (
@@ -132,6 +134,8 @@ function HomeCategoria() {
                     </div>
                 )}
             </div>
+            {/* Footer de la página */}
+            <Footer_Landing />
         </div>
     );
 }
