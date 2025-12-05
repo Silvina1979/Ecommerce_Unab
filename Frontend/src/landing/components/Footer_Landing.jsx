@@ -1,21 +1,23 @@
 import { Link, useLocation } from "react-router-dom";
 import "../styles/Footer_Landing.css";
-
 import { LuExternalLink } from "react-icons/lu";
+
 /**
  * Componente Landing
- * 
- * Página inicial de la aplicación. Muestra información general
+ * * Página inicial de la aplicación.
+ * Muestra información general
  * y permite navegar a las tiendas o iniciar sesión.
- * Diseño basado en landing
+ * * Diseño basado en landing
  */
 
 function Footer_Landing() {
     const location = useLocation();
     const isLandingPage = location.pathname === "/";
     const isTiendasPage = location.pathname === "/tiendas";
-    
+
     const scrollToFeatures = (e) => {
+        // Si no estamos en la landing, no prevenimos el default para que navegue, 
+        // pero aquí manejamos la lógica condicional en el render
         e.preventDefault();
         const featuresSection = document.getElementById("features");
         if (featuresSection) {
@@ -40,20 +42,26 @@ function Footer_Landing() {
                             </Link>
                         )}
                     </div>
+              
                     <div className="footer-section">
                         <h3>Producto</h3>
-                        <p><a href="#features" onClick={scrollToFeatures}>Características</a></p>
-                        <p><a href="#">Precios</a></p>
+                        {/* Lógica condicional: Scroll si es landing, Link si es otra página */}
+                        {isLandingPage ? (
+                            <p><a href="#features" onClick={scrollToFeatures}>Características</a></p>
+                        ) : (
+                            <p><Link to="/info/caracteristicas">Características</Link></p>
+                        )}
+                        <p><Link to="/info/precios">Precios</Link></p>
                     </div>
                     <div className="footer-section">
                         <h3>Soporte</h3>
-                        <p><a href="#">Centro de Ayuda</a></p>
-                        <p><a href="#">Contacto</a></p>
+                        <p><Link to="/info/ayuda">Centro de Ayuda</Link></p>
+                        <p><Link to="/info/contacto">Contacto</Link></p>
                     </div>
                     <div className="footer-section">
                         <h3>Legal</h3>
-                        <p><a href="#">Política de Privacidad</a></p>
-                        <p><a href="#">Términos de Servicio</a></p>
+                        <p><Link to="/info/privacidad">Política de Privacidad</Link></p>
+                        <p><Link to="/info/terminos">Términos de Servicio</Link></p>
                     </div>
                 </div>
                 <div className="footer-bottom">
