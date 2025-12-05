@@ -4,9 +4,8 @@ import { useAuth } from "../../tienda/contexts/AuthContext";
 import "../styles/AdminLayout.css";
 
 /**
- * Layout del panel administrativo
- * 
- * Proporciona la estructura base con sidebar y navbar
+ * Layout del panel administrativo (VENDEDORES)
+ * * Proporciona la estructura base con sidebar y navbar
  * para todas las páginas del panel de administración
  */
 function AdminLayout() {
@@ -14,20 +13,21 @@ function AdminLayout() {
     const { nombreTienda } = useParams();
     const location = useLocation();
     const navigate = useNavigate();
-
+    
     // Obtener el nombreTienda de los params o de la tienda del usuario
-    const tiendaActual = nombreTienda || tiendaUsuario?.nombreUrl || tiendaUsuario?.nombreTienda || 'tienda';
+    const tiendaActual = nombreTienda ||
+    tiendaUsuario?.nombreUrl || tiendaUsuario?.nombreTienda || 'tienda';
 
     // Estado para controlar si el menú de productos está abierto
     const [productosMenuAbierto, setProductosMenuAbierto] = useState(false);
-
+    
     // Verificar si estamos en alguna ruta de productos
     useEffect(() => {
         const rutaActual = location.pathname;
         const estaEnProductos = rutaActual.includes('/productos/crear') || rutaActual.includes('/productos/editar');
         setProductosMenuAbierto(estaEnProductos);
     }, [location.pathname]);
-
+    
     const handleLogout = () => {
         logout();
         navigate("/login");
@@ -39,7 +39,7 @@ function AdminLayout() {
             <aside className="admin-sidebar">
                 <div className="admin-sidebar-header">
                     <h2 className="admin-sidebar-title">
-                        Panel Admin
+                        Panel Vendedor
                     </h2>
                 </div>
 
@@ -50,12 +50,15 @@ function AdminLayout() {
                     >
                         📊 Dashboard
                     </Link>
+             
                     <Link 
                         to={`/admin/${tiendaActual}/configuracion`}
                         className="admin-sidebar-link"
                     >
                         🏪 Mi Tienda
                     </Link>
+
+                    {/* SUBMENU PRODUCTOS */}
                     <div className="admin-sidebar-submenu">
                         <div 
                             className="admin-sidebar-submenu-title"
@@ -83,17 +86,40 @@ function AdminLayout() {
                             </Link>
                         </div>
                     </div>
-                    <Link 
-                        to={`/admin/${tiendaActual}/pedidos`}
-                        className="admin-sidebar-link"
-                    >
-                        🛒 Pedidos
-                    </Link>
+
                     <Link 
                         to={`/admin/${tiendaActual}/categorias`}
                         className="admin-sidebar-link"
                     >
-                        📁 Categorías
+                        📂 Categorías
+                    </Link>
+
+                    {/* SECCIÓN DE VENTAS (Lo que me compran a mí) */}
+                    <div style={{ margin: '10px 0', borderTop: '1px solid rgba(255,255,255,0.1)' }}></div>
+                    <Link 
+                        to={`/admin/${tiendaActual}/pedidos`}
+                        className="admin-sidebar-link"
+                        style={{ color: '#81ecec' }}
+                    >
+                        📤 Mis Ventas
+                    </Link>
+
+                    {/* SECCIÓN PERSONAL (Lo que yo compro y seguridad) */}
+                    <div style={{ margin: '10px 0', borderTop: '1px solid rgba(255,255,255,0.1)' }}></div>
+                    
+                    <Link 
+                        to="/perfil/compras"
+                        className="admin-sidebar-link"
+                        style={{ color: '#fab1a0' }} 
+                    >
+                        📥 Mis Compras
+                    </Link>
+
+                    <Link 
+                        to={`/admin/${tiendaActual}/seguridad`}
+                        className="admin-sidebar-link"
+                    >
+                        🔒 Seguridad
                     </Link>
                 </nav>
 
@@ -109,16 +135,18 @@ function AdminLayout() {
                                         className={`admin-sidebar-footer-user-icon ${usuario.emailVerificado ? "verified" : "unverified"}`}
                                         title={usuario.emailVerificado ? "Email Verificado" : "Email No Verificado"}
                                     >
-                                        {usuario.emailVerificado ? "✓" : "⚠"}
+                                        {usuario.emailVerificado ? "✓" : "⚠️"}
                                     </span>
                                 )}
                             </div>
+  
                             <button
                                 onClick={handleLogout}
                                 className="admin-sidebar-footer-logout"
                             >
                                 Cerrar Sesión
                             </button>
+                     
                             <button
                                 onClick={() => navigate("/")}
                                 className="btn-landing-link"
@@ -135,7 +163,7 @@ function AdminLayout() {
                 {/* Navbar superior */}
                 <header className="admin-header">
                     <h1 className="admin-header-title">
-                        Panel de Administración
+                        Gestión de Tienda
                     </h1>
                     {tiendaUsuario?.nombreUrl && (
                         <Link 
@@ -157,4 +185,3 @@ function AdminLayout() {
 }
 
 export default AdminLayout;
-

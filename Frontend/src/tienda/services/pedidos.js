@@ -50,3 +50,13 @@ export async function getPedidosByUsuario(nombreTienda, dni) {
     const res = await api.get(`tiendas/${nombreTienda}/pedidos/usuario/${dni}`);
     return res.data;
 }
+
+/**
+ * Obtiene todos los pedidos realizados por un usuario (Historial global sin importar tienda)
+ * @param {number} dni - DNI del usuario
+ * @returns {Promise<Array>} Lista de pedidos
+ */
+export async function getPedidosGlobalesUsuario(dni) {
+    const res = await api.get(`usuarios/${dni}/pedidos`);
+    return res.data;
+}

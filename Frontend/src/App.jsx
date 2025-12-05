@@ -14,6 +14,11 @@ import ExplorarTiendas from "./landing/pages/ExplorarTiendas.jsx";
 import SolicitarRecuperacion from "./landing/pages/SolicitarRecuperacion.jsx";
 import RestablecerContrasenia from "./landing/pages/RestablecerContrasenia.jsx";
 
+// Rutas de comprador (Asegúrate de que estos archivos existan en estas carpetas)
+import BuyerLayout from "./landing/components/BuyerLayout.jsx";
+import BuyerCompras from "./landing/pages/BuyerCompras.jsx";
+import PerfilSeguridad from "./components/PerfilSeguridad.jsx";
+
 // Rutas de admin
 import AdminLayout from "./admin/layouts/AdminLayout.jsx";
 import AdminDashboard from "./admin/pages/AdminDashboard.jsx";
@@ -36,16 +41,13 @@ import EstadoPago from "./tienda/pages/EstadoPago.jsx";
 
 /**
 * Componente App
-* 
-* Componente principal de la aplicación que configura el enrutamiento.
+* * Componente principal de la aplicación que configura el enrutamiento.
 * Define todas las rutas disponibles en la aplicación utilizando React Router.
 * Cada ruta está asociada a un componente de página específico.
-* 
-* Contextos proporcionados:
+* * Contextos proporcionados:
 * - AuthProvider: Gestiona la autenticación y el token JWT
 * - TiendaWrapper: Proporciona el contexto de tienda, detectando automáticamente el nombreTienda de la URL
-* 
-* Rutas disponibles:
+* * Rutas disponibles:
 * - "/" - Página principal (Home)
 * - "/login" - Página de inicio de sesión
 * - "/catalogo" - Catálogo de productos
@@ -79,6 +81,21 @@ function App() {
               <Route path="/forgot-password" element={<SolicitarRecuperacion />} />
               <Route path="/reset-password" element={<RestablecerContrasenia />} />
 
+              {/* --- NUEVAS RUTAS: Panel de Comprador --- */}
+              <Route 
+                path="/perfil" 
+                element={
+                  <ProtectedRoute>
+                    <BuyerLayout />
+                  </ProtectedRoute>
+                } 
+              >
+                {/* Por defecto ir a compras */}
+                <Route index element={<BuyerCompras />} />
+                <Route path="compras" element={<BuyerCompras />} />
+                <Route path="seguridad" element={<PerfilSeguridad />} />
+              </Route>
+
               {/* Rutas de tienda con nombreTienda (para compradores) */}
               <Route path="/tienda/:nombreTienda/home" element={<Home />} />
               <Route path="/tienda/:nombreTienda/categoria/:categoriaNombre" element={<HomeCategoria />} />
@@ -109,7 +126,9 @@ function App() {
                 <Route path="productos/editar" element={<AdminEditarProductos />} />
                 <Route path="pedidos" element={<AdminPedidos />} />
                 <Route path="categorias" element={<AdminCategorias />} />
-                {/* Más rutas del admin se agregarán aquí */}
+                
+                {/* Ruta de seguridad para vendedor */}
+                <Route path="seguridad" element={<PerfilSeguridad />} />
               </Route>
               
               {/* Ruta alternativa del admin sin nombreTienda (compatibilidad) */}
@@ -122,7 +141,8 @@ function App() {
                 }
               >
                 <Route path="dashboard" element={<AdminDashboard />} />
-                {/* Más rutas del admin se agregarán aquí */}
+                {/* Ruta de seguridad en el fallback también */}
+                <Route path="seguridad" element={<PerfilSeguridad />} />
               </Route>
             </Routes>
               </CarritoProvider>

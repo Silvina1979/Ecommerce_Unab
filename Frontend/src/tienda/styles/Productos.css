@@ -1,161 +1,188 @@
-/* ----------------------------Container especfico de Home---------------------------- */
+/* =========================================
+   CONTENEDORES PRINCIPALES
+   ========================================= */
+
+/* Contenedor específico de Home */
 .main-home-contenedor {
-    /* border: 1px solid blue; */
+    /* MANTENEMOS FLEXBOX PARA EL CENTRADO PRINCIPAL DE LA GRILLA */
     display: flex;
     justify-content: center;
+    width: 100%;
     margin-top: 50px;
-    min-height: 100vh;
+    min-height: 100vh; /* Se mantiene para que el footer no se suba */
+    padding: 0 20px;
+    box-sizing: border-box; 
 }
 
-/* ----------------------------Container especifico de HomeCategoria---------------------------- */
-
+/* Contenedor específico de HomeCategoria */
 .main-catalogo {
-    /* border: 1px solid green; */
     max-width: 1270px;
     margin: 0 auto;
     display: flex;
     flex-flow: column;
     align-items: center;
-}
-
-
-/* ----------------------------Productos en general---------------------------- */
-.grid-home-prod {
-    /* border: 1px solid red; */
+    padding: 0 20px; /* Aseguramos padding responsive */
     width: 100%;
-    max-width: 1200px;
-    display: flex;
-    gap: var(--gap-lg);
-    margin: 30px auto;
-    flex-flow: row wrap;
-    justify-content: center;
+    box-sizing: border-box;
 }
 
 @media screen and (max-width: 768px) {
-    
     .main-home-contenedor {
         padding-top: 80px;
     }
-    
-} 
-    
+}
 
+/* =========================================
+   GRILLA DE PRODUCTOS (FLEXBOX SYSTEM)
+   ========================================= */
+
+.grid-home-prod {
+    width: 100%;
+    max-width: 1200px;
+    
+    /* FLEXBOX: Mantiene la lógica de centrado que te funcionaba */
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center; /* CENTRADO CRÍTICO: Alinea los ítems al centro */
+    
+    gap: 30px; 
+    margin: 30px auto; 
+    
+    /* CRÍTICO: Permitimos que el contenedor se ajuste al contenido (no se estire) */
+    align-items: flex-start; 
+}
+
+/* =========================================
+   TARJETA DE PRODUCTO (CARD)
+   ========================================= */
 
 .prod-home-container {
-    border: 1px solid rgb(196, 196, 196);
-    border-radius: var(--border-radius);
-    box-shadow: 1px 1px 1px rgba(165, 165, 165, 0.474);
-    flex-grow: 1;
+    background-color: white;
+    /* ESTILOS MODERNOS MANTENIDOS */
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    padding: 20px;
+    
+    /* FLEX DIMENSIONES MANTENIDAS */
     display: flex;
     flex-direction: column;
-    padding: var(--padding-md);
-    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
     max-width: 350px;
-    flex: 1 1 250px;
+    flex: 1 1 250px; /* Permite que crezca hasta 350px, pero el tamaño base es 250px */
+    
+    /* CRÍTICO: ELIMINAMOS MIN-HEIGHT FIJO QUE CAUSABA EL ALARGAMIENTO */
+    /* min-height: 480px; <--- ELIMINADO */
+    
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
     cursor: pointer;
+    box-sizing: border-box;
+    overflow: hidden; 
 }
 
 .prod-home-container:hover {
-    transform: translateY(-4px);
-    box-shadow: 2px 2px 2px rgba(133, 133, 133, 0.474);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+    border-color: var(--green-650);
 }
 
-
-/*Productos*/
-
+/* --- IMAGEN --- */
 .prod-home-image {
-    border: 1px solid rgb(220, 220, 220);
     width: 100%;
-    height: 200px;
-    object-fit: contain;
-    border-radius: var(--border-radius);
-    margin-bottom: var(--margin-md);
+    height: 220px; /* Altura FIJA */
+    object-fit: contain; 
+    background-color: #fff;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    flex-shrink: 0; 
 }
 
+/* --- TÍTULO --- */
 .prod-home-nombre {
-    font-size: var(--font-size-xl);
-    font-weight: 600;
-    color: var(--text-gray-3);
-    /*margin: 0 0 var(--margin-sm) 0;*/
-    margin-bottom: var(--margin-sm);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-gray-2);
+    margin: 0 0 10px 0;
+    line-height: 1.3;
+    
+    /* Recorte de título */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 2.6em; 
 }
 
+/* --- PRECIO Y STOCK --- */
 .prod-home-precio {
-    font-weight: 700;
-    font-size: var(--font-size-2xl);
+    font-size: 1.4rem;
+    font-weight: 800;
     color: var(--green-650);
-    margin: 0 0 var(--margin-sm) 0;
+    margin: 5px 0;
 }
 
 .prod-home-stock {
-    font-size: var(--font-size-base);
-    color: var(--text-gray-5);
+    font-size: 0.9rem;
+    color: var(--text-gray-4);
     font-weight: 600;
-    margin: 0 0 var(--margin-sm) 0;
+    margin-bottom: 10px;
 }
 
+/* --- DESCRIPCIÓN --- */
 .prod-home-descripcion {
-    font-size: var(--font-size-sm);
+    font-size: 0.9rem;
     color: var(--text-gray-5);
-    margin: 0 0 var(--margin-md) 0;
-    flex-grow: 1;
     line-height: 1.5;
-    font-weight: 500;
+    margin-bottom: 20px;
+    
+    /* SOLUCIÓN AL PROBLEMA: forzamos a que crezca si el contenido es corto */
+    /* Mantenemos min-height para reservar espacio de 3 líneas y que se vean uniformes */
+    min-height: 60px; 
+    
+    /* SOLUCIÓN DE RECORTE DE TEXTO (Asegura 3 líneas máx.) */
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Muestra máximo 3 líneas */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+    
+    /* Empuja el botón al final */
+    flex-grow: 1; /* ESTA PROPIEDAD ES LA QUE GARANTIZA EL ESPACIO */
 }
 
+/* --- BOTÓN --- */
 .prod-home-btn-carrito {
-    position: relative;
+    width: 100%;
+    padding: 12px;
     background-color: var(--green-650);
-    color: var(--text-white);
-    border: 1px solid rgba(0, 0, 0, 0.15);
-    border-radius: var(--border-radius-lg);
-    padding: var(--padding-md);
-    font-size: var(--font-size-base);
+    color: white;
+    border: none;
+    border-radius: 8px;
     font-weight: 600;
+    font-size: 1rem;
     cursor: pointer;
-    transition: background-color var(--transition-fast),  box-shadow 0.3s ease;
-    margin-top: auto;
-    transition: background-color var(--transition-fast),
-                box-shadow var(--transition-normal),
-                transform var(--transition-fast);
-    overflow: hidden;
+    transition: all 0.2s;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    
+    /* Eliminamos margin-top: auto; para que flex-grow: 1 en la descripción funcione */
 }
 
 .prod-home-btn-carrito:hover {
     background-color: var(--green-800);
-    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 .prod-home-btn-carrito:active {
     transform: scale(0.98);
 }
 
-/* Animación cuando se agrega producto al carrito */
+/* Animación de Agregado (Check) */
 .prod-home-btn-carrito.agregado {
     background-color: var(--green-800);
-    animation: agregadoAnimacion 0.5s ease-in-out;
+    cursor: default;
+    transform: none;
 }
-
-@keyframes agregadoAnimacion {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.05);
-        box-shadow: 0 0 15px rgba(71, 150, 89, 0.6);
-    }
-    100% {
-        transform: scale(1);
-    }
-}
-
-.prod-home-btn-carrito.agregado::before {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: var(--border-radius-lg);
-    pointer-events: none;
-    translate: translateX(-50%);
-}
-

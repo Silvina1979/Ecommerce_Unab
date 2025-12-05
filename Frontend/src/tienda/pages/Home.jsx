@@ -205,7 +205,7 @@ function Home() {
                                 <p className="prod-home-stock">Stock: {prod.stock}</p>
                       
                                 {/* Descripción del producto */}
-                                <p className="prod-home-descripcion">Descripción: {prod.descripcion ||
+                                <p className="prod-home-descripcion">{prod.descripcion ||
                                 "Sin descripción"}</p>
                                 {/* Botón para agregar el producto al carrito */}
                                 <button

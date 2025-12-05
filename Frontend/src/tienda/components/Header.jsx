@@ -11,12 +11,9 @@ import { VscAccount } from "react-icons/vsc";
 import { FaSearch } from "react-icons/fa";
 import { FaTimes } from "react-icons/fa";
 
-
-
 /**
 * Componente Header
-* 
-* Renderiza el encabezado principal de la aplicación con navegación.
+* * Renderiza el encabezado principal de la aplicación con navegación.
 * Detecta automáticamente si está en una tienda para usar el login correcto.
 */
 
@@ -33,12 +30,21 @@ function Header() {
     const tiendaSlug = nombreTienda || location.pathname.split("/")[2];
     const loginPath = tiendaSlug ? `/tienda/${tiendaSlug}/login` : "/login";
     
-    // Determinar la ruta del botón "Mi Cuenta"
-    // Si es vendedor autenticado, ir al admin; si no, ir al login
-    const cuentaPath = (isAuthenticated && userType === 'vendedor' && tiendaUsuario) 
-        ? `/admin/${tiendaUsuario.nombreUrl || tiendaUsuario.nombreTienda || 'dashboard'}`
-        : loginPath;
-    
+    // --- LÓGICA CORREGIDA DEL BOTÓN MI CUENTA ---
+    let cuentaPath = loginPath;
+
+    if (isAuthenticated) {
+        // Caso 1: Es vendedor Y tiene una tienda creada -> Va al Admin
+        if (userType === 'vendedor' && tiendaUsuario && tiendaUsuario.nombreUrl) {
+            const adminSlug = tiendaUsuario.nombreUrl;
+            cuentaPath = `/admin/${adminSlug}/dashboard`;
+        } 
+        // Caso 2: Es comprador O vendedor sin tienda -> Va al Perfil de Usuario
+        else {
+            cuentaPath = "/perfil/compras";
+        }
+    }
+
     // Obtener el nombre de la tienda (nombreFantasia) o usar un valor por defecto
     const nombreTiendaDisplay = tienda?.nombreFantasia || "TradioGlobal";
     
@@ -64,7 +70,6 @@ function Header() {
     // Limpiar búsqueda
     const handleLimpiarBusqueda = () => {
         setTerminoBusqueda('');
-        // Si estamos en la página de catálogo, limpiar también la URL
         if (location.pathname.includes('/catalogo') && tiendaSlug) {
             navigate(`/tienda/${tiendaSlug}/catalogo`);
         }
@@ -153,14 +158,12 @@ function Header() {
                             </div>
                         </Link>
                     </div>
-
                 </header>
             </div>
 
             {/* Componente de navegación por categorías */}
             <Nav_Categories />
-
         </>
     );
 };
-export default Header
+export default Header;
