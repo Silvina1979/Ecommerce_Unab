@@ -2,8 +2,17 @@ import api from "./api";
 
 /**
  * Servicios para interactuar con el endpoint de tiendas de la API
- * * Todas las operaciones de tiendas requieren el nombreUrl (slug) de la tienda
+ * Todas las operaciones de tiendas requieren el nombreUrl (slug) de la tienda
  */
+
+/**
+ * Obtiene todas las tiendas registradas (Para la página Explorar)
+ * @returns {Promise} Promesa que resuelve con la lista de todas las tiendas
+ */
+export async function getAllTiendas() {
+    const res = await api.get("tiendas");
+    return res.data;
+}
 
 /**
  * Obtiene una tienda por su nombreUrl (slug)
@@ -76,4 +85,3 @@ export async function getTiendaByVendedor(vendedorDni) {
 export async function deleteTienda(nombreUrl) {
     await api.delete(`tiendas/${nombreUrl}`);
 }
-

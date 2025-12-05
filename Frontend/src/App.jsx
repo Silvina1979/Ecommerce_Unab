@@ -9,6 +9,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 // Rutas de landing
 import Landing from "./landing/pages/Landing.jsx";
 import Login from "./landing/pages/Login.jsx";
+import ExplorarTiendas from "./landing/pages/ExplorarTiendas.jsx";
 
 // Rutas de admin
 import AdminLayout from "./admin/layouts/AdminLayout.jsx";
@@ -27,7 +28,7 @@ import Carrito from "./tienda/pages/Carrito.jsx";
 import Checkout from "./tienda/pages/Checkout.jsx";
 import VerUsuarios from "./tienda/pages/VerUsuarios.jsx";
 import LoginComprador from "./tienda/pages/LoginComprador.jsx";
-import EstadoPago from "./tienda/pages/EstadoPago.jsx"; // <--- IMPORTADO AQUÍ
+import EstadoPago from "./tienda/pages/EstadoPago.jsx";
 
 
 /**
@@ -61,6 +62,9 @@ function App() {
 
               {/* Ruta raíz: Landing page */}
               <Route path="/" element={<Landing />} />
+
+              {/* Ruta para explorar tiendas */}
+              <Route path="/tiendas" element={<ExplorarTiendas />} />
 
               {/* Rutas públicas */}
               <Route path="/login" element={<Login />} />
