@@ -21,47 +21,25 @@ function CarouselImg({ images = [], isProduct = false }) {
 
         return () => clearInterval(interval);
     }, [images.length, isProduct]);
-    
-    // Estilos dinámicos para el contenedor
-    const containerStyle = isProduct ? { 
-        height: '100%', 
-        margin: '0', 
-        borderRadius: '8px', 
-        boxShadow: 'none',
-        minHeight: '220px', // Altura mínima para la imagen del producto
-        backgroundColor: 'white' 
-    } : {
-        // Estilos para el banner principal (para que se estire y ocupe el espacio)
-        height: '380px', // Altura definida en CSS anterior
-        minHeight: '380px', 
-        borderRadius: '12px',
-        margin: '20px auto',
-        overflow: 'hidden',
-        position: 'relative',
-        width: '100%',
-        maxWidth: '1270px'
-    };
-    
+
     // Estilos dinámicos para la imagen
     const imageStyle = isProduct ? { 
         // Productos: Usamos 'contain' para NO deformar
         objectFit: 'contain' 
     } : {
-        // Banner Principal: Usamos 'fill' para estirar y llenar el espacio sin barras blancas
+        // Banner Principal: Usamos 'cover' para que se vea bien en móvil sin deformarse tanto,
+        // o 'fill' si prefieres que se estire a la fuerza.
         objectFit: 'fill' 
     };
-    
-    const trackStyle = isProduct ? {
-        height: '100%'
-    } : {};
 
     return (
-        <div className="carousel-container" style={containerStyle}>
+        // FIX: Usamos clases en lugar de estilos inline para poder hacer responsive el height
+        <div className={`carousel-container ${isProduct ? 'product-mode' : 'banner-mode'}`}>
             <div
                 className="carousel-track"
                 style={{ 
                     transform: `translateX(-${index * 100}%)`,
-                    ...trackStyle
+                    height: '100%'
                 }}
             >
                 {images.map((src, i) => (
