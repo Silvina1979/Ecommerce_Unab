@@ -34,13 +34,13 @@ a{
 }
 
 .header {
-    /* border: 1px solid blue; */
+    /* Mantenemos el max-width grande para que ocupe todo el espacio */
     background-color: var(--green-650);
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    max-width: 1270px;
+    max-width: 1270px; /* Aseguramos que se estire hasta el límite visual */
     height: 70px;
     gap: var(--gap-md);
     padding: 0 var(--padding-md);
@@ -93,6 +93,7 @@ a{
 }
 
 .header-right {
+    /* Aumentamos el gap en el lado derecho */
     display: flex;
     align-items: center;
     gap: var(--gap-xl);
@@ -102,6 +103,7 @@ a{
     flex-grow: 1;
     display: flex;
     align-items: center;    
+    max-width: 450px; /* Damos un poco más de espacio al buscador */
 }
 
 /*agrego left para poner logo*/
@@ -170,7 +172,7 @@ a{
     justify-content: space-between;
     padding: 0px 10px;
     width: 100%;
-    max-width: 400px;
+    max-width: 100%; /* Permitimos que ocupe el espacio del flex-grow */
     height: 37px;
 }
 
@@ -214,11 +216,20 @@ a{
     transform: scale(0.95);
 }
 
+.search-box .lupa { /* Agregamos color a la lupa */
+    color: var(--green-900);
+}
+
 
 /* Oculta BOTÓN DE CATEGORÍAS solo en la página de Login */
 body.no-categories .categories-button {
     display: none !important;
 }
+
+
+/* Media Queries para Responsive Design */
+
+/* ... Mantenemos Media Queries si existen en el archivo original ... */
 
 
 /* Media Queries para Responsive Design */

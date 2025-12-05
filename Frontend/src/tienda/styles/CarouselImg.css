@@ -1,8 +1,8 @@
 .carousel-container {
-    /* border: 1px solid red; */
+    /* CRÍTICO: Aumentamos el max-width para que se estire horizontalmente */
     width: 100%;
-    max-width: 1270px;
-    height: 350px;
+    max-width: 1270px; /* Se ajusta al ancho del Header y contenedor principal */
+    height: 380px; /* Aumentamos un poco la altura para más presencia */
     margin: 20px auto;
     overflow: hidden;
     position: relative;
@@ -26,9 +26,11 @@
 }
 
 .carousel-slide img {
+    /* CRÍTICO: Usamos 'fill' para estirar la imagen y que ocupe todo el espacio,
+       sin recortar los bordes, aunque se deforme ligeramente. */
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: fill; 
     object-position: center;
     display: block;
     image-rendering: -webkit-optimize-contrast;

@@ -9,7 +9,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { MdOutlineAddShoppingCart } from "react-icons/md";
 
 import Header from "../components/Header.jsx";
-import CarouselImg from "../components/CarouselImg.jsx";
+import CarouselImg from "../components/CarouselImg.jsx"; // Importamos el carrusel
 import Footer_Landing from "../../landing/components/Footer_Landing.jsx";
 
 import "../styles/Home.css";
@@ -54,6 +54,17 @@ function Home() {
         }
         // 3. Fallback
         return "/default-product.png";
+    };
+    
+    // --- NUEVA FUNCIÓN: Obtener lista de imágenes o default ---
+    const obtenerListaImagenes = (prod) => {
+        if (prod.imagenes && Array.isArray(prod.imagenes) && prod.imagenes.length > 0) {
+            return prod.imagenes;
+        }
+        if (prod.imagen && typeof prod.imagen === 'string' && prod.imagen.trim() !== "") {
+            return [prod.imagen];
+        }
+        return ["/default-product.png"];
     };
     // -------------------------------------------------------------
 
@@ -175,68 +186,73 @@ function Home() {
                 ) : (
                     <div className="grid-home-prod">
  
-                        {productos.map((prod) => (
-                            <div key={prod.id} className="prod-home-container">
-                                {/* Imagen del producto */}
-         
-                                <img 
-                                    src={obtenerImagen(prod)} 
-                                    alt={prod.nombre} 
-                                    className="prod-home-image"
-                        
-                                    onError={(e) => {
-                                        // Si la imagen falla al cargar, evitar bucle infinito
-                           
-                                        if (!e.target.dataset.fallback) {
-                                            e.target.dataset.fallback = "true";
-                                            // Usar una imagen placeholder SVG
-                                            e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%23ddd' width='200' height='200'/%3E%3Ctext fill='%23999' font-family='sans-serif' font-size='14' dy='10.5' font-weight='bold' x='50%25' y='50%25' text-anchor='middle'%3ESin imagen%3C/text%3E%3C/svg%3E";
-                                        }
-                                    }}
-                                />
-                                
-                                {/* Nombre del producto */}
-                                <h2 className="prod-home-nombre">{prod.nombre}</h2>
-                               
-                                {/* Precio del producto */}
-                           
-                                <p className="prod-home-precio">Precio: ${formatearPrecio(prod.precio)}</p>
-                                {/* Stock disponible del producto */}
-                                <p className="prod-home-stock">Stock: {prod.stock}</p>
-                      
-                                {/* Descripción del producto */}
-                                <p className="prod-home-descripcion">{prod.descripcion ||
-                                "Sin descripción"}</p>
-                                {/* Botón para agregar el producto al carrito */}
-                                <button
-                                    style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }}
-                                    className={`prod-home-btn-carrito ${productosAgregados.has(prod.id) ? 'agregado' : ''}`}
-                                    onClick={async () => {
-                                        // Verificar si el usuario está autenticado
-                                        if (!isAuthenticated || !usuario) {
-                                            showError("Atención", "Debes iniciar sesión para comprar");
-                                            navigate(`/tienda/${tienda.nombreUrl}/login`, { state: { from: location.pathname } });
-                                            return;
-                                        }
-
-                                        // Activar animación inmediatamente
-                                        setProductosAgregados(prev => new Set(prev).add(prod.id));
-                                        setTimeout(() => {
-                                            setProductosAgregados(prev => {
-                                                const nuevo = new Set(prev);
-                                                nuevo.delete(prod.id);
-                                                return nuevo;
-                                            });
-                                        }, 2000);
-                                        // Llamar a la función de agregar (sin await para que sea instantáneo)
-                                        agregarProducto(prod.id, 1);
-                                    }}
-                                >
-                                    {productosAgregados.has(prod.id) ? '✓ Agregado' : <><MdOutlineAddShoppingCart size={25}/> Agregar al carrito</>}
-                                </button>
+                        {productos.map((prod) => {
+                            const imagenes = obtenerListaImagenes(prod);
+                            return (
+                                <div key={prod.id} className="prod-home-container">
+                                    {/* IMAGEN: Usar Carrusel si hay más de una imagen, si no, usar <img> normal */}
+                                    {imagenes.length > 1 ? (
+                                        <div className="prod-home-image-wrapper"> {/* Nuevo contenedor para el carrusel */}
+                                            <CarouselImg images={imagenes} isProduct={true} />
+                                        </div>
+                                    ) : (
+                                        <img 
+                                            src={imagenes[0]} 
+                                            alt={prod.nombre} 
+                                            className="prod-home-image"
+                                            onError={(e) => {
+                                                if (!e.target.dataset.fallback) {
+                                                    e.target.dataset.fallback = "true";
+                                                    // Usar una imagen placeholder SVG
+                                                    e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%23ddd' width='200' height='200'/%3E%3Ctext fill='%23999' font-family='sans-serif' font-size='14' dy='10.5' font-weight='bold' x='50%25' y='50%25' text-anchor='middle'%3ESin imagen%3C/text%3E%3C/svg%3E";
+                                                }
+                                            }}
+                                        />
+                                    )}
                                     
-                            </div>
-                        ))}
+                                    {/* Nombre del producto */}
+                                    <h2 className="prod-home-nombre">{prod.nombre}</h2>
+                                
+                                    {/* Precio del producto */}
+                                
+                                    <p className="prod-home-precio">Precio: ${formatearPrecio(prod.precio)}</p>
+                                    {/* Stock disponible del producto */}
+                                    <p className="prod-home-stock">Stock: {prod.stock}</p>
+                        
+                                    {/* Descripción del producto - SE ELIMINA 'Descripción: ' */}
+                                    <p className="prod-home-descripcion">{prod.descripcion ||
+                                    "Sin descripción"}</p>
+                                    {/* Botón para agregar el producto al carrito */}
+                                    <button
+                                        style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }}
+                                        className={`prod-home-btn-carrito ${productosAgregados.has(prod.id) ? 'agregado' : ''}`}
+                                        onClick={async () => {
+                                            // Verificar si el usuario está autenticado
+                                            if (!isAuthenticated || !usuario) {
+                                                showError("Atención", "Debes iniciar sesión para comprar");
+                                                navigate(`/tienda/${tienda.nombreUrl}/login`, { state: { from: location.pathname } });
+                                                return;
+                                            }
+
+                                            // Activar animación inmediatamente
+                                            setProductosAgregados(prev => new Set(prev).add(prod.id));
+                                            setTimeout(() => {
+                                                setProductosAgregados(prev => {
+                                                    const nuevo = new Set(prev);
+                                                    nuevo.delete(prod.id);
+                                                    return nuevo;
+                                                });
+                                            }, 2000);
+                                            // Llamar a la función de agregar (sin await para que sea instantáneo)
+                                            agregarProducto(prod.id, 1);
+                                        }}
+                                    >
+                                        {productosAgregados.has(prod.id) ? '✓ Agregado' : <><MdOutlineAddShoppingCart size={25}/> Agregar al carrito</>}
+                                    </button>
+                                        
+                                </div>
+                            );
+                        })}
                     </div>
                 )}
             </main>
