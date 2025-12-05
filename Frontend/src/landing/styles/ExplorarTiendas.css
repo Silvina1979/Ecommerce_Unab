@@ -149,3 +149,142 @@
     border-radius: 8px;
     font-weight: bold;
 }
+
+/* ============================== RESPONSIVE ============================== */
+
+/*-----seccion RESPONSIVA CONTENEDOR-------*/
+@media (max-width: 768px) {
+    .explorar-main {
+        padding: 30px 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .explorar-main {
+        padding: 20px 10px;
+    }
+}
+
+/*-----seccion RESPONSIVA HERO-------*/
+@media (max-width: 768px) {
+    .explorar-hero {
+        margin-bottom: 30px;
+    }
+    
+    .explorar-title {
+        font-size: 2rem;
+    }
+    
+    .explorar-subtitle {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .explorar-title {
+        font-size: 1.5rem;
+    }
+    
+    .explorar-subtitle {
+        font-size: 0.9rem;
+    }
+}
+
+/*-----seccion RESPONSIVA GRID-------*/
+@media (max-width: 768px) {
+    .tiendas-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .tiendas-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+}
+
+/*-----seccion RESPONSIVA TARJETAS-------*/
+@media (max-width: 768px) {
+    .tienda-card {
+        height: auto;
+        min-height: 280px;
+    }
+    
+    .tienda-card-content {
+        padding: 15px;
+        padding-top: 35px;
+    }
+    
+    .tienda-logo-wrapper {
+        width: 70px;
+        height: 70px;
+        top: -35px;
+    }
+    
+    .tienda-nombre {
+        font-size: 1.1rem;
+    }
+    
+    .tienda-desc {
+        font-size: 0.85rem;
+    }
+    
+    .btn-visitar {
+        padding: 6px 16px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .tienda-card {
+        min-height: 260px;
+    }
+    
+    .tienda-card-banner {
+        max-height: 80px;
+        height: 80px;
+    }
+    
+    .tienda-card-content {
+        padding: 12px;
+        padding-top: 30px;
+    }
+    
+    .tienda-logo-wrapper {
+        width: 60px;
+        height: 60px;
+        top: -30px;
+    }
+    
+    .tienda-nombre {
+        font-size: 1rem;
+        margin: 8px 0 4px 0;
+    }
+    
+    .tienda-desc {
+        font-size: 0.8rem;
+        margin-bottom: 10px;
+    }
+    
+    .btn-visitar {
+        padding: 6px 14px;
+        font-size: 0.8rem;
+    }
+    
+    .btn-crear {
+        padding: 8px 20px;
+        font-size: 0.9rem;
+    }
+}
+
+/*-----seccion RESPONSIVA MENSAJES-------*/
+@media (max-width: 768px) {
+    .explorar-loading, 
+    .explorar-error, 
+    .explorar-empty {
+        padding: 30px 15px;
+        font-size: 1rem;
+    }
+}

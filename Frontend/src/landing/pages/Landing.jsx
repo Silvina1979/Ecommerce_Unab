@@ -49,13 +49,13 @@ function Landing() {
                             <a href="#" className="landing-nav-link">Soporte</a>
                         </div>
                         <div className="landing-nav-actions">
-                            <Link to="/tiendas" className="btn-secondary">
+                            <Link to="/tiendas" className="btn-secondary-header">
                                 <FaShoppingBag />
                                 Explorar Tiendas
                             </Link>
                             {isAuthenticated ? (
                                 <>
-                                    <Link to="/login" className="btn-primary">
+                                    <Link to="/login" className="btn-primary-header">
                                         <FaUser />
                                         Mi Cuenta
                                     </Link>
@@ -65,7 +65,7 @@ function Landing() {
                                     </button>
                                 </>
                             ) : (
-                                <Link to="/login" className="btn-primary">
+                                <Link to="/login" className="btn-primary-header">
                                     <FaSignInAlt />
                                     Iniciar Sesión
                                 </Link>
@@ -74,6 +74,38 @@ function Landing() {
                     </div>
                 </nav>
             </header>
+            <div className="landing-header-mobile">
+                <div className="landing-nav-links-container-mobile">
+                    <a href="#features" onClick={scrollToFeatures} className="landing-nav-link-mobile">
+                        Características
+                    </a>
+                    <a href="#" className="landing-nav-link-mobile">Acerca de</a>
+                    <a href="#" className="landing-nav-link-mobile">Soporte</a>
+                </div>
+                <div className="landing-nav-actions">
+                    <Link to="/tiendas" className="btn-secondary-header-mobile">
+                        <FaShoppingBag />
+                        Explorar Tiendas
+                    </Link>
+                    {isAuthenticated ? (
+                        <>
+                            <Link to="/login" className="btn-primary-header-mobile">
+                                <FaUser />
+                                Mi Cuenta
+                            </Link>
+                            <button onClick={handleLogout} className="btn-logout-mobile">
+                                <FaSignOutAlt />
+                                Cerrar Sesión
+                            </button>
+                        </>
+                    ) : (
+                        <Link to="/login" className="btn-primary-header-mobile">
+                            <FaSignInAlt />
+                            Iniciar Sesión
+                        </Link>
+                    )}
+                </div>
+            </div>
 
             {/* Sección Hero */}
             <main>
@@ -100,7 +132,7 @@ function Landing() {
                                 <div className="preview-header">
                                     <div className="preview-logo">
                                         <FaStore />
-                                        <span>Mi Tienda</span>
+                                        <span>TradioGlobal</span>
                                     </div>
                                     <span>Dashboard</span>
                                 </div>

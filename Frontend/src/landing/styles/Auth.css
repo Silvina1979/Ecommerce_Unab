@@ -157,3 +157,100 @@ input[type=number] {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* ============================== RESPONSIVE ============================== */
+
+/*-----seccion RESPONSIVA CONTENEDOR-------*/
+@media (max-width: 768px) {
+    .auth-container {
+        padding: var(--padding-md);
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-container {
+        padding: var(--padding-sm);
+        align-items: flex-start;
+        padding-top: var(--padding-lg);
+    }
+}
+
+/*-----seccion RESPONSIVA TARJETA-------*/
+@media (max-width: 768px) {
+    .auth-card {
+        width: 100%;
+        padding: 30px 20px;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-card {
+        padding: 25px 15px;
+        border-radius: var(--border-radius-lg);
+    }
+}
+
+/*-----seccion RESPONSIVA TEXTOS-------*/
+@media (max-width: 768px) {
+    .auth-title {
+        font-size: var(--font-size-2xl);
+    }
+    
+    .auth-subtitle {
+        font-size: var(--font-size-xs);
+        margin-bottom: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-title {
+        font-size: var(--font-size-xl);
+        margin-bottom: 8px;
+    }
+    
+    .auth-subtitle {
+        font-size: 0.8rem;
+        margin-bottom: 20px;
+    }
+}
+
+/*-----seccion RESPONSIVA INPUTS-------*/
+@media (max-width: 768px) {
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    .form-input {
+        padding: 10px 12px;
+        font-size: var(--font-size-sm);
+    }
+}
+
+@media (max-width: 480px) {
+    .form-input {
+        padding: 10px;
+    }
+}
+
+/*-----seccion RESPONSIVA BOTONES-------*/
+@media (max-width: 768px) {
+    .btn-primary-auth {
+        padding: 12px 20px;
+        font-size: var(--font-size-sm);
+    }
+}
+
+@media (max-width: 480px) {
+    .btn-primary-auth {
+        padding: 14px 20px;
+    }
+}
+
+/*-----seccion RESPONSIVA MENSAJES-------*/
+@media (max-width: 768px) {
+    .msg-box {
+        padding: 12px;
+        font-size: var(--font-size-xs);
+    }
+}

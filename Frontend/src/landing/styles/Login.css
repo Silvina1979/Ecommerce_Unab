@@ -316,25 +316,95 @@
     color: var(--blue-600);
 }
 
-/* --- Responsive --- */
-@media (max-width: 880px) {
-    .login-box,
-    .register-box {
-        width: 100%;
-        position: relative; /* Cambia a relativo para apilar si es necesario */
-    }
+/* ============================== RESPONSIVE ============================== */
 
-    .container-welcome {
-        display: none; /* Ocultamos el panel lateral en móviles */
+/*-----seccion RESPONSIVA CONTENEDOR-------*/
+@media (max-width: 880px) {
+    .main-login {
+        padding: var(--padding-md);
     }
 
     .all-login-container {
         height: auto;
-        padding: var(--padding-xl) 0;
+        padding: var(--padding-xl) var(--padding-md);
         max-width: 500px;
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-login {
+        padding: var(--padding-sm);
+    }
+    
+    .all-login-container {
+        padding: var(--padding-lg) var(--padding-sm);
+        border-radius: var(--border-radius-lg);
+    }
+}
+
+/*-----seccion RESPONSIVA FORMULARIOS-------*/
+@media (max-width: 880px) {
+    .login-box,
+    .register-box {
+        width: 100%;
+        position: relative;
     }
     
     .all-login-container.active .login-box {
-        display: none; /* Ocultar manualmente en móvil */
+        display: none;
+    }
+    
+    .all-login-container form {
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .all-login-container h2 {
+        font-size: var(--font-size-2xl);
+    }
+    
+    .input-box {
+        margin-bottom: var(--margin-md);
+    }
+    
+    .submit-button-contenedor button {
+        padding: 14px 28px;
+        font-size: var(--font-size-sm);
+    }
+}
+
+@media (max-width: 480px) {
+    .all-login-container h2 {
+        font-size: var(--font-size-xl);
+        margin-bottom: var(--margin-md);
+    }
+    
+    .input-box input {
+        height: 40px;
+        font-size: var(--font-size-sm);
+    }
+    
+    .input-box label {
+        font-size: var(--font-size-xs);
+    }
+    
+    .password-details {
+        font-size: var(--font-size-xs);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--gap-xs);
+    }
+    
+    .password-forgot {
+        font-size: var(--font-size-xs);
+        margin-top: var(--margin-sm);
+    }
+}
+
+/*-----seccion RESPONSIVA PANEL BIENVENIDA-------*/
+@media (max-width: 880px) {
+    .container-welcome {
+        display: none;
     }
 }

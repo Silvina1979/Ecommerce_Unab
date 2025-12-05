@@ -51,6 +51,87 @@
     transition: var(--main-transition-fast);
 }
 
+/* ============================== RESPONSIVE ============================== */
+
+/*-----seccion RESPONSIVA FOOTER-------*/
+@media (max-width: 768px) {
+    .footer {
+        /* border: 3px solid red; */
+        padding: var(--margin-md) var(--padding-md) var(--padding-md);
+    }
+    
+    .footer-container {
+        /* border: 3px solid blue; */
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        justify-items: center;
+        gap: var(--gap-xl);
+        text-align: start;
+        margin: 20px 10px 0px 10px;
+    }
+    
+    .footer-section h3 {
+        /* border: 3px solid yellow; */
+        font-size: var(--font-size-lg);
+        margin: 0;
+        padding: 0;
+    }
+    
+    .footer-section p,
+    .footer-section a {
+        /* border: 3px solid purple; */
+        font-size: var(--font-size-sm);
+        margin: 0;
+        padding: 7px 0px 5px 0px;
+    }
+    
+    .footer-bottom {
+        /* border: 3px solid rgb(255, 0, 0); */
+        padding-top: var(--padding-md);
+        font-size: var(--font-size-xs);
+    }
+}
+
+
+@media (max-width: 480px) {
+    .footer {
+        /* border: 3px solid red; */
+        padding: var(--margin-md) var(--padding-md) var(--padding-md);
+    }
+    
+    .footer-container {
+        /* border: 3px solid blue; */
+        grid-template-columns: 1fr;
+        gap: var(--gap-lg);
+        text-align: start;
+    }
+    
+    .footer-section {
+        /* border: 3px solid green; */
+        width: 100%;
+    }
+
+    .footer-section h3 {
+        /* border: 3px solid yellow; */
+        font-size: var(--font-size-lg);
+        margin: 0;
+        padding: 0;
+    }
+    
+    .footer-section p,
+    .footer-section a {
+        /* border: 3px solid purple; */
+        font-size: var(--font-size-sm);
+        margin: 0;
+        padding: 7px 0px 5px 0px;
+    }
+    
+    .footer-bottom {
+        /* border: 3px solid rgb(255, 0, 0); */
+        padding-top: var(--padding-md);
+        font-size: var(--font-size-xs);
+    }
+}
+
 /* Footer desktop: distribuir columnas con space-between */
 @media (min-width: 768px) {
     .footer-container {
