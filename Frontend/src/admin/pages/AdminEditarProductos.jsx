@@ -7,6 +7,14 @@ import { useNotifications } from "../../contexts/NotificationContext";
 import "../styles/AdminEditarProductos.css";
 
 /**
+ * Función para formatear precios con puntos como separadores de miles
+ */
+function formatearPrecio(precio) {
+    const precioRedondeado = Math.round(precio || 0);
+    return precioRedondeado.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+/**
  * Página de edición de productos
  * * Permite ver, filtrar, buscar y editar productos de la tienda
  */
@@ -424,7 +432,7 @@ function AdminEditarProductos() {
                             </div>
                             <div className="editar-productos-card-info">
                                 <h3 className="editar-productos-card-nombre">{producto.nombre}</h3>
-                                <p className="editar-productos-card-precio">${producto.precio}</p>
+                                <p className="editar-productos-card-precio">${formatearPrecio(producto.precio)}</p>
                             </div>
                         </div>
                     ))}
@@ -557,7 +565,7 @@ function AdminEditarProductos() {
                                     </div>
                                     <div className="editar-productos-detalle-info">
                                         <p><strong>Nombre:</strong> {productoEditando.nombre}</p>
-                                        <p><strong>Precio:</strong> ${productoEditando.precio}</p>
+                                        <p><strong>Precio:</strong> ${formatearPrecio(productoEditando.precio)}</p>
                                         <p><strong>Stock:</strong> {productoEditando.stock}</p>
                                         <p><strong>Descripción:</strong> {productoEditando.descripcion || "Sin descripción"}</p>
                                         <p><strong>Categoría:</strong> {

@@ -104,6 +104,7 @@
 }
 
 .prod-home-btn-carrito {
+    position: relative;
     background-color: var(--green-650);
     color: var(--text-white);
     border: 1px solid rgba(0, 0, 0, 0.15);
@@ -117,13 +118,44 @@
     transition: background-color var(--transition-fast),
                 box-shadow var(--transition-normal),
                 transform var(--transition-fast);
+    overflow: hidden;
 }
 
 .prod-home-btn-carrito:hover {
-    background-color: var(--third-dark-color);
-    box-shadow: var(shadow-md);
+    background-color: var(--green-800);
+    box-shadow: var(--shadow-md);
 }
 
 .prod-home-btn-carrito:active {
     transform: scale(0.98);
 }
+
+/* Animación cuando se agrega producto al carrito */
+.prod-home-btn-carrito.agregado {
+    background-color: var(--green-800);
+    animation: agregadoAnimacion 0.5s ease-in-out;
+}
+
+@keyframes agregadoAnimacion {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(71, 150, 89, 0.6);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.prod-home-btn-carrito.agregado::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--border-radius-lg);
+    pointer-events: none;
+    translate: translateX(-50%);
+}
+

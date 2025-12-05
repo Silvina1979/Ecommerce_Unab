@@ -73,8 +73,7 @@ const SolicitarRecuperacion = () => {
             </div>
 
             {error && <div className="msg-box msg-error">⚠️ {error}</div>}
-
-            <button type="submit" disabled={loading} className="btn-primary">
+            <button type="submit" disabled={loading} className="btn-primary-auth">
                 {loading ? 'Enviando...' : 'Enviar solicitud'}
             </button>
 

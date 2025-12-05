@@ -1,17 +1,19 @@
-import "../styles/Home.css";
-import Header from "../components/Header.jsx";
 import { useTienda } from "../contexts/TiendaContext";
+import { useCarrito } from "../contexts/CarritoContext";
+import { useAuth } from "../contexts/AuthContext";
+import { useNotifications } from "../../contexts/NotificationContext";
 import { getProductosByTienda } from "../services/productos";
-import CarouselImg from "../components/CarouselImg.jsx";
 import { useState, useEffect } from "react";
-import "../styles/Productos.css";
+import { useNavigate, useLocation } from "react-router-dom";
+
+import { MdOutlineAddShoppingCart } from "react-icons/md";
+
+import Header from "../components/Header.jsx";
+import CarouselImg from "../components/CarouselImg.jsx";
 import Footer_Landing from "../../landing/components/Footer_Landing.jsx";
 
-// --- Imports nuevos para la lógica del carrito ---
-import { agregarAlCarrito } from "../services/carrito";
-import { useAuth } from "../contexts/AuthContext.jsx";
-import { useNotifications } from "../../contexts/NotificationContext.jsx";
-import { useNavigate, useLocation } from "react-router-dom";
+import "../styles/Home.css";
+import "../styles/Productos.css";
 
 /**
 * Componente Home
@@ -30,15 +32,15 @@ const homeImages = [
 
 function Home() {
     const { tienda, loading, error } = useTienda();
+    const { agregarProducto } = useCarrito();
+    const { usuario, isAuthenticated } = useAuth();
+    const { error: showError } = useNotifications();
+    const navigate = useNavigate();
+    const location = useLocation();
     const [productos, setProductos] = useState([]);
     const [cargandoProductos, setCargandoProductos] = useState(true);
     const [errorProductos, setErrorProductos] = useState(null);
-
-    // Hooks para autenticación, navegación y notificaciones
-    const { usuario, isAuthenticated } = useAuth();
-    const { success: showSuccess, error: showError } = useNotifications();
-    const navigate = useNavigate();
-    const location = useLocation();
+    const [productosAgregados, setProductosAgregados] = useState(new Set());
 
     // --- FIX BACKEND: Función para obtener la imagen principal ---
     const obtenerImagen = (prod) => {
@@ -55,31 +57,12 @@ function Home() {
     };
     // -------------------------------------------------------------
 
-    // Función para manejar la acción de agregar al carrito
-    const handleAgregarAlCarrito = async (productoId) => {
-        // Verificar si el usuario está autenticado
-        if (!isAuthenticated || !usuario) {
-            showError("Atención", "Debes iniciar sesión para comprar");
-            // Redirigir al login de la tienda actual guardando la ubicación
-            navigate(`/tienda/${tienda.nombreUrl}/login`, { state: { from: location.pathname } });
-            return;
-        }
-
-        try {
-            // Preparar datos para el backend
-            const requestData = {
-                usuarioDni: usuario.dni,
-                productoId: productoId,
-                cantidad: 1 
-            };
-
-            await agregarAlCarrito(tienda.nombreUrl, requestData);
-            showSuccess("¡Listo!", "Producto agregado al carrito");
-        } catch (err) {
-            console.error(err);
-            const msg = err.response?.data?.message || "No se pudo agregar al carrito";
-            showError("Error", msg);
-        }
+    /**
+     * Función para formatear precios con puntos como separadores de miles
+     */
+    const formatearPrecio = (precio) => {
+        const precioRedondeado = Math.round(precio || 0);
+        return precioRedondeado.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     };
 
     // Cargar productos de la tienda
@@ -98,11 +81,17 @@ function Home() {
                 const productosData = await getProductosByTienda(tienda.nombreUrl);
                 console.log("Productos cargados:", productosData);
         
+                // Ordenar productos de más nuevos a más viejos (por ID descendente)
+                const productosOrdenados = Array.isArray(productosData)
+                    ? [...productosData].sort((a, b) => (b.id || 0) - (a.id || 0))
+                    : [];
+                
                 // Mostrar solo los primeros 6 productos en la home
-                setProductos(Array.isArray(productosData) ? productosData.slice(0, 6) : []);
+                setProductos(productosOrdenados.slice(0, 6));
             } catch (err) {
                 console.error("Error cargando productos:", err);
                 setErrorProductos(err.message || "Error al cargar productos");
+       
             } finally {
                 setCargandoProductos(false);
             }
@@ -118,7 +107,9 @@ function Home() {
                 <Header />
                 <main className="main-home-contenedor">
                     <p>Cargando tienda...</p>
+         
                 </main>
+                <Footer_Landing />
             </>
         );
     }
@@ -130,11 +121,14 @@ function Home() {
                 <Header />
                 <main className="main-home-contenedor">
                     <div style={{ textAlign: "center", padding: "40px" }}>
+ 
                         <h2>Tienda no encontrada</h2>
                         <p>{error}</p>
                     </div>
                 </main>
+                <Footer_Landing />
             </>
+   
         );
     }
 
@@ -144,11 +138,13 @@ function Home() {
             <>
                 <Header />
                 <main className="main-home-contenedor">
-                    <div style={{ textAlign: "center", padding: "40px" }}>
+                    <div style={{ 
+                        textAlign: "center", padding: "40px" }}>
                         <h2>Tienda no encontrada</h2>
                         <p>La tienda que buscas no existe o no está disponible.</p>
                     </div>
                 </main>
+                <Footer_Landing />
             </>
         );
     }
@@ -166,25 +162,31 @@ function Home() {
             {/*Carousel*/}
             <CarouselImg images={bannersAMostrar} />
             
+     
             {/* Grid principal que contiene todos los productos */}
             <main className="main-home-contenedor">
                 {cargandoProductos ? (
                     <p>Cargando productos...</p>
                 ) : errorProductos ? (
+        
                     <p style={{ color: "red" }}>Error: {errorProductos}</p>
                 ) : productos.length === 0 ? (
                     <p>No hay productos disponibles en esta tienda.</p>
                 ) : (
                     <div className="grid-home-prod">
+ 
                         {productos.map((prod) => (
                             <div key={prod.id} className="prod-home-container">
                                 {/* Imagen del producto */}
+         
                                 <img 
                                     src={obtenerImagen(prod)} 
                                     alt={prod.nombre} 
                                     className="prod-home-image"
+                        
                                     onError={(e) => {
                                         // Si la imagen falla al cargar, evitar bucle infinito
+                           
                                         if (!e.target.dataset.fallback) {
                                             e.target.dataset.fallback = "true";
                                             // Usar una imagen placeholder SVG
@@ -197,27 +199,49 @@ function Home() {
                                 <h2 className="prod-home-nombre">{prod.nombre}</h2>
                                
                                 {/* Precio del producto */}
-                                <p className="prod-home-precio">Precio: ${prod.precio}</p>
-   
+                           
+                                <p className="prod-home-precio">Precio: ${formatearPrecio(prod.precio)}</p>
                                 {/* Stock disponible del producto */}
                                 <p className="prod-home-stock">Stock: {prod.stock}</p>
                       
                                 {/* Descripción del producto */}
-                                <p className="prod-home-descripcion">Descripción: {prod.descripcion || "Sin descripción"}</p>
-                                
+                                <p className="prod-home-descripcion">Descripción: {prod.descripcion ||
+                                "Sin descripción"}</p>
                                 {/* Botón para agregar el producto al carrito */}
-                                <button 
-                                    className="prod-home-btn-carrito"
-                                    onClick={() => handleAgregarAlCarrito(prod.id)}
+                                <button
+                                    style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }}
+                                    className={`prod-home-btn-carrito ${productosAgregados.has(prod.id) ? 'agregado' : ''}`}
+                                    onClick={async () => {
+                                        // Verificar si el usuario está autenticado
+                                        if (!isAuthenticated || !usuario) {
+                                            showError("Atención", "Debes iniciar sesión para comprar");
+                                            navigate(`/tienda/${tienda.nombreUrl}/login`, { state: { from: location.pathname } });
+                                            return;
+                                        }
+
+                                        // Activar animación inmediatamente
+                                        setProductosAgregados(prev => new Set(prev).add(prod.id));
+                                        setTimeout(() => {
+                                            setProductosAgregados(prev => {
+                                                const nuevo = new Set(prev);
+                                                nuevo.delete(prod.id);
+                                                return nuevo;
+                                            });
+                                        }, 2000);
+                                        // Llamar a la función de agregar (sin await para que sea instantáneo)
+                                        agregarProducto(prod.id, 1);
+                                    }}
                                 >
-                                    Agregar al carrito
+                                    {productosAgregados.has(prod.id) ? '✓ Agregado' : <><MdOutlineAddShoppingCart size={25}/> Agregar al carrito</>}
                                 </button>
+                                    
                             </div>
                         ))}
                     </div>
                 )}
             </main>
             {/* Footer de la página */}
+       
             <Footer_Landing />
         </>
     );

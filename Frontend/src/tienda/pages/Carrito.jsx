@@ -1,69 +1,83 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext.jsx";
-import { obtenerCarrito, eliminarItemCarrito } from "../services/carrito.js";
-import { useNotifications } from "../../contexts/NotificationContext.jsx";
-import Header from "../components/Header.jsx";
-import "../styles/Carrito.css";
+import { useAuth } from "../contexts/AuthContext";
+import { useCarrito } from "../contexts/CarritoContext";
+import { useNotifications } from "../../contexts/NotificationContext";
+import { FaTrashCan } from "react-icons/fa6";
+import { FaShoppingBasket } from "react-icons/fa";
+
 import Footer_Landing from "../../landing/components/Footer_Landing.jsx";
+import Header from "../components/Header.jsx";
+
+import "../styles/Carrito.css";
+
+/**
+ * Función para acortar el nombre del producto
+ * @param {string} nombre - Nombre completo del producto
+ * @param {number} maxLength - Longitud máxima (por defecto 25)
+ * @returns {string} Nombre acortado con "..."
+ */
+function acortarNombre(nombre, maxLength = 25) {
+    if (!nombre || nombre.length <= maxLength) {
+        return nombre;
+    }
+    return nombre.substring(0, maxLength - 3) + "...";
+}
+
+/**
+ * Función para formatear precios con puntos como separadores de miles
+ * @param {number} precio - Precio a formatear
+ * @returns {string} Precio formateado (ej: $1.000, $10.000)
+ */
+function formatearPrecio(precio) {
+    const precioRedondeado = Math.round(precio || 0);
+    return precioRedondeado.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+/**
+ * Función para obtener la imagen del producto
+ */
+function obtenerImagen(item) {
+    if (item.imagenProducto && item.imagenProducto.trim() !== "") {
+        return item.imagenProducto;
+    }
+    return "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%23ddd' width='200' height='200'/%3E%3Ctext fill='%23999' font-family='sans-serif' font-size='14' dy='10.5' font-weight='bold' x='50%25' y='50%25' text-anchor='middle'%3ESin imagen%3C/text%3E%3C/svg%3E";
+}
 
 /**
 * Componente Carrito
-* * Muestra la página del carrito de compras del usuario.
-* Renderiza una lista de productos agregados al carrito obtenida del backend
-* y un botón para proceder al checkout.
+* 
+* Muestra la página del carrito de compras del usuario.
+* Renderiza una lista de productos agregados al carrito y un botón
+* para realizar la compra.
 */
 
 function Carrito() {
     const { nombreTienda } = useParams();
-    const { usuario, isAuthenticated } = useAuth();
     const navigate = useNavigate();
+    const { items, loading, eliminarItem, actualizarCantidad, calcularTotal } = useCarrito();
+    const { isAuthenticated } = useAuth();
     const { error: showError, success: showSuccess } = useNotifications();
+    
+    // Estado local para las cantidades de cada item (para actualización visual inmediata)
+    const [cantidadesLocales, setCantidadesLocales] = useState({});
+    const timersRef = useRef({});
 
-    // Estado para items del carrito y totales
-    const [items, setItems] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [total, setTotal] = useState(0);
-
-    // Cargar carrito al montar el componente si hay usuario
+    // Sincronizar cantidades locales con items del carrito
     useEffect(() => {
-        if (isAuthenticated && usuario && nombreTienda) {
-            cargarCarrito();
-        } else {
-            setLoading(false);
-        }
-    }, [isAuthenticated, usuario, nombreTienda]);
-
-    // Calcular el total cada vez que cambian los items
-    useEffect(() => {
-        // El backend ya manda 'subtotal', pero sumamos aquí para el total general
-        const nuevoTotal = items.reduce((acc, item) => acc + (item.subtotal || 0), 0);
-        setTotal(nuevoTotal);
+        const nuevasCantidades = {};
+        items.forEach(item => {
+            nuevasCantidades[item.idItem] = item.cantidad;
+        });
+        setCantidadesLocales(nuevasCantidades);
     }, [items]);
 
-    const cargarCarrito = async () => {
-        try {
-            setLoading(true);
-            const data = await obtenerCarrito(nombreTienda, usuario.dni);
-            setItems(data || []);
-        } catch (error) {
-            console.error("Error al cargar carrito:", error);
-            // Si es 404 puede ser que esté vacío o no exista, no mostramos error crítico
-            if (error.response?.status !== 404) {
-                showError("Error", "No se pudo cargar el carrito.");
-            }
-        } finally {
-            setLoading(false);
-        }
-    };
-
+    // Función para manejar la eliminación con confirmación
     const handleEliminarItem = async (idItem) => {
         if (!window.confirm("¿Estás seguro de eliminar este producto?")) return;
 
         try {
-            await eliminarItemCarrito(nombreTienda, idItem);
-            // Actualizamos el estado local filtrando el item eliminado
-            setItems(prev => prev.filter(item => item.idItem !== idItem));
+            await eliminarItem(idItem);
             showSuccess("Eliminado", "Producto eliminado del carrito");
         } catch (error) {
             console.error("Error al eliminar item:", error);
@@ -71,22 +85,18 @@ function Carrito() {
         }
     };
 
-    const irACheckout = () => {
-        if (items.length === 0) {
-            showError("Carrito vacío", "Agrega productos antes de realizar la compra.");
-            return;
-        }
-        navigate(`/tienda/${nombreTienda}/checkout`);
-    };
-
-    // Si no está logueado, mostrar aviso
+    // Si no está autenticado, mostrar mensaje
     if (!isAuthenticated) {
         return (
             <div>
                 <Header />
                 <div className="main-carrito" style={{ flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
                     <h2>Inicia sesión para ver tu carrito</h2>
-                    <Link to={`/tienda/${nombreTienda}/login`} className="cart-btn" style={{ maxWidth: '200px', marginTop: '20px', textDecoration: 'none', display: 'inline-block' }}>
+                    <Link 
+                        to={`/tienda/${nombreTienda}/login`} 
+                        className="cart-btn" 
+                        style={{ maxWidth: '200px', marginTop: '20px', textDecoration: 'none', display: 'inline-block' }}
+                    >
                         Iniciar Sesión
                     </Link>
                 </div>
@@ -95,88 +105,296 @@ function Carrito() {
         );
     }
 
+    const total = calcularTotal();
+
+    const handleCheckout = () => {
+        // Validar que el carrito no esté vacío antes de proceder
+        if (items.length === 0) {
+            showError("Carrito vacío", "Agrega productos antes de realizar la compra.");
+            return;
+        }
+        
+        if (nombreTienda) {
+            navigate(`/tienda/${nombreTienda}/checkout`);
+        }
+    };
+
+    // Actualizar cantidad local inmediatamente
+    const handleCantidadInputChange = (idItem, valor) => {
+        setCantidadesLocales(prev => ({
+            ...prev,
+            [idItem]: valor
+        }));
+    };
+
+    // Aplicar cambio de cantidad al backend (con debounce)
+    const handleCantidadChange = async (idItem, productoId, nuevaCantidad) => {
+        // Limpiar timer anterior si existe
+        if (timersRef.current[idItem]) {
+            clearTimeout(timersRef.current[idItem]);
+        }
+
+        // Validar que sea un número válido
+        const cantidad = nuevaCantidad === '' ? null : parseInt(nuevaCantidad, 10);
+        
+        if (nuevaCantidad === '' || isNaN(cantidad)) {
+            // Si está vacío o no es un número, no hacer nada todavía
+            return;
+        }
+
+        if (cantidad < 1) {
+            // Restaurar valor anterior si es menor a 1
+            setCantidadesLocales(prev => ({
+                ...prev,
+                [idItem]: items.find(i => i.idItem === idItem)?.cantidad || 1
+            }));
+            return;
+        }
+
+        // Usar debounce para esperar a que el usuario termine de escribir
+        timersRef.current[idItem] = setTimeout(async () => {
+            try {
+                await actualizarCantidad(idItem, productoId, cantidad);
+            } catch (error) {
+                // Si hay error, restaurar el valor anterior
+                const itemOriginal = items.find(i => i.idItem === idItem);
+                if (itemOriginal) {
+                    setCantidadesLocales(prev => ({
+                        ...prev,
+                        [idItem]: itemOriginal.cantidad
+                    }));
+                }
+            }
+        }, 500); // Esperar 500ms después de que el usuario deje de escribir
+    };
+
+    const handleIncrement = async (idItem, productoId, cantidadActual) => {
+        const nuevaCantidad = cantidadActual + 1;
+        setCantidadesLocales(prev => ({
+            ...prev,
+            [idItem]: nuevaCantidad
+        }));
+        await actualizarCantidad(idItem, productoId, nuevaCantidad);
+    };
+
+    const handleDecrement = async (idItem, productoId, cantidadActual) => {
+        if (cantidadActual > 1) {
+            const nuevaCantidad = cantidadActual - 1;
+            setCantidadesLocales(prev => ({
+                ...prev,
+                [idItem]: nuevaCantidad
+            }));
+            await actualizarCantidad(idItem, productoId, nuevaCantidad);
+        }
+    };
+
+    const handleCantidadBlur = async (idItem, productoId, valor) => {
+        // Limpiar timer si existe
+        if (timersRef.current[idItem]) {
+            clearTimeout(timersRef.current[idItem]);
+            delete timersRef.current[idItem];
+        }
+
+        const cantidad = valor === '' ? null : parseInt(valor, 10);
+        
+        if (valor === '' || isNaN(cantidad) || cantidad < 1) {
+            // Restaurar valor original si es inválido
+            const itemOriginal = items.find(i => i.idItem === idItem);
+            if (itemOriginal) {
+                setCantidadesLocales(prev => ({
+                    ...prev,
+                    [idItem]: itemOriginal.cantidad
+                }));
+            }
+            return;
+        }
+
+        // Aplicar cambio inmediatamente al hacer blur
+        try {
+            await actualizarCantidad(idItem, productoId, cantidad);
+        } catch (error) {
+            // Si hay error, restaurar el valor anterior
+            const itemOriginal = items.find(i => i.idItem === idItem);
+            if (itemOriginal) {
+                setCantidadesLocales(prev => ({
+                    ...prev,
+                    [idItem]: itemOriginal.cantidad
+                }));
+            }
+        }
+    };
+
     return (
         <div>
             {/* Header de navegación de la aplicación */}
             <Header />
 
             {/* Sección de los items del carrito */}
-            <div className="main-carrito">
-
-                <div className="items-cart-cont">
+            <div className="main-carrito" style={{ minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "" }}>
+                <div className="items-cart-cont" style={{ margin: "0 auto", padding: "0" }}>
                     <h1 style={{ fontSize: '1.5rem', marginBottom: '10px' }}>Tu Carrito</h1>
                     
                     {loading ? (
-                        <p>Cargando productos...</p>
+                        <div className="items-cart" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                            <p>Cargando carrito...</p>
+                        </div>
                     ) : items.length === 0 ? (
-                        <div className="items-cart" style={{ justifyContent: 'center' }}>
-                            <p>No hay productos en el carrito.</p>
+                        <div className="items-cart" style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", gap: "50px" }}>
+                            <h2>Tu carrito está vacío</h2>
+                            <p>Agrega productos para continuar.</p>
                         </div>
                     ) : (
-                        items.map((item) => (
-                            <div key={item.idItem} className="items-cart">
-                                <img 
-                                    src={item.imagenProducto || "/default-product.png"} 
-                                    alt={item.nombreProducto}
-                                    onError={(e) => { e.target.src = "/default-product.png" }} 
-                                />
-                                <div style={{ flex: 1 }}>
-                                    <h2 style={{ fontSize: '1.2rem', margin: '0 0 5px 0' }}>{item.nombreProducto}</h2>
-                                    <p style={{ margin: 0, color: '#666' }}>Precio unitario: ${item.precioUnitario}</p>
-                                    <p style={{ margin: 0, color: '#666' }}>Cantidad: {item.cantidad}</p>
-                                </div>
-                                <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                    <span style={{ fontWeight: 'bold', fontSize: '1.2rem', color: 'var(--green-650)' }}>
-                                        ${item.subtotal}
-                                    </span>
+                        items.map((item) => {
+                            const precio = item.precioUnitario || item.precio || 0;
+                            const subtotal = item.subtotal || (precio * (item.cantidad || 1));
+                            
+                            return (
+                                <div key={item.idItem} className="items-cart">
+                                    <img 
+                                        src={obtenerImagen(item)} 
+                                        alt={item.nombreProducto}
+                                        onError={(e) => {
+                                            if (!e.target.dataset.fallback) {
+                                                e.target.dataset.fallback = "true";
+                                                e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%23ddd' width='200' height='200'/%3E%3Ctext fill='%23999' font-family='sans-serif' font-size='14' dy='10.5' font-weight='bold' x='50%25' y='50%25' text-anchor='middle'%3ESin imagen%3C/text%3E%3C/svg%3E";
+                                            }
+                                        }}
+                                    />
+                                    <div className="prod-cart-container">
+                                        <div className="prod-cart-data-left">
+                                            <h3 className="prod-cart-nombre">{item.nombreProducto}</h3>
+                                            <div className="cantidad-controls">
+                                                <label htmlFor={`cantidad-${item.idItem}`} className="cantidad-label">
+                                                    Cantidad:
+                                                </label>
+                                                <div className="cantidad-input-group">
+                                                    <button 
+                                                        className="cantidad-btn cantidad-btn-decrement"
+                                                        onClick={() => handleDecrement(item.idItem, item.productoId, item.cantidad)}
+                                                        disabled={loading || item.cantidad <= 1}
+                                                        type="button"
+                                                    >
+                                                        −
+                                                    </button>
+                                                    <input
+                                                        id={`cantidad-${item.idItem}`}
+                                                        type="number"
+                                                        min="1"
+                                                        value={cantidadesLocales[item.idItem] ?? item.cantidad}
+                                                        onChange={(e) => {
+                                                            handleCantidadInputChange(item.idItem, e.target.value);
+                                                            handleCantidadChange(item.idItem, item.productoId, e.target.value);
+                                                        }}
+                                                        onBlur={(e) => {
+                                                            handleCantidadBlur(item.idItem, item.productoId, e.target.value);
+                                                        }}
+                                                        required
+                                                        disabled={loading}
+                                                        className="prod-cart-cantidad-input"
+                                                    />
+                                                    <button 
+                                                        className="cantidad-btn cantidad-btn-increment"
+                                                        onClick={() => handleIncrement(item.idItem, item.productoId, item.cantidad)}
+                                                        disabled={loading}
+                                                        type="button"
+                                                    >
+                                                        +
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="prod-cart-data-right">
+                                            <p className="prod-cart-precio">${formatearPrecio(precio)}</p>
+                                            <p className="prod-cart-subtotal">
+                                                Subtotal: ${formatearPrecio(subtotal)}
+                                            </p>
+                                        </div>
+                                    </div>
                                     <button 
                                         onClick={() => handleEliminarItem(item.idItem)}
-                                        style={{ 
-                                            background: 'transparent', 
-                                            border: 'none', 
-                                            color: '#dc3545', 
-                                            cursor: 'pointer', 
-                                            textDecoration: 'underline',
-                                            fontSize: '0.9rem'
+                                        style={{
+                                            padding: "8px 12px",
+                                            backgroundColor: "var(--red-500)",
+                                            color: "white",
+                                            border: "none",
+                                            borderRadius: "0 var(--border-radius-lg) var(--border-radius-lg) 0",
+                                            cursor: "pointer",
+                                            fontSize: "17px",
                                         }}
                                     >
-                                        Eliminar
+                                        <FaTrashCan />
                                     </button>
                                 </div>
-                            </div>
-                        ))
+                            );
+                        })
                     )}
                 </div>  
             
                 {/* Sección de confirmación y botón para realizar compra */}
-                <div className="cart-confirm">
-                    <h1>Resumen</h1>
-                    
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                        <span>Subtotal:</span>
-                        <span>${total}</span>
-                    </div>
-                    
-                    <div style={{ borderTop: '1px solid #eee', margin: '10px 0' }}></div>
-                    
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', fontWeight: 'bold', fontSize: '1.2rem' }}>
-                        <span>Total:</span>
-                        <span>${total}</span>
-                    </div>
+                {items.length > 0 && (
+                    <div className="cart-confirm">
+                        <h2 style={{ marginBottom: "20px" }}>Resumen de compra</h2>
+                        
+                        <div style={{ marginBottom: "20px" }}>
+                            {items.map((item) => {
+                                const precio = item.precioUnitario || item.precio || 0;
+                                const subtotal = item.subtotal || (precio * (item.cantidad || 1));
+                                const cantidad = item.cantidad || 1;
+                                
+                                return (
+                                    <div 
+                                        key={item.idItem}
+                                        className="cart-item-summary"
+                                    >
+                                        <span className="cart-item-summary-name">
+                                            {cantidad > 1 ? `${cantidad}x | ` : ""}{acortarNombre(item.nombreProducto)}
+                                        </span>
+                                        <span className="cart-item-summary-price">
+                                            ${formatearPrecio(subtotal)}
+                                        </span>
+                                    </div>
+                                );
+                            })}
+                        </div>
 
-                    <button 
-                        className="cart-btn" 
-                        onClick={irACheckout}
-                        disabled={items.length === 0}
-                        style={{ opacity: items.length === 0 ? 0.6 : 1 }}
-                    >
-                        Realizar compra
-                    </button>
-                    
-                    <Link to={`/tienda/${nombreTienda}/catalogo`} style={{ textAlign: 'center', marginTop: '15px', fontSize: '0.9rem', color: '#666' }}>
-                        Seguir comprando
-                    </Link>
-                </div>
+                        <div className="cart-total">
+                            <span>Total</span>
+                            <span>${formatearPrecio(total)}</span>
+                        </div>
+
+                        <button 
+                            className="cart-btn"
+                            onClick={handleCheckout}
+                            disabled={items.length === 0}
+                            style={{ 
+                                marginTop: "20px",
+                                opacity: items.length === 0 ? 0.6 : 1,
+                                cursor: items.length === 0 ? "not-allowed" : "pointer"
+                            }}
+                        >
+                            Confirmar compra
+                        </button>
+                        
+                        <Link 
+                            to={`/tienda/${nombreTienda}/catalogo`} 
+                            style={{ 
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                textAlign: "center", 
+                                marginTop: "15px", 
+                                fontSize: "0.9rem", 
+                                color: "#666",
+                                gap: "5px",
+                                textDecoration: "none",
+                                width: "fit-content",
+                                margin: "0 auto",
+                            }}
+                        >
+                            <FaShoppingBasket /> Seguir comprando
+                        </Link>
+                    </div>
+                )}
             </div>
 
             {/* Footer de la página */}
@@ -184,4 +402,5 @@ function Carrito() {
         </div>
     );
 };
-export default Carrito
+
+export default Carrito;

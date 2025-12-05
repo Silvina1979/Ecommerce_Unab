@@ -1,13 +1,15 @@
-import { Link, useParams, useLocation } from "react-router-dom";
+import { Link, useParams, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext.jsx";
 import { useTienda } from "../contexts/TiendaContext";
 import Nav_Categories from "./Nav_Category";
 
 import "../styles/Header.css";
 
-import { MdOutlineAddShoppingCart } from "react-icons/md";
+import { MdOutlineShoppingCart } from "react-icons/md";
 import { VscAccount } from "react-icons/vsc";
 import { FaSearch } from "react-icons/fa";
+import { FaTimes } from "react-icons/fa";
 
 
 
@@ -21,8 +23,11 @@ import { FaSearch } from "react-icons/fa";
 function Header() {
     const { nombreTienda } = useParams();
     const location = useLocation();
-    const { isAuthenticated, userType, tiendaUsuario } = useAuth();
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const { isAuthenticated, userType, tiendaUsuario, usuario } = useAuth();
     const { tienda } = useTienda();
+    const [terminoBusqueda, setTerminoBusqueda] = useState('');
     
     // Si no hay nombreTienda en params, intentar extraerlo de la URL como fallback
     const tiendaSlug = nombreTienda || location.pathname.split("/")[2];
@@ -36,6 +41,34 @@ function Header() {
     
     // Obtener el nombre de la tienda (nombreFantasia) o usar un valor por defecto
     const nombreTiendaDisplay = tienda?.nombreFantasia || "TradioGlobal";
+    
+    // Obtener el nombre del usuario para mostrar
+    const nombreUsuario = usuario?.nombre && usuario?.apellido 
+        ? `${usuario.nombre} ${usuario.apellido}`
+        : usuario?.nombre || usuario?.email || "Mi Cuenta";
+
+    // Sincronizar el término de búsqueda con la URL
+    useEffect(() => {
+        const q = searchParams.get('q') || '';
+        setTerminoBusqueda(q);
+    }, [searchParams]);
+
+    // Manejar búsqueda
+    const handleBusqueda = (e) => {
+        e.preventDefault();
+        if (tiendaSlug && terminoBusqueda.trim() !== '') {
+            navigate(`/tienda/${tiendaSlug}/catalogo?q=${encodeURIComponent(terminoBusqueda.trim())}`);
+        }
+    };
+
+    // Limpiar búsqueda
+    const handleLimpiarBusqueda = () => {
+        setTerminoBusqueda('');
+        // Si estamos en la página de catálogo, limpiar también la URL
+        if (location.pathname.includes('/catalogo') && tiendaSlug) {
+            navigate(`/tienda/${tiendaSlug}/catalogo`);
+        }
+    };
 
     return (
         <>
@@ -63,15 +96,28 @@ function Header() {
 
                     {/* Sección central: Barra de búsqueda de productos */}
                     <div className="header-search">
-                        <div className="search-box">
+                        <form className="search-box" onSubmit={handleBusqueda}>
                             <FaSearch className="lupa"/>
+                            <p style={{ margin: "0 3px", fontSize: "1.5rem", fontWeight: "500", color: "var(--green-900)" }}>|</p>
                             <input 
                                 type="text" 
                                 className="buscador" 
                                 placeholder="Buscar productos..."
                                 aria-label="Buscar productos"
+                                value={terminoBusqueda}
+                                onChange={(e) => setTerminoBusqueda(e.target.value)}
                             />
-                        </div>
+                            {terminoBusqueda && (
+                                <button
+                                    type="button"
+                                    onClick={handleLimpiarBusqueda}
+                                    className="search-clear-btn"
+                                    aria-label="Limpiar búsqueda"
+                                >
+                                    <FaTimes />
+                                </button>
+                            )}
+                        </form>
                     </div>
 
                     {/* Sección derecha: Enlaces a cuenta y carrito */}
@@ -92,7 +138,7 @@ function Header() {
                             <Link to={cuentaPath} className="link-login">
                                 <div className="cuenta-box">
                                     <VscAccount className="logo-cuenta" size={26}/>
-                                    <span>Mi Cuenta</span>
+                                    <span>{nombreUsuario}</span>
                                 </div>
                             </Link>
                         )}
@@ -103,7 +149,7 @@ function Header() {
                             className="link-carrito"
                         >
                             <div className="cart-icon">
-                                <MdOutlineAddShoppingCart size={25}/>
+                                <MdOutlineShoppingCart size={25}/>
                             </div>
                         </Link>
                     </div>

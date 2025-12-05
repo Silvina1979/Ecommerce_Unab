@@ -3,9 +3,12 @@ import { useParams } from "react-router-dom";
 import { getProductosByTienda, getProductosByCategoria } from "../services/productos";
 import { getCategoriasByTienda } from "../services/categorias";
 import { useTienda } from "../contexts/TiendaContext";
+import { useCarrito } from "../contexts/CarritoContext";
+import { MdOutlineAddShoppingCart } from "react-icons/md";
 import Header from "../components/Header.jsx";
 import Footer_Landing from "../../landing/components/Footer_Landing.jsx";
 import "../styles/Productos.css";
+import "../styles/Filtros.css";
 
 /**
  * Convierte un nombre de categoría a un slug para la URL
@@ -29,11 +32,15 @@ function categoriaToSlug(nombre) {
 function HomeCategoria() {
     const { nombreTienda, categoriaNombre } = useParams();
     const {tienda, loading: tiendaLoading } = useTienda();
+    const { agregarProducto } = useCarrito();
     const [productos, setProductos] = useState([]);
+    const [productosOriginales, setProductosOriginales] = useState([]);
     const [categorias, setCategorias] = useState([]);
     const [categoriaActual, setCategoriaActual] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [filtroOrden, setFiltroOrden] = useState('nuevos');
+    const [productosAgregados, setProductosAgregados] = useState(new Set());
 
     // Función para obtener la imagen principal (misma lógica que en Home.jsx)
     const obtenerImagen = (prod) => {
@@ -47,6 +54,14 @@ function HomeCategoria() {
         }
         // 3. Fallback
         return "/default-product.png";
+    };
+
+    /**
+     * Función para formatear precios con puntos como separadores de miles
+     */
+    const formatearPrecio = (precio) => {
+        const precioRedondeado = Math.round(precio || 0);
+        return precioRedondeado.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     };
 
     useEffect(() => {
@@ -74,10 +89,14 @@ function HomeCategoria() {
                     setCategoriaActual(categoria);
                     // Cargar productos de esa categoría
                     const productosData = await getProductosByCategoria(nombreTienda, categoria.id);
-                    setProductos(Array.isArray(productosData) ? productosData : []);
+                    const productosArray = Array.isArray(productosData) ? productosData : [];
+                    // Guardar productos originales y aplicar orden inicial
+                    setProductosOriginales(productosArray);
+                    aplicarFiltro(productosArray, filtroOrden);
                 } else {
                     setError("Categoría no encontrada");
                     setProductos([]);
+                    setProductosOriginales([]);
                 }
             } catch (err) {
                 console.error(err);
@@ -89,6 +108,52 @@ function HomeCategoria() {
 
         cargarDatos();
     }, [nombreTienda, categoriaNombre]);
+
+    // Función para aplicar filtros de ordenamiento
+    const aplicarFiltro = (productosData, tipoOrden) => {
+        let productosOrdenados = [...productosData];
+        
+        switch(tipoOrden) {
+            case 'a-z':
+                productosOrdenados.sort((a, b) => {
+                    const nombreA = (a.nombre || '').toLowerCase();
+                    const nombreB = (b.nombre || '').toLowerCase();
+                    return nombreA.localeCompare(nombreB);
+                });
+                break;
+            case 'z-a':
+                productosOrdenados.sort((a, b) => {
+                    const nombreA = (a.nombre || '').toLowerCase();
+                    const nombreB = (b.nombre || '').toLowerCase();
+                    return nombreB.localeCompare(nombreA);
+                });
+                break;
+            case 'precio-menor':
+                productosOrdenados.sort((a, b) => (a.precio || 0) - (b.precio || 0));
+                break;
+            case 'precio-mayor':
+                productosOrdenados.sort((a, b) => (b.precio || 0) - (a.precio || 0));
+                break;
+            case 'nuevos':
+                productosOrdenados.sort((a, b) => (b.id || 0) - (a.id || 0));
+                break;
+            case 'viejos':
+                productosOrdenados.sort((a, b) => (a.id || 0) - (b.id || 0));
+                break;
+            default:
+                productosOrdenados.sort((a, b) => (b.id || 0) - (a.id || 0));
+        }
+        
+        setProductos(productosOrdenados);
+    };
+
+    // Efecto para aplicar filtro cuando cambia
+    useEffect(() => {
+        if (productosOriginales.length > 0) {
+            aplicarFiltro(productosOriginales, filtroOrden);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [filtroOrden]);
 
     if (tiendaLoading || loading) {
         return (
@@ -115,14 +180,36 @@ function HomeCategoria() {
     return (
         <div>
             <Header />
-            <div className="main-catalogo">
-                <h2 style={{ maxWidth: "1200px", width: "100%" }}>
-                    {categoriaActual ? `Categoría: ${categoriaActual.nombre}` : "Categoría no encontrada"}
-                </h2>
+            <div className="main-catalogo" style={{ minHeight: "100vh" }}>
+                <div style={{ maxWidth: "1200px", width: "100%", padding: "10px 0px 10px 0px", borderBottom: "1px solid var(--gray-400)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "15px" }}>
+                    <h2 style={{ margin: "0px" }}>
+                        {categoriaActual ? `Categoría: ${categoriaActual.nombre}` : "Categoría no encontrada"}
+                    </h2>
+                    {productos.length > 0 && (
+                        <div className="filtros-container">
+                            <label htmlFor="filtro-orden-categoria" style={{ fontSize: "var(--font-size-base)" }}>
+                                Ordenar por:
+                            </label>
+                            <select 
+                                id="filtro-orden-categoria"
+                                value={filtroOrden}
+                                onChange={(e) => setFiltroOrden(e.target.value)}
+                                className="filtro-select"
+                            >
+                                <option value="nuevos">Más Nuevos</option>
+                                <option value="viejos">Más Viejos</option>
+                                <option value="a-z">Nombre A-Z</option>
+                                <option value="z-a">Nombre Z-A</option>
+                                <option value="precio-menor">Precio: Menor a Mayor</option>
+                                <option value="precio-mayor">Precio: Mayor a Menor</option>
+                            </select>
+                        </div>
+                    )}
+                </div>
                 {productos.length === 0 ? (
                     <p>No hay productos disponibles en esta categoría.</p>
                 ) : (
-                    <div className="grid-home-prod">
+                    <div className="grid-home-prod" style={{ marginTop: "20px" }}>
                         {productos.map((prod) => (
                             <div key={prod.id} className="prod-home-container">
                                 <img 
@@ -139,10 +226,28 @@ function HomeCategoria() {
                                     }}
                                 />
                                 <h2 className="prod-home-nombre">{prod.nombre}</h2>
-                                <p className="prod-home-precio">Precio: ${prod.precio}</p>
+                                <p className="prod-home-precio">Precio: ${formatearPrecio(prod.precio)}</p>
                                 <p className="prod-home-stock">Stock: {prod.stock}</p>
                                 <p className="prod-home-descripcion">Descripción: {prod.descripcion}</p>
-                                <button className="prod-home-btn-carrito">Agregar al carrito</button>
+                                <button 
+                                    style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }}
+                                    className={`prod-home-btn-carrito ${productosAgregados.has(prod.id) ? 'agregado' : ''}`}
+                                    onClick={() => {
+                                        // Activar animación inmediatamente
+                                        setProductosAgregados(prev => new Set(prev).add(prod.id));
+                                        setTimeout(() => {
+                                            setProductosAgregados(prev => {
+                                                const nuevo = new Set(prev);
+                                                nuevo.delete(prod.id);
+                                                return nuevo;
+                                            });
+                                        }, 2000);
+                                        // Llamar a la función de agregar (sin await para que sea instantáneo)
+                                        agregarProducto(prod.id, 1);
+                                    }}
+                                >
+                                    {productosAgregados.has(prod.id) ? '✓ Agregado' : <><MdOutlineAddShoppingCart size={25}/> Agregar al carrito</>}
+                                </button>
                             </div>
                         ))}
                     </div>

@@ -70,7 +70,7 @@
 }
 
 /* --- 5. BOTONES --- */
-.btn-primary {
+.btn-primary-auth {
     width: 100%;
     margin-top: 10px;
     padding: 12px 28px;
@@ -85,13 +85,15 @@
     transition: all 0.3s ease;
 }
 
-.btn-primary:hover {
+
+.btn-primary-auth:hover {
     background: var(--blue-500, #3b82f6);
     transform: translateY(-2px);
     box-shadow: 0 10px 15px -3px rgba(30, 64, 175, 0.4);
 }
 
-.btn-primary:disabled {
+
+.btn-primary-auth:disabled {
     background: var(--gray-400, #9ca3af);
     cursor: not-allowed;
     transform: none;
@@ -144,11 +146,11 @@
 /* Eliminar flechas en inputs numéricos */
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 
-  -webkit-appearance: none; 
-  margin: 0; 
+    -webkit-appearance: none; 
+    margin: 0; 
 }
 input[type=number] {
-  -moz-appearance: textfield;
+    -moz-appearance: textfield;
 }
 
 @keyframes fadeIn {

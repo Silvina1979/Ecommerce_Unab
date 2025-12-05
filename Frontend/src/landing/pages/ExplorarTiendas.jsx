@@ -1,14 +1,23 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
+import { useAuth } from "../../tienda/contexts/AuthContext.jsx";
 import { getAllTiendas } from "../../tienda/services/tiendas";
-import "../styles/ExplorarTiendas.css";
+import { FaStore, FaUser, FaSignOutAlt, FaSignInAlt, FaShoppingBag } from "react-icons/fa";
 import Footer_Landing from "../components/Footer_Landing";
-import { FaStore } from "react-icons/fa";
+import "../styles/ExplorarTiendas.css";
+import "../../MainStyles.css";
 
 function ExplorarTiendas() {
     const [tiendas, setTiendas] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { isAuthenticated, usuario, logout } = useAuth();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        logout();
+        navigate("/", { replace: true });
+    };
 
     useEffect(() => {
         cargarTiendas();
@@ -28,15 +37,39 @@ function ExplorarTiendas() {
 
     return (
         <div className="explorar-page">
-            {/* Header simple */}
-            <header className="explorar-header">
-                <div className="explorar-header-content">
-                    <Link to="/" className="explorar-logo">
+            {/* Header de navegación */}
+            <header className="landing-header">
+                <nav className="landing-nav">
+                    <Link to="/" className="landing-logo">
                         <FaStore />
                         <h1>TradioGlobal</h1>
                     </Link>
-                    <Link to="/" className="btn-volver">Volver al Inicio</Link>
-                </div>
+                    <div className="landing-nav-container">
+                        <div className="landing-nav-links-container">
+                            <a href="#" className="landing-nav-link">Acerca de</a>
+                            <a href="#" className="landing-nav-link">Soporte</a>
+                        </div>
+                        <div className="landing-nav-actions">
+                            {isAuthenticated ? (
+                                <>
+                                    <Link to="/login" className="btn-primary">
+                                        <FaUser />
+                                        Mi Cuenta
+                                    </Link>
+                                    <button onClick={handleLogout} className="btn-logout">
+                                        <FaSignOutAlt />
+                                        Cerrar Sesión
+                                    </button>
+                                </>
+                            ) : (
+                                <Link to="/login" className="btn-primary">
+                                    <FaSignInAlt />
+                                    Iniciar Sesión
+                                </Link>
+                            )}
+                        </div>
+                    </div>
+                </nav>
             </header>
 
             <main className="explorar-main">

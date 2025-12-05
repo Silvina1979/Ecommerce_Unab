@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./tienda/contexts/AuthContext";
 import { TiendaWrapper } from "./tienda/contexts/TiendaWrapper";
+import { CarritoProvider } from "./tienda/contexts/CarritoContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
 
 // Rutas de protected
@@ -10,8 +11,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Landing from "./landing/pages/Landing.jsx";
 import Login from "./landing/pages/Login.jsx";
 import ExplorarTiendas from "./landing/pages/ExplorarTiendas.jsx";
-import SolicitarRecuperacion from './landing/pages/SolicitarRecuperacion';
-import RestablecerContrasenia from './landing/pages/RestablecerContrasenia';
+import SolicitarRecuperacion from "./landing/pages/SolicitarRecuperacion.jsx";
+import RestablecerContrasenia from "./landing/pages/RestablecerContrasenia.jsx";
 
 // Rutas de admin
 import AdminLayout from "./admin/layouts/AdminLayout.jsx";
@@ -35,13 +36,16 @@ import EstadoPago from "./tienda/pages/EstadoPago.jsx";
 
 /**
 * Componente App
-* * Componente principal de la aplicación que configura el enrutamiento.
+* 
+* Componente principal de la aplicación que configura el enrutamiento.
 * Define todas las rutas disponibles en la aplicación utilizando React Router.
 * Cada ruta está asociada a un componente de página específico.
-* * Contextos proporcionados:
+* 
+* Contextos proporcionados:
 * - AuthProvider: Gestiona la autenticación y el token JWT
 * - TiendaWrapper: Proporciona el contexto de tienda, detectando automáticamente el nombreTienda de la URL
-* * Rutas disponibles:
+* 
+* Rutas disponibles:
 * - "/" - Página principal (Home)
 * - "/login" - Página de inicio de sesión
 * - "/catalogo" - Catálogo de productos
@@ -59,6 +63,8 @@ function App() {
           <AuthProvider>
             {/* Wrapper que proporciona el contexto de tienda a toda la aplicación */}
             <TiendaWrapper>
+              {/* Provider del carrito: Gestiona el carrito de compras */}
+              <CarritoProvider>
             {/* Contenedor de todas las rutas definidas */}
             <Routes>
 
@@ -82,7 +88,7 @@ function App() {
               <Route path="/tienda/:nombreTienda/checkout" element={<Checkout />} />
               <Route path="/tienda/:nombreTienda/usuarios" element={<VerUsuarios />} />
 
-              {/* NUEVAS RUTAS DE RETORNO DE MERCADO PAGO */}
+              {/* RUTAS DE RETORNO DE MERCADO PAGO */}
               <Route path="/compra-exitosa" element={<EstadoPago estado="exito" />} />
               <Route path="/compra-fallida" element={<EstadoPago estado="fallo" />} />
               <Route path="/compra-pendiente" element={<EstadoPago estado="pendiente" />} />
@@ -119,6 +125,7 @@ function App() {
                 {/* Más rutas del admin se agregarán aquí */}
               </Route>
             </Routes>
+              </CarritoProvider>
             </TiendaWrapper>
           </AuthProvider>
         </NotificationProvider>

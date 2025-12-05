@@ -13,6 +13,7 @@ import { LuExternalLink } from "react-icons/lu";
 function Footer_Landing() {
     const location = useLocation();
     const isLandingPage = location.pathname === "/";
+    const isTiendasPage = location.pathname === "/tiendas";
     
     const scrollToFeatures = (e) => {
         e.preventDefault();
@@ -33,7 +34,7 @@ function Footer_Landing() {
                             La solución integral para crear y gestionar tu tienda online.
                             Diseñada para vendedores y para compradores.
                         </p>
-                        {!isLandingPage && (
+                        {!isLandingPage && !isTiendasPage && (
                             <Link to="/" className="link-to-landing">
                                 <LuExternalLink /> Volver a la página principal
                             </Link>

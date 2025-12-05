@@ -31,8 +31,8 @@ function AdminConfiguracion() {
     const [nombreUrl, setNombreUrl] = useState("");
     const [descripcion, setDescripcion] = useState("");
     // AÑADIDO: Estado para el costo de envío
-    const [costoEnvio, setCostoEnvio] = useState(0); 
-    
+    const [costoEnvio, setCostoEnvio] = useState(0);
+
     // Estados de Logo
     const [logo, setLogo] = useState(null);
     const [logoPreview, setLogoPreview] = useState(null);
@@ -54,14 +54,11 @@ function AdminConfiguracion() {
     // Cargar datos de la tienda si está en modo edición
     useEffect(() => {
         if (isEditMode && tiendaUsuario) {
-            setNombreFantasia(tiendaUsuario.nombreFantasia || "");
-            setNombreUrl(tiendaUsuario.nombreUrl || "");
-            setDescripcion(tiendaUsuario.descripcion || "");
-            
-            // AÑADIDO: Cargar costo de envío
-            setCostoEnvio(tiendaUsuario.costoEnvio || 0);
-            
-            if (tiendaUsuario.logo) {
+            setNombreFantasia(tiendaUsuario.nombreFantasia || ""); // AÑADIDO: Cargar nombre de la tienda
+            setNombreUrl(tiendaUsuario.nombreUrl || ""); // AÑADIDO: Cargar nombre de URL
+            setDescripcion(tiendaUsuario.descripcion || ""); // AÑADIDO: Cargar descripción
+            setCostoEnvio(tiendaUsuario.costoEnvio || 0);  // AÑADIDO: Cargar costo de envío
+            if (tiendaUsuario.logo) { // AÑADIDO: Cargar logo
                 setLogoPreview(tiendaUsuario.logo);
             }
             // Cargar banners existentes
@@ -120,6 +117,7 @@ function AdminConfiguracion() {
         const files = Array.from(e.target.files);
         if (files.length > 0) {
             const validFiles = [];
+            
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
                 if (!file.type.startsWith("image/")) continue;
@@ -181,6 +179,7 @@ function AdminConfiguracion() {
         try {
             // Crear FormData para multipart/form-data
             const formData = new FormData();
+            
             // Crear objeto JSON con los datos de la tienda
             const tiendaData = {
                 nombreUrl: nombreUrl.trim(),
@@ -188,7 +187,6 @@ function AdminConfiguracion() {
                 descripcion: descripcion.trim() || null,
                 vendedorDni: typeof usuario.dni === 'number' ? usuario.dni : parseInt(usuario.dni),
                 banners: bannersExistentes, // Enviamos los banners viejos que quedan
-                
                 // AÑADIDO: Agregar costo de envío al objeto de datos
                 costoEnvio: parseFloat(costoEnvio) || 0,
             };
@@ -202,6 +200,7 @@ function AdminConfiguracion() {
             
             // Agregar el JSON como string en el campo "tienda"
             formData.append("tienda", JSON.stringify(tiendaData));
+            
             // Agregar el archivo del logo si se seleccionó uno
             if (logo) {
                 formData.append("file", logo);
@@ -237,9 +236,11 @@ function AdminConfiguracion() {
                     ? 'Los cambios se han guardado correctamente.' 
                     : '¡Tu tienda ha sido creada exitosamente!'
             });
+            
             // Limpiar estados de banners nuevos
             setNuevosBanners([]);
             setNuevosBannersPreview([]);
+
         } catch (error) {
             console.error("Error al guardar tienda:", error);
             console.error("Error completo:", {
@@ -248,6 +249,7 @@ function AdminConfiguracion() {
                 data: error.response?.data,
                 message: error.message
             });
+            
             // Mensajes de error más específicos
             let mensajeError = "Error al guardar la tienda. Intenta nuevamente.";
             if (error.response?.status === 500) {
@@ -297,7 +299,7 @@ function AdminConfiguracion() {
             <div className="configuracion-loading">
                 <div className="configuracion-loading-content">
                     <div className="configuracion-loading-title">Cargando...</div>
-                    <div className="configuracion-loading-text">Obteniendo información del usuario</div>
+                    <div className="configuracion-loading-text">Obteniendo información del usuario...</div>
                 </div>
             </div>
         );
@@ -403,7 +405,7 @@ function AdminConfiguracion() {
                         className="configuracion-textarea"
                     />
                 </div>
-                
+
                 {/* INICIO NUEVO CAMPO: Costo de Envío Estándar */}
                 <div className="configuracion-form-group">
                     <label className="configuracion-label">Costo de Envío Estándar ($)</label>
@@ -438,7 +440,7 @@ function AdminConfiguracion() {
                         key={isEditMode ? `logo-${tiendaUsuario?.nombreUrl}` : 'logo-new'}
                     />
                     <small className="configuracion-help-text">
-                        Formato: JPG, PNG, GIF. Tamaño máximo: 5MB. {isEditMode && "Puedes seleccionar un nuevo logo para reemplazar el actual."}
+                        Formato: JPG, PNG, GIF. Tamaño máximo: 5MB {isEditMode && " Puedes seleccionar un nuevo logo para reemplazar el actual."}
                     </small>
                 </div>
 

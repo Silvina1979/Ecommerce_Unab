@@ -8,6 +8,7 @@
 .landing-header {
     background: var(--bg-light-primary);
     box-shadow: var(--shadow-sm);
+    border-bottom: 1px solid rgb(196, 196, 196);
     position: sticky;
     height: 70px;
     top: 0;

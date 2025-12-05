@@ -1,8 +1,15 @@
-import "../styles/Productos.css";
 import { useEffect, useState } from "react";
 import { getProductoById } from "../services/productos";
 // --- FIX BACKEND: Importamos el carrusel para soportar múltiples imágenes ---
-import CarouselImg from "./CarouselImg"; 
+import { MdOutlineAddShoppingCart } from "react-icons/md";
+import CarouselImg from "./CarouselImg";
+import "../styles/Productos.css";
+
+/* Función para formatear precios con puntos como separadores de miles  */
+function formatearPrecio(precio) {
+    const precioRedondeado = Math.round(precio || 0);
+    return precioRedondeado.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+} 
 
 /**
 * Componente ProductoHome
@@ -61,13 +68,13 @@ function ProductoHome({ id }) {
             {/* Nombre del producto */}
             <h2 className="prod-home-nombre">{producto.nombre}</h2>
             {/* Precio del producto */}
-            <p className="prod-home-precio">Precio: ${producto.precio}</p>
+            <p className="prod-home-precio">Precio: ${formatearPrecio(producto.precio)}</p>
             {/* Stock disponible del producto */}
             <p className="prod-home-stock">Stock: {producto.stock}</p>
             {/* Descripción del producto */}
             <p className="prod-home-descripcion">Descripción: {producto.descripcion}</p>
             {/* Botón para agregar el producto al carrito */}
-            <button className="prod-home-btn-carrito">Agregar al carrito</button>
+            <button className="prod-home-btn-carrito"><MdOutlineAddShoppingCart size={25}/> Agreggar al carrito</button>
         </div>
     );
 }
