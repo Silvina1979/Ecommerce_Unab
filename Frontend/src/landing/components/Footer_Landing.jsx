@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import "../../styles/Footer_Landing.css";
+import "../styles/Footer_Landing.css";
 
 import { LuExternalLink } from "react-icons/lu";
 /**

@@ -2,6 +2,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../tienda/contexts/AuthContext.jsx";
 import { FaStore, FaShoppingBag, FaUser, FaSignOutAlt, FaSignInAlt, FaRocket, FaBox, FaShoppingCart, FaChartLine, FaCreditCard, FaShieldAlt, FaUserPlus } from "react-icons/fa";
 import "../styles/Footer_Landing.css";
+import "../../MainStyles.css";
+import "../styles/Landing.css";
 
 import Footer_Landing from "../components/Footer_Landing.jsx";
 
