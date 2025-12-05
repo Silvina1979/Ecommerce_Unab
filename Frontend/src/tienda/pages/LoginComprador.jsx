@@ -220,8 +220,15 @@ function LoginComprador() {
             if (!registerForm.email || !registerForm.email.includes('@')) {
                 throw new Error("Email inválido");
             }
+            // Validación de contraseña: mínimo 6 caracteres, al menos una mayúscula y un número
             if (registerForm.password.length < 6) {
                 throw new Error("La contraseña debe tener al menos 6 caracteres");
+            }
+            if (!/[A-Z]/.test(registerForm.password)) {
+                throw new Error("La contraseña debe contener al menos una letra mayúscula");
+            }
+            if (!/[0-9]/.test(registerForm.password)) {
+                throw new Error("La contraseña debe contener al menos un número");
             }
 
             // Convertir DNI a número
@@ -508,6 +515,9 @@ function LoginComprador() {
                                 />
                                 <label>Contraseña</label>
                             </div>
+                            <small style={{ color: '#666', fontSize: '0.85rem', marginTop: '-10px', marginBottom: '10px', display: 'block', paddingLeft: '40px' }}>
+                                La contraseña debe tener mínimo 6 caracteres, al menos una letra mayúscula y un número.
+                            </small>
                             <div className="password-details">
                                 <label>
                                     <input 

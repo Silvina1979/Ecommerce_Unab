@@ -29,9 +29,17 @@ const RestablecerContrasenia = () => {
       setError('Las contraseñas no coinciden.');
       return;
     }
-    // Validación básica de longitud
+    // Validación de contraseña: mínimo 6 caracteres, al menos una mayúscula y un número
     if (passwords.password.length < 6) {
         setError('La contraseña debe tener al menos 6 caracteres.');
+        return;
+    }
+    if (!/[A-Z]/.test(passwords.password)) {
+        setError('La contraseña debe contener al menos una letra mayúscula.');
+        return;
+    }
+    if (!/[0-9]/.test(passwords.password)) {
+        setError('La contraseña debe contener al menos un número.');
         return;
     }
 
@@ -76,7 +84,7 @@ const RestablecerContrasenia = () => {
                 type="password"
                 name="password"
                 className="form-input"
-                placeholder="Nueva contraseña"
+                placeholder="Mínimo 6 caracteres, una mayúscula y un número"
                 value={passwords.password}
                 onChange={handleChange}
                 required

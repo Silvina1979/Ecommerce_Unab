@@ -231,9 +231,9 @@ function Login() {
                 throw new Error("Email inválido");
             }
             
-            // Validación de contraseña: mínimo 8 caracteres, al menos una mayúscula y un número
-            if (registerForm.password.length < 8) {
-                throw new Error("La contraseña debe tener al menos 8 caracteres");
+            // Validación de contraseña: mínimo 6 caracteres, al menos una mayúscula y un número
+            if (registerForm.password.length < 6) {
+                throw new Error("La contraseña debe tener al menos 6 caracteres");
             }
             if (!/[A-Z]/.test(registerForm.password)) {
                 throw new Error("La contraseña debe contener al menos una letra mayúscula");
@@ -576,7 +576,7 @@ function Login() {
                                 </label>
                             </div>
                             <small style={{ color: '#666', fontSize: '0.85rem', marginTop: '-10px', marginBottom: '10px', display: 'block' }}>
-                                La contraseña debe tener mínimo 8 caracteres, al menos una letra mayúscula y un número.
+                                La contraseña debe tener mínimo 6 caracteres, al menos una letra mayúscula y un número.
                             </small>
                             <div className="submit-button-contenedor">
                                 <button type="submit" disabled={registerLoading}>

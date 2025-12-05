@@ -24,8 +24,17 @@ function PerfilSeguridad() {
             showError("Error", "Las contraseñas nuevas no coinciden");
             return;
         }
+        // Validación de contraseña: mínimo 6 caracteres, al menos una mayúscula y un número
         if (formData.newPassword.length < 6) {
             showError("Error", "La nueva contraseña debe tener al menos 6 caracteres");
+            return;
+        }
+        if (!/[A-Z]/.test(formData.newPassword)) {
+            showError("Error", "La contraseña debe contener al menos una letra mayúscula");
+            return;
+        }
+        if (!/[0-9]/.test(formData.newPassword)) {
+            showError("Error", "La contraseña debe contener al menos un número");
             return;
         }
 
@@ -74,7 +83,7 @@ function PerfilSeguridad() {
                             value={formData.newPassword}
                             onChange={handleChange}
                             className="configuracion-input"
-                            placeholder="Mínimo 6 caracteres"
+                            placeholder="Mínimo 6 caracteres, una mayúscula y un número"
                             required
                         />
                     </div>
