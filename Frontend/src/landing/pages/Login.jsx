@@ -473,7 +473,9 @@ function Login() {
                                     </div>
                                 )}
                             </div>
-                                <a className="password-forgot" href="#">¿Olvidaste tu contraseña?</a>
+                                <Link to="/forgot-password" className="password-forgot">
+                                ¿Olvidaste tu contraseña?
+                                </Link>
                         </form>
                     </div>
 

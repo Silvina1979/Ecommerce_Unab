@@ -10,6 +10,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Landing from "./landing/pages/Landing.jsx";
 import Login from "./landing/pages/Login.jsx";
 import ExplorarTiendas from "./landing/pages/ExplorarTiendas.jsx";
+import SolicitarRecuperacion from './landing/pages/SolicitarRecuperacion';
+import RestablecerContrasenia from './landing/pages/RestablecerContrasenia';
 
 // Rutas de admin
 import AdminLayout from "./admin/layouts/AdminLayout.jsx";
@@ -68,6 +70,8 @@ function App() {
 
               {/* Rutas públicas */}
               <Route path="/login" element={<Login />} />
+              <Route path="/forgot-password" element={<SolicitarRecuperacion />} />
+              <Route path="/reset-password" element={<RestablecerContrasenia />} />
 
               {/* Rutas de tienda con nombreTienda (para compradores) */}
               <Route path="/tienda/:nombreTienda/home" element={<Home />} />
