@@ -4,39 +4,30 @@ import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import "../styles/Nav_Category.css";
 import "../styles/Header.css";
-
 import { FaBars } from "react-icons/fa6";
 import { FaChevronRight } from "react-icons/fa";
 
 /**
  * Convierte un nombre de categoría a un slug para la URL
- * Reemplaza espacios con guiones y normaliza el texto
  */
 function categoriaToSlug(nombre) {
     return nombre
         .toLowerCase()
         .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "") // Eliminar acentos
-        .replace(/[^a-z0-9]+/g, "-") // Reemplazar espacios y caracteres especiales con guiones
-        .replace(/^-+|-+$/g, ""); // Eliminar guiones al inicio y final
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
 }
 
 /**
 * Componente Nav_Categories
-* 
-* Renderiza la barra de navegación de categorías de productos.
-* Obtiene las categorías desde la API al montar el componente
-* y las muestra en una lista junto con categorías estáticas adicionales.
 */
-
 function Nav_Categories() {
     const { nombreTienda } = useParams();
-    // Estado para almacenar las categorías obtenidas de la API
     const [categorias, setCategorias] = useState([]);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [error, setError] = useState(null);
 
-    // Función para ordenar categorías: "Otros" siempre al final
     const ordenarCategorias = (categorias) => {
         const otras = categorias.filter(cat => 
             cat.nombre.toLowerCase().trim() === 'otros'
@@ -61,7 +52,6 @@ function Nav_Categories() {
                 } else if (data && Array.isArray(data.content)) {
                     categoriasData = data.content;
                 }
-                // Ordenar categorías: "Otros" al final
                 setCategorias(ordenarCategorias(categoriasData));
             })
             .catch(err => {
@@ -70,52 +60,75 @@ function Nav_Categories() {
             });
     }, [nombreTienda]);
 
-        const toggleMenu = () => {
+    const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
+    };
+
+    // Función para cerrar el menú explícitamente
+    const closeMenu = () => {
+        setIsMenuOpen(false);
     };
 
     return (
         <div className="main-nav"> 
-                <div className="nav-cont-categ">
+            <div className="nav-cont-categ">
 
-                    {/* Sección izquierda: Icono de menú hamburguesa */}
-                    <div className="nav-menu" onMouseLeave={() => setIsMenuOpen(false)} onMouseEnter={toggleMenu}>
-                        <div className="faBar-icon" >
-                            <FaBars size={20}/>Categorías
-                        </div>
-                        
-                        {/* Menú desplegable */}
-                        {isMenuOpen && (
+                {/* Sección izquierda: Botón de menú hamburguesa */}
+                {/* FIX: Quitamos onMouseEnter/Leave y usamos onClick para móvil */}
+                <div className="nav-menu">
+                    <div 
+                        className="faBar-icon" 
+                        onClick={toggleMenu} // Evento click funciona en web y móvil
+                    >
+                        <FaBars size={20}/>
+                        <span>Categorías</span>
+                    </div>
+                    
+                    {/* Menú desplegable */}
+                    {isMenuOpen && (
+                        <>
+                            {/* Overlay transparente para cerrar al hacer clic afuera */}
+                            <div className="menu-overlay" onClick={closeMenu}></div>
+                            
                             <div className="menu-desplegable">
-                                <Link to={`/tienda/${nombreTienda}/catalogo`} className="menu-item" onClick={() => setIsMenuOpen(false)}>Todas las categorías <FaChevronRight /></Link>
+                                <Link 
+                                    to={`/tienda/${nombreTienda}/catalogo`} 
+                                    className="menu-item" 
+                                    onClick={closeMenu}
+                                >
+                                    Todas las categorías <FaChevronRight style={{fontSize: '0.8em', marginLeft: 'auto'}}/>
+                                </Link>
+                                
                                 {categorias.map((categoria) => (
                                     <Link 
                                         key={categoria.id} 
                                         to={`/tienda/${nombreTienda}/categoria/${categoriaToSlug(categoria.nombre)}`}
                                         className="menu-item categoria"
-                                        onClick={() => setIsMenuOpen(false)}
+                                        onClick={closeMenu}
                                     >
                                         {categoria.nombre}
                                     </Link>
                                 ))}
 
                                 {error && <p className="menu-error">{error}</p>}
-
                             </div>
-                        )}
-                    </div>
+                        </>
+                    )}
+                </div>
 
-                    {/* Renderiza las categorías obtenidas de la API */}
+                {/* Renderiza las categorías horizontales (Se ocultarán en móvil vía CSS) */}
+                <div className="desktop-categories">
                     {categorias.map((cat) => (
                         <Link 
                             key={cat.id} 
                             to={`/tienda/${nombreTienda}/categoria/${categoriaToSlug(cat.nombre)}`}
+                            className="categoria-link"
                         >
-                            <li className="categoria-item">{cat.nombre}</li>
+                            <span className="categoria-item">{cat.nombre}</span>
                         </Link>
                     ))} 
-                    {/* Categorías estáticas temporales */}
                 </div>
+            </div>
         </div>
     );
 }

@@ -13,6 +13,7 @@ import Login from "./landing/pages/Login.jsx";
 import ExplorarTiendas from "./landing/pages/ExplorarTiendas.jsx";
 import SolicitarRecuperacion from "./landing/pages/SolicitarRecuperacion.jsx";
 import RestablecerContrasenia from "./landing/pages/RestablecerContrasenia.jsx";
+import InfoPages from "./landing/pages/InfoPages.jsx";
 
 // Rutas de comprador (Asegúrate de que estos archivos existan en estas carpetas)
 import BuyerLayout from "./landing/components/BuyerLayout.jsx";
@@ -72,6 +73,7 @@ function App() {
 
               {/* Ruta raíz: Landing page */}
               <Route path="/" element={<Landing />} />
+              <Route path="/info/:pagina" element={<InfoPages />} />
 
               {/* Ruta para explorar tiendas */}
               <Route path="/tiendas" element={<ExplorarTiendas />} />

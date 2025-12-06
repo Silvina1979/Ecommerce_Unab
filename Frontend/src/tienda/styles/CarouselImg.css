@@ -1,19 +1,35 @@
+/* Base container style */
 .carousel-container {
-    /* CRÍTICO: Aumentamos el max-width para que se estire horizontalmente */
     width: 100%;
-    max-width: 1270px; /* Se ajusta al ancho del Header y contenedor principal */
-    height: 380px; /* Aumentamos un poco la altura para más presencia */
-    margin: 20px auto;
-    overflow: hidden;
     position: relative;
+    overflow: hidden;
+    background-color: #fff;
+}
+
+/* === ESTILO PARA BANNER PRINCIPAL (HOME) === */
+.carousel-container.banner-mode {
+    max-width: 1270px;
+    height: 380px;
+    /* FIX MARGEN: Reducido margen inferior de 20px a 5px */
+    margin: 20px auto 5px auto;
     border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* === ESTILO PARA IMÁGENES DE PRODUCTOS (CARDS) === */
+.carousel-container.product-mode {
+    height: 100%;
+    min-height: 220px;
+    margin: 0;
+    border-radius: 8px;
+    box-shadow: none;
 }
 
 .carousel-track {
     display: flex;
     width: 100%;
     height: 100%;
-    transition: transform 1.2s ease-in-out;
+    transition: transform 0.5s ease-in-out;
 }
 
 .carousel-slide {
@@ -26,15 +42,10 @@
 }
 
 .carousel-slide img {
-    /* CRÍTICO: Usamos 'fill' para estirar la imagen y que ocupe todo el espacio,
-       sin recortar los bordes, aunque se deforme ligeramente. */
     width: 100%;
     height: 100%;
-    object-fit: fill; 
-    object-position: center;
     display: block;
     image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
 }
 
 /* Botones */
@@ -42,17 +53,20 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(0,0,0,0.4);
+    background: rgba(0,0,0,0.3);
     border: none;
-    padding: 10px 7px;
-    color: var(--background-color);
-    font-size: 24px;
+    padding: 10px;
+    color: white;
+    font-size: 20px;
     cursor: pointer;
     border-radius: 50%;
     transition: 0.3s;
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 2;
+    width: 40px;
+    height: 40px;
 }
 
 .carousel-btn:hover {
@@ -60,9 +74,60 @@
 }
 
 .carousel-btn.left {
-    left: 15px;
+    left: 10px;
 }
 
 .carousel-btn.right {
-    right: 15px;
+    right: 10px;
+}
+
+/* Indicadores */
+.carousel-indicators {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 2;
+}
+
+.indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.indicator.active {
+    background-color: white;
+    transform: scale(1.2);
+}
+
+/* ==================================  RESPONSIVE  =========================================================== */
+
+@media screen and (max-width: 768px) {
+    .carousel-container.banner-mode {
+        height: 220px;
+        margin: 15px auto 5px auto; /* Menos margen en tablets también */
+        width: 95%;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .carousel-container.banner-mode {
+        height: 160px;
+        margin: 10px auto 5px auto;
+        border-radius: 8px;
+        width: 95%;
+    }
+
+    .carousel-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 16px;
+        background: rgba(0,0,0,0.2);
+    }
 }
