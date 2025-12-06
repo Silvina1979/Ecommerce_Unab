@@ -1,7 +1,19 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../tienda/contexts/AuthContext";
+import { getProductosByTienda } from "../../tienda/services/productos";
+import { getPedidosByTienda } from "../../tienda/services/pedidos";
 import "../styles/AdminDashboard.css";
+
+/**
+ * Función para formatear precios con puntos como separadores de miles
+ * @param {number} precio - Precio a formatear
+ * @returns {string} Precio formateado (ej: $1.000, $10.000)
+ */
+function formatearPrecio(precio) {
+    const precioRedondeado = Math.round(precio || 0);
+    return precioRedondeado.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
 
 /**
  * Dashboard del panel administrativo
@@ -14,6 +26,12 @@ function AdminDashboard() {
     const navigate = useNavigate();
     const [tienda, setTienda] = useState(null);
     const [loading, setLoading] = useState(true);
+    
+    // Estados para las estadísticas
+    const [totalProductos, setTotalProductos] = useState(0);
+    const [pedidosPendientes, setPedidosPendientes] = useState(0);
+    const [totalVendido, setTotalVendido] = useState(0);
+    const [loadingStats, setLoadingStats] = useState(true);
 
     useEffect(() => {
         // El contexto ya carga la tienda automáticamente al iniciar sesión
@@ -22,6 +40,71 @@ function AdminDashboard() {
             setTienda(tiendaUsuario);
         }
         setLoading(false);
+    }, [tiendaUsuario]);
+
+    // Cargar estadísticas cuando la tienda esté disponible
+    useEffect(() => {
+        const cargarEstadisticas = async () => {
+            if (!tiendaUsuario?.nombreUrl) {
+                setLoadingStats(false);
+                return;
+            }
+
+            try {
+                setLoadingStats(true);
+                const nombreTiendaActual = tiendaUsuario.nombreUrl;
+
+                // Cargar productos y pedidos en paralelo
+                const [productosData, pedidosData] = await Promise.all([
+                    getProductosByTienda(nombreTiendaActual),
+                    getPedidosByTienda(nombreTiendaActual)
+                ]);
+
+                // Normalizar datos de productos
+                let productos = [];
+                if (Array.isArray(productosData)) {
+                    productos = productosData;
+                } else if (productosData && Array.isArray(productosData.content)) {
+                    productos = productosData.content;
+                }
+
+                // Contar productos activos
+                const productosActivos = productos.filter(p => p.activo !== false);
+                setTotalProductos(productosActivos.length);
+
+                // Normalizar datos de pedidos
+                let pedidos = [];
+                if (Array.isArray(pedidosData)) {
+                    pedidos = pedidosData;
+                } else if (pedidosData && Array.isArray(pedidosData.content)) {
+                    pedidos = pedidosData.content;
+                }
+
+                // Contar pedidos pendientes (PENDIENTE o PAGADO)
+                const pendientes = pedidos.filter(p => 
+                    p.estado === 'PENDIENTE' || p.estado === 'PAGADO'
+                );
+                setPedidosPendientes(pendientes.length);
+
+                // Calcular total vendido (suma de pedidos PAGADOS y ENTREGADOS)
+                const vendidos = pedidos.filter(p => 
+                    p.estado === 'PAGADO' || p.estado === 'ENTREGADO'
+                );
+                const total = vendidos.reduce((sum, pedido) => sum + (pedido.total || 0), 0);
+                setTotalVendido(total);
+
+            } catch (error) {
+                console.error("Error cargando estadísticas:", error);
+                // En caso de error, mantener valores en 0
+                setTotalProductos(0);
+                setPedidosPendientes(0);
+                setTotalVendido(0);
+            } finally {
+                setLoadingStats(false);
+            }
+        };
+
+        cargarEstadisticas();
     }, [tiendaUsuario]);
 
     if (loading) {
@@ -69,19 +152,31 @@ function AdminDashboard() {
                     <div className="dashboard-stats-grid">
                         <div className="dashboard-stat-card products">
                             <h4>Productos</h4>
-                            <p className="dashboard-stat-value">0</p>
+                            {loadingStats ? (
+                                <p className="dashboard-stat-value">...</p>
+                            ) : (
+                                <p className="dashboard-stat-value">{totalProductos}</p>
+                            )}
                             <p className="dashboard-stat-label">Total de productos</p>
                         </div>
 
                         <div className="dashboard-stat-card orders">
                             <h4>Pedidos</h4>
-                            <p className="dashboard-stat-value">0</p>
+                            {loadingStats ? (
+                                <p className="dashboard-stat-value">...</p>
+                            ) : (
+                                <p className="dashboard-stat-value">{pedidosPendientes}</p>
+                            )}
                             <p className="dashboard-stat-label">Pedidos pendientes</p>
                         </div>
 
                         <div className="dashboard-stat-card sales">
                             <h4>Ventas</h4>
-                            <p className="dashboard-stat-value">$0</p>
+                            {loadingStats ? (
+                                <p className="dashboard-stat-value">...</p>
+                            ) : (
+                                <p className="dashboard-stat-value">${formatearPrecio(totalVendido)}</p>
+                            )}
                             <p className="dashboard-stat-label">Total vendido</p>
                         </div>
                     </div>
