@@ -8,21 +8,6 @@
 
 ---
 
-## 📋 Contenido
-
-1. [Descripción general](#descripción-general)
-2. [Tecnologías](#tecnologías)
-3. [Requisitos previos](#requisitos-previos)
-4. [Instalación y setup](#instalación-y-setup)
-5. [Ejecución](#ejecución)
-6. [Estructura del proyecto](#estructura-del-proyecto)
-7. [Funcionalidades principales](#funcionalidades-principales)
-8. [Endpoints de API](#endpoints-de-api)
-9. [Configuración de entorno](#configuración-de-entorno)
-10. [Testing](#testing)
-11. [Roadmap y mejoras futuras](#roadmap-y-mejoras-futuras)
-12. [Contribución y preguntas](#contribución-y-preguntas)
-
 ---
 
 ## 📌 Descripción general
@@ -233,78 +218,8 @@ Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd Frontend; npm 
 
 ---
 
-## 📁 Estructura del proyecto
 
-```
-Ecommerce_Unab/
-├── Backend/                                    # Spring Boot application
-│   ├── mvnw / mvnw.cmd                         # Maven Wrapper
-│   ├── pom.xml                                 # Dependencias y build config
-│   ├── Dockerfile                              # Containerización multi-stage
-│   ├── .env.example                            # Template de variables de entorno
-│   ├── src/
-│   │   ├── main/
-│   │   │   ├── java/back/ecommerce/
-│   │   │   │   ├── controllers/                # REST endpoints
-│   │   │   │   ├── services/                   # Lógica de negocio
-│   │   │   │   ├── repositories/               # Acceso a datos (JPA)
-│   │   │   │   ├── models/entities/            # Entidades JPA
-│   │   │   │   ├── dto/                        # Data Transfer Objects
-│   │   │   │   ├── config/                     # Configuraciones (Security, CORS, etc)
-│   │   │   │   └── exception/                  # Manejo de errores
-│   │   │   └── resources/
-│   │   │       ├── application.properties      # Config predeterminada (dev)
-│   │   │       ├── application-dev.properties  # Config desarrollo
-│   │   │       ├── application-prod.properties # Config producción
-│   │   │       └── data.sql                    # Datos iniciales (H2)
-│   │   └── test/
-│   │       └── java/back/ecommerce/            # Tests unitarios
-│   ├── test_prod.py                            # Script Python de prueba de integración
-│   └── target/                                 # Artefactos de build (no versionar)
-│
-├── Frontend/                                   # React + Vite application
-│   ├── package.json                            # Dependencias npm
-│   ├── vite.config.js                          # Configuración Vite
-│   ├── eslint.config.js                        # Linting
-│   ├── .env.example                            # Template de variables de entorno
-│   ├── public/                                 # Archivos estáticos públicos
-│   ├── src/
-│   │   ├── main.jsx                            # Entry point
-│   │   ├── App.jsx                             # Componente raíz
-│   │   ├── landing/                            # Páginas públicas (Login, register)
-│   │   │   ├── pages/
-│   │   │   ├── components/
-│   │   │   └── styles/
-│   │   ├── tienda/                             # Tienda (comprador)
-│   │   │   ├── pages/                          # Catálogo, carrito, pedidos
-│   │   │   ├── components/                     # Componentes reutilizables
-│   │   │   ├── services/                       # Llamadas a API
-│   │   │   ├── contexts/                       # Estado global (Auth, Tienda)
-│   │   │   └── styles/
-│   │   ├── admin/                              # Panel admin (vendedor)
-│   │   │   ├── pages/                          # Gestión de productos, categorías, pedidos
-│   │   │   ├── layouts/
-│   │   │   └── styles/
-│   │   ├── components/                         # Componentes globales
-│   │   ├── contexts/                           # Contextos globales (Notificaciones)
-│   │   └── utils/                              # Funciones utilitarias
-│   ├── dist/                                   # Build de producción (no versionar)
-│   └── node_modules/                           # Dependencias (no versionar)
-│
-├── .github/                                    # Configuraciones de GitHub
-├── .gitignore                                  # Archivos a ignorar en Git
-├── README.md                                   # Este archivo
-├── README_FULL.md                              # Documentación extendida
-├── API_ENDPOINTS_FOR_UNAB.txt                  # Listado de endpoints con ejemplos
-├── CURL_EXAMPLES.md                            # Ejemplos curl para testing
-├── PROJECT_EVALUATION.md                       # Evaluación y recomendaciones
-├── PRESENTATION_SLIDES.md                      # Slides para presentación
-└── ANALISIS_MEJORAS_IMPLEMENTADAS.md          # Análisis de estado del código
-```
-
----
-
-## ✨ Funcionalidades principales
+### ✨ Funcionalidades principales
 
 ### 🔐 Autenticación y autorización
 - Registro de usuarios (vendedores y compradores)
@@ -357,7 +272,6 @@ La API está documentada automáticamente por **springdoc-openapi**. Una vez que
 
 - Swagger UI: `http://localhost:8080/swagger-ui.html`
 
-Si preferís ejemplos curl exportables o un listado en texto, puedo generarlos desde los controladores y agregarlos al repositorio bajo petición.
 
 ### Ejemplos rápidos (mínimos)
 
@@ -440,39 +354,6 @@ cd Frontend
 npm run lint
 ```
 
----
-
-## 🚧 Roadmap y mejoras futuras
-
-### ✅ Completado
-- [x] Estructura base backend/frontend
-- [x] Autenticación JWT
-- [x] CRUD tiendas, productos, carrito, pedidos
-- [x] Integración MercadoPago
-- [x] Subida de imágenes a Cloudinary
-- [x] Validaciones frontend
-- [x] Sistema de notificaciones
-
-### 🔄 En progreso / Pendiente (Prioridad alta)
-- [ ] Migraciones DB con Flyway/Liquibase
-- [ ] Cambiar `ddl-auto=update` a `validate` en producción
-- [ ] Aumentar HikariCP pool size (actualmente 2, recomendado 20 en prod)
-- [ ] Endpoint `GET /api/auth/me`
-- [ ] Tests de integración con RestAssured
-- [ ] Pipeline CI/CD (GitHub Actions)
-- [ ] Paginación en endpoints `GET` grandes
-
-### 💡 Nice to have (Prioridad media)
-- [ ] Cache con Redis
-- [ ] Optimización de queries (`@EntityGraph`)
-- [ ] Refresh tokens JWT
-- [ ] Rate limiting
-- [ ] Swagger completo con todas las anotaciones
-- [ ] Componente LoadingButton reutilizable
-- [ ] Tests frontend con Vitest/React Testing Library
-- [ ] Modo offline con Service Workers
-
----
 
 ## 🐛 Troubleshooting
 
