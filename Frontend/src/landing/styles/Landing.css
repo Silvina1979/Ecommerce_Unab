@@ -32,7 +32,7 @@
     padding: 0 var(--padding-md);
 }
 
-.landing-logo {
+.landing-logo, .landing-logo-login {
     /* border: 1px solid red; */
     max-height: 70px;
     display: flex;
@@ -44,13 +44,13 @@
     font-weight: var(--font-weight-bold);
 }
 
-.landing-logo svg {
+.landing-logo svg, .landing-logo-login svg {
     font-size: var(--icon-size-lg);
     color: var(--icon-color-blue);
     flex-shrink: 0;
 }
 
-.landing-logo i {
+.landing-logo i, .landing-logo-login i {
     font-size: var(--icon-size-lg);
     color: var(--icon-color-blue);
 }
@@ -88,7 +88,7 @@
     font-size: var(--font-size-sm);
 }
 
-.btn-primary, .btn-primary-header, .btn-secondary-header, .btn-secondary, 
+.btn-primary, .btn-primary-login, .btn-primary-header, .btn-secondary-header, .btn-secondary, 
 .btn-logout, .btn-primary-inverse, .btn-secundary-inverse, .btn-primary-header-mobile, 
 .btn-secondary-header-mobile, .btn-primary-header-mobile, .btn-logout-mobile {
     /* border: 1px solid red; */
@@ -105,7 +105,7 @@
     text-decoration: none;
 }
 
-.btn-primary svg, .btn-secondary svg, .btn-logout svg, .btn-primary-inverse svg, 
+.btn-primary svg, .btn-primary-login svg, .btn-secondary svg, .btn-logout svg, .btn-primary-inverse svg, 
 .btn-secundary-inverse svg, .btn-primary-header-mobile svg, .btn-secondary-header-mobile svg, 
 .btn-primary-header-mobile svg, .btn-logout-mobile svg {
     flex-shrink: 0;
@@ -113,12 +113,12 @@
     height: 1em;
 }
 
-.btn-primary, .btn-primary-header, .btn-primary-header-mobile {
+.btn-primary, .btn-primary-login, .btn-primary-header, .btn-primary-header-mobile {
     background: var(--blue-500);
     color: var(--text-white);
 }
 
-.btn-primary:hover, .btn-primary-header:hover, .btn-primary-header-mobile:hover {
+.btn-primary:hover, .btn-primary-login:hover, .btn-primary-header:hover, .btn-primary-header-mobile:hover {
     background: var(--blue-700);
     transform: translateY(-2px);
 }
@@ -431,8 +431,12 @@
         font-size: var(--font-size-md);
         margin: 0 auto;
     }
-    .landing-logo svg {
+    .landing-logo svg, .landing-logo-login svg {
         font-size: var(--icon-size-md);
+    }
+
+    .btn-logout {
+        display: none !important;
     }
 
     .landing-header-mobile {

@@ -74,14 +74,8 @@ function Landing() {
                     </div>
                 </nav>
             </header>
+            {/* -------------- Header de navegación mobile -------------- */}
             <div className="landing-header-mobile">
-                <div className="landing-nav-links-container-mobile">
-                    <a href="#features" onClick={scrollToFeatures} className="landing-nav-link-mobile">
-                        Características
-                    </a>
-                    <a href="#" className="landing-nav-link-mobile">Acerca de</a>
-                    <a href="#" className="landing-nav-link-mobile">Soporte</a>
-                </div>
                 <div className="landing-nav-actions">
                     <Link to="/tiendas" className="btn-secondary-header-mobile">
                         <FaShoppingBag />

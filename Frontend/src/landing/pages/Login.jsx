@@ -2,8 +2,11 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import { useAuth } from "../../tienda/contexts/AuthContext.jsx";
 import { useNotifications } from "../../contexts/NotificationContext.jsx";
-// import "../styles/Login.css";
+
+import Footer_Landing from "../components/Footer_Landing.jsx";
+import "../styles/Login.css";
 import "../../MainStyles.css";
+import "../styles/Landing.css";
 
 import { FaStore, FaShoppingBag } from "react-icons/fa";
 import { IoPerson } from "react-icons/io5";
@@ -364,7 +367,7 @@ function Login() {
             return {
                 register: {
                     title: "¡Bienvenido!",
-                    message: "¿Aún no tienes una cuenta? Regístrate y comienza tu experiencia como vendedor.",
+                    message: "¿Aún no tienes una cuenta?",
                     button: "Regístrate"
                 },
                 login: {
@@ -383,14 +386,14 @@ function Login() {
             {/* Header de navegación */}
             <header className="landing-header">
                 <nav className="landing-nav">
-                    <Link to="/" className="landing-logo">
+                    <Link to="/" className="landing-logo-login">
                         <FaStore />
                         <h1>TradioGlobal</h1>
                     </Link>
                     <div className="landing-nav-actions">
                         <a href="#" className="landing-nav-link">Acerca de</a>
                         <a href="#" className="landing-nav-link">Soporte</a>
-                        <Link to="/tiendas" className="btn-primary">
+                        <Link to="/tiendas" className="btn-primary-login">
                             <FaShoppingBag />
                             Explorar Tiendas
                         </Link>
@@ -399,7 +402,7 @@ function Login() {
             </header>
 
             {/* Contenedor principal del login */}
-            <div className="main-login">
+            <div className="main-login-landing">
                 <div className={`all-login-container ${isRegisterActive ? "active" : ""}`}>
 
                     {/* FORM LOGIN */}
@@ -417,7 +420,6 @@ function Login() {
                                         value={loginForm.dni}
                                         onChange={handleLoginChange}
                                         pattern="^[0-9]{7,8}$" 
-                                        // ^\d{2}\.\d{3}\.\d{3}$
                                         inputMode="numeric" 
                                         maxLength="8"
                                         title="Ingrese un DNI válido (solo números, entre 7 y 8 dígitos)"
@@ -453,7 +455,6 @@ function Login() {
                                 <label>Contraseña</label>
                             </div>
                             <div className="password-details">
-                                <label><input type="checkbox" />Recuérdame </label>
                                 <label>
                                     <input 
                                         type="checkbox"
@@ -617,7 +618,22 @@ function Login() {
                         </div>
                     </div>
                 </div>
+
+                {/* Botón móvil para cambiar entre login y registro (fuera del contenedor) */}
+                <div className="mobile-toggle-btn-container">
+                    <p className="mobile-toggle-text">
+                        {isRegisterActive ? welcomeTexts.login.message : welcomeTexts.register.message}
+                    </p>
+                    <button 
+                        type="button" 
+                        className="mobile-toggle-btn"
+                        onClick={() => setIsRegisterActive(!isRegisterActive)}
+                    >
+                        {isRegisterActive ? welcomeTexts.login.button : welcomeTexts.register.button}
+                    </button>
+                </div>
             </div>
+            <Footer_Landing />
         </div>
     );
 }

@@ -29,6 +29,7 @@
 
 /* Grid */
 .tiendas-grid {
+    /* border: 3px solid red; */
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 30px;
@@ -191,6 +192,12 @@
 }
 
 /*-----seccion RESPONSIVA GRID-------*/
+@media (max-width: 650px) {
+    .tienda-card {
+        border: 3px solid red;
+    }
+}
+
 @media (max-width: 768px) {
     .tiendas-grid {
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -200,10 +207,36 @@
 
 @media (max-width: 480px) {
     .tiendas-grid {
+        margin: 0px 10px 10px 10px;
         grid-template-columns: 1fr;
         gap: 15px;
     }
 }
+
+/*-----seccion RESPONSIVA HEADER MOBILE-------*/
+@media (max-width: 480px) {
+    .landing-header-mobile {
+        display: block !important;
+        padding: var(--padding-md);
+        background-color: var(--bg-light-primary);
+        position: sticky;
+        top: 0;
+        z-index: var(--z-sticky);
+    }
+    
+    .btn-primary-header, .landing-nav-link-mobile {
+        display: none !important;
+    }
+    
+    .btn-primary-header-mobile, 
+    .btn-secondary-header-mobile, 
+    .btn-logout-mobile {
+        width: 170px;
+        margin: 0 auto;
+        text-align: center;
+        justify-content: center;
+    }
+}   
 
 /*-----seccion RESPONSIVA TARJETAS-------*/
 @media (max-width: 768px) {

@@ -5,6 +5,7 @@ import { getAllTiendas } from "../../tienda/services/tiendas";
 import { FaStore, FaUser, FaSignOutAlt, FaSignInAlt, FaShoppingBag } from "react-icons/fa";
 import Footer_Landing from "../components/Footer_Landing";
 import "../styles/ExplorarTiendas.css";
+import "../styles/Landing.css";
 import "../../MainStyles.css";
 
 function ExplorarTiendas() {
@@ -52,7 +53,7 @@ function ExplorarTiendas() {
                         <div className="landing-nav-actions">
                             {isAuthenticated ? (
                                 <>
-                                    <Link to="/login" className="btn-primary">
+                                    <Link to="/login" className="btn-primary-header">
                                         <FaUser />
                                         Mi Cuenta
                                     </Link>
@@ -71,7 +72,23 @@ function ExplorarTiendas() {
                     </div>
                 </nav>
             </header>
+            {/* -------------- Header de navegación mobile -------------- */}
+            {isAuthenticated && (
+                <div className="landing-header-mobile">
+                    <div className="landing-nav-actions">
+                        <Link to="/login" className="btn-primary-header-mobile">
+                            <FaUser />
+                            Mi Cuenta
+                        </Link>
+                        <button onClick={handleLogout} className="btn-logout-mobile">
+                            <FaSignOutAlt />
+                            Cerrar Sesión
+                        </button>
+                    </div>
+                </div>
+            )}
 
+            {/* -------------- Main -------------- */}
             <main className="explorar-main">
                 <div className="explorar-hero">
                     <h1 className="explorar-title">Nuestras Tiendas</h1>
