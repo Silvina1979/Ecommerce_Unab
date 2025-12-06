@@ -2,13 +2,16 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import { useAuth } from "../../tienda/contexts/AuthContext.jsx";
 import { useNotifications } from "../../contexts/NotificationContext.jsx";
-import "../../landing/styles/Login.css";
 import Header from "../components/Header.jsx";
-
+import "../../landing/styles/Login.css";
+import "../../landing/styles/Landing.css";
+import "../../MainStyles.css";
 import { IoPerson } from "react-icons/io5";
 import { FaLock } from "react-icons/fa";
 import { IoMail } from "react-icons/io5";
 import { FaAddressCard } from "react-icons/fa6";
+
+import Footer_Landing from "../../landing/components/Footer_Landing.jsx";
 
 /**
  * Componente Login Unificado
@@ -37,7 +40,6 @@ function LoginComprador() {
     
     // Estados para el formulario de login
     const [loginForm, setLoginForm] = useState({
-        dni: '',
         email: '',
         password: ''
     });
@@ -50,7 +52,8 @@ function LoginComprador() {
         nombre: '',
         apellido: '',
         email: '',
-        password: ''
+        password: '',
+        confirmPassword: ''
     });
     const [registerError, setRegisterError] = useState(null);
     const [registerSuccess, setRegisterSuccess] = useState(false);
@@ -102,9 +105,6 @@ function LoginComprador() {
         
         try {
             // Validaciones básicas
-            if (!loginForm.dni || !/^[0-9]{7,8}$/.test(loginForm.dni)) {
-                throw new Error("DNI inválido (debe tener entre 7 y 8 dígitos)");
-            }
             if (!loginForm.email || !loginForm.email.includes('@')) {
                 throw new Error("Email inválido");
             }
@@ -124,8 +124,9 @@ function LoginComprador() {
                 password: loginForm.password
             };
             
-            // Llamada al contexto de autenticación con el DNI para obtener el usuario completo
-            await login(credencialesLogin, parseInt(loginForm.dni));
+            // Llamada al contexto de autenticación (sin DNI para compradores)
+            const dniParaLogin = null;
+            await login(credencialesLogin, dniParaLogin);
             
             // Mostrar notificación de éxito (persistirá entre navegaciones)
             showSuccess('Inicio de sesión exitoso', '¡Bienvenido de nuevo!');
@@ -230,6 +231,11 @@ function LoginComprador() {
             if (!/[0-9]/.test(registerForm.password)) {
                 throw new Error("La contraseña debe contener al menos un número");
             }
+            
+            // Validar que las contraseñas coincidan
+            if (registerForm.password !== registerForm.confirmPassword) {
+                throw new Error("Las contraseñas no coinciden");
+            }
 
             // Convertir DNI a número
             const datosRegistro = {
@@ -267,7 +273,8 @@ function LoginComprador() {
                     nombre: '',
                     apellido: '',
                     email: '',
-                    password: ''
+                    password: '',
+                    confirmPassword: ''
                 });
                 
                 setTimeout(() => {
@@ -283,7 +290,8 @@ function LoginComprador() {
                     nombre: '',
                     apellido: '',
                     email: '',
-                    password: ''
+                    password: '',
+                    confirmPassword: ''
                 });
                 
                 setTimeout(() => {
@@ -303,7 +311,8 @@ function LoginComprador() {
                     nombre: '',
                     apellido: '',
                     email: '',
-                    password: ''
+                    password: '',
+                    confirmPassword: ''
                 });
                 
                 setTimeout(() => {
@@ -366,32 +375,14 @@ function LoginComprador() {
             <Header />
 
             {/* Contenedor principal del login */}
-            <div className="main-login">
+            <div className="main-login-tienda">
                 <div className={`all-login-container ${isRegisterActive ? "active" : ""}`}>
 
                     {/* FORM LOGIN */}
                     <div className="login-box">
                         <form onSubmit={handleLogin}>
                             <h2>Iniciar Sesión</h2>
-                            <div className="input-box">
-                                <span className="icon">
-                                    <FaAddressCard name="dni-outline" size={20}/>
-                                </span>
-                                <input 
-                                    type="text" 
-                                    name="dni"
-                                    value={loginForm.dni}
-                                    onChange={handleLoginChange}
-                                    pattern="^[0-9]{7,8}$" 
-                                    // ^\d{2}\.\d{3}\.\d{3}$
-                                    inputMode="numeric" 
-                                    maxLength="8"
-                                    title="Ingrese un DNI válido (solo números, entre 7 y 8 dígitos)"
-                                    required 
-                                />
-                                <label>DNI</label>
-                            </div>
-                            <div className="input-box">
+                            <div className="input-box-tienda">
                                 <span className="icon">
                                     <IoMail name="mail-outline" size={20}/>
                                 </span>
@@ -404,7 +395,7 @@ function LoginComprador() {
                                 />
                                 <label>Email</label>
                             </div>
-                            <div className="input-box">
+                            <div className="input-box-tienda">
                                 <span className="icon">
                                     <FaLock name="lock-closed-outline" size={18}/>
                                 </span>
@@ -418,7 +409,6 @@ function LoginComprador() {
                                 <label>Contraseña</label>
                             </div>
                             <div className="password-details">
-                                <label><input type="checkbox" />Recuérdame </label>
                                 <label>
                                     <input 
                                         type="checkbox"
@@ -428,7 +418,7 @@ function LoginComprador() {
                                     Mostrar contraseña
                                 </label>
                             </div>
-                            <div className="submit-button-contenedor">
+                            <div className="submit-button-contenedor-tienda">
                                 <button type="submit" disabled={loginLoading}>
                                     {loginLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
                                 </button>
@@ -438,7 +428,9 @@ function LoginComprador() {
                                     </div>
                                 )}
                             </div>
-                            <a className="password-forgot" href="#">¿Olvidaste tu contraseña?</a>
+                                <Link to="/forgot-password" className="password-forgot-tienda">
+                                ¿Olvidaste tu contraseña?
+                                </Link>
                         </form>
                     </div>
 
@@ -446,7 +438,7 @@ function LoginComprador() {
                     <div className="register-box">
                         <form onSubmit={handleRegister}>
                             <h2>Registrarse</h2>
-                            <div className="input-box">
+                            <div className="input-box-tienda">
                                 <span className="icon">
                                     <FaAddressCard name="dni-outline" size={20}/>
                                 </span>
@@ -463,7 +455,7 @@ function LoginComprador() {
                                 />
                                 <label>DNI</label>
                             </div>
-                            <div className="input-box">
+                            <div className="input-box-tienda">
                                 <span className="icon">
                                     <IoPerson name="mail-outline" size={20}/>
                                 </span>
@@ -476,7 +468,7 @@ function LoginComprador() {
                                 />
                                 <label>Nombre</label>
                             </div>
-                            <div className="input-box">
+                            <div className="input-box-tienda">
                                 <span className="icon">
                                     <IoPerson name="mail-outline" size={20}/>
                                 </span>
@@ -489,7 +481,7 @@ function LoginComprador() {
                                 />
                                 <label>Apellido</label>
                             </div>
-                            <div className="input-box">
+                            <div className="input-box-tienda">
                                 <span className="icon">
                                     <IoMail name="mail-outline" size={20}/>
                                 </span>
@@ -502,7 +494,7 @@ function LoginComprador() {
                                 />
                                 <label>Email</label>
                             </div>
-                            <div className="input-box">
+                            <div className="input-box-tienda">
                                 <span className="icon">
                                     <FaLock name="lock-closed-outline" size={18}/>
                                 </span>
@@ -515,9 +507,19 @@ function LoginComprador() {
                                 />
                                 <label>Contraseña</label>
                             </div>
-                            <small style={{ color: '#666', fontSize: '0.85rem', marginTop: '-10px', marginBottom: '10px', display: 'block', paddingLeft: '40px' }}>
-                                La contraseña debe tener mínimo 6 caracteres, al menos una letra mayúscula y un número.
-                            </small>
+                            <div className="input-box-tienda">
+                                <span className="icon">
+                                    <FaLock name="lock-closed-outline" size={18}/>
+                                </span>
+                                <input 
+                                    type={showRegisterPassword ? "text" : "password"}
+                                    name="confirmPassword"
+                                    value={registerForm.confirmPassword}
+                                    onChange={handleRegisterChange}
+                                    required 
+                                />
+                                <label>Confirmar Contraseña</label>
+                            </div>
                             <div className="password-details">
                                 <label>
                                     <input 
@@ -528,7 +530,10 @@ function LoginComprador() {
                                     Mostrar contraseña
                                 </label>
                             </div>
-                            <div className="submit-button-contenedor">
+                            <small style={{ color: '#666', fontSize: '0.85rem', marginTop: '-10px', marginBottom: '10px', display: 'block' }}>
+                                La contraseña debe tener mínimo 6 caracteres, al menos una letra mayúscula y un número.
+                            </small>
+                            <div className="submit-button-contenedor-tienda">
                                 <button type="submit" disabled={registerLoading}>
                                     {registerLoading ? "Registrando..." : "Registrarse"}
                                 </button>
@@ -548,26 +553,41 @@ function LoginComprador() {
                     </div>
 
                     {/* CONTENEDOR DE BIENVENIDA */}
-                    <div className="container-welcome">
+                    <div className="container-welcome-tienda">
                         {/* Panel para el registro */}
-                        <div className={`welcome-panel welcome-register ${isRegisterActive ? "hidden" : "visible"}`} aria-hidden={isRegisterActive}>
+                        <div className={`welcome-panel-tienda welcome-register ${isRegisterActive ? "hidden" : "visible"}`} aria-hidden={isRegisterActive}>
                             <h2>{welcomeTexts.register.title}</h2>
                             <p>{welcomeTexts.register.message}</p>
-                            <button type="button" className="welcome-btn" onClick={() => setIsRegisterActive(true)}>
+                            <button type="button" className="welcome-btn-tienda" onClick={() => setIsRegisterActive(true)}>
                                 {welcomeTexts.register.button}
                             </button>
                         </div>
                         {/* Panel para el login */}
-                        <div className={`welcome-panel welcome-login ${isRegisterActive ? "visible" : "hidden"}`} aria-hidden={!isRegisterActive}>
+                        <div className={`welcome-panel-tienda welcome-login ${isRegisterActive ? "visible" : "hidden"}`} aria-hidden={!isRegisterActive}>
                             <h2>{welcomeTexts.login.title}</h2>
                             <p>{welcomeTexts.login.message}</p>
-                            <button type="button" className="welcome-btn" onClick={() => setIsRegisterActive(false)}>
+                            <button type="button" className="welcome-btn-tienda" onClick={() => setIsRegisterActive(false)}>
                                 {welcomeTexts.login.button}
                             </button>
                         </div>
                     </div>
                 </div>
+
+                {/* Botón móvil para cambiar entre login y registro (fuera del contenedor) */}
+                <div className="mobile-toggle-btn-container">
+                    <p className="mobile-toggle-text">
+                        {isRegisterActive ? welcomeTexts.login.message : welcomeTexts.register.message}
+                    </p>
+                    <button 
+                        type="button" 
+                        className="mobile-toggle-btn-tienda"
+                        onClick={() => setIsRegisterActive(!isRegisterActive)}
+                    >
+                        {isRegisterActive ? welcomeTexts.login.button : welcomeTexts.register.button}
+                    </button>
+                </div>
             </div>
+            <Footer_Landing />
         </div>
     );
 }

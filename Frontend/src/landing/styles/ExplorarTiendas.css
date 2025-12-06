@@ -192,11 +192,6 @@
 }
 
 /*-----seccion RESPONSIVA GRID-------*/
-@media (max-width: 650px) {
-    .tienda-card {
-        border: 3px solid red;
-    }
-}
 
 @media (max-width: 768px) {
     .tiendas-grid {

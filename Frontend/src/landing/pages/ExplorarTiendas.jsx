@@ -47,8 +47,8 @@ function ExplorarTiendas() {
                     </Link>
                     <div className="landing-nav-container">
                         <div className="landing-nav-links-container">
-                            <a href="#" className="landing-nav-link">Acerca de</a>
-                            <a href="#" className="landing-nav-link">Soporte</a>
+                            <Link to="/info/acerca" className="landing-nav-link">Acerca de</Link>
+                            <Link to="/info/ayuda" className="landing-nav-link">Soporte</Link>
                         </div>
                         <div className="landing-nav-actions">
                             {isAuthenticated ? (

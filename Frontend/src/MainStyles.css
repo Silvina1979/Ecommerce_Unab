@@ -162,6 +162,7 @@
     --gradient-green-light: linear-gradient(135deg, var(--green-400) 0%, var(--green-600) 100%);
     --gradient-green-dark: linear-gradient(135deg, var(--green-700) 0%, var(--green-900) 100%);
     --gradient-green-soft: linear-gradient(135deg, var(--green-100) 0%, var(--green-300) 100%);
+    --gradient-green-soft-2: linear-gradient(135deg, var(--green-300) 0%, var(--green-100) 100%);
     --gradient-green-vertical: linear-gradient(180deg, var(--green-500) 0%, var(--green-700) 100%);
     --gradient-green-vertical-soft: linear-gradient(180deg, var(--green-100) 0%, var(--green-400) 100%);
     --gradient-green-vertical-soft-2: linear-gradient(180deg, var(--green-400) 0%, var(--green-100) 100%);

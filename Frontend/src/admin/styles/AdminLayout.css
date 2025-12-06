@@ -33,8 +33,6 @@
     font-weight: bold;
     margin: 0;
     padding: 10px 0 20px;
-    /*word-break: break-word;*/
-    /* white-space: normal ;*/
 }
 
 .admin-sidebar-user {
@@ -119,7 +117,7 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 0.5rem;
+    font-size: 1rem;
     font-weight: bold;
     transition: background-color 0.2s;
 }
@@ -136,7 +134,7 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 0.5rem;
+    font-size: 1rem;
 }
 
 .btn-landing-link:hover {
@@ -380,6 +378,23 @@
 📱📱 RESPONSIVE MOBILE — 480px y menos (iPhone SE / Android)
    ========================================================= */
 @media (max-width: 480px) {
+
+    .btn-tienda-link {
+        font-size: 0.8rem;
+        text-align: center;
+    }
+
+    .btn-landing-link {
+        font-size: 0.6rem;
+        padding: 5px 10px;
+        width: 60px;
+    }
+    
+    .admin-sidebar-footer-logout {
+        font-size: 0.6rem;
+        padding: 5px 10px;
+        width: 60px;
+    }
 
     /* Sidebar aún más angosta y todo más pequeño */
     .admin-sidebar {

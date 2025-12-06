@@ -73,6 +73,7 @@
 .landing-nav-link {
     color: var(--text-gray-2);
     text-decoration: none;
+    font-size: var(--font-size-xl);
     font-weight: var(--font-weight-medium);
     transition: var(--main-transition-all-normal);
 }

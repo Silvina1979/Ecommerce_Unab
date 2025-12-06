@@ -391,8 +391,8 @@ function Login() {
                         <h1>TradioGlobal</h1>
                     </Link>
                     <div className="landing-nav-actions">
-                        <a href="#" className="landing-nav-link">Acerca de</a>
-                        <a href="#" className="landing-nav-link">Soporte</a>
+                        <Link to="/info/acerca" className="landing-nav-link">Acerca de</Link>
+                        <Link to="/info/ayuda" className="landing-nav-link">Soporte</Link>
                         <Link to="/tiendas" className="btn-primary-login">
                             <FaShoppingBag />
                             Explorar Tiendas
