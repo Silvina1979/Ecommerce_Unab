@@ -211,3 +211,130 @@
     margin-top: 8px;
 }
 
+
+@media (max-width: 480px) {
+
+    .configuracion-title {
+        font-size: 1.4rem;
+        text-align: center;
+    }
+
+    .configuracion-form {
+        padding: 18px;
+        max-width: 100%;
+    }
+
+    .configuracion-form-group {
+        margin-bottom: 15px;
+    }
+
+    .configuracion-label,
+    .configuracion-label-flex {
+        font-size: 0.95rem;
+    }
+
+    .configuracion-input,
+    .configuracion-textarea,
+    .configuracion-file-input {
+        font-size: 0.95rem;
+        padding: 10px;
+    }
+
+    .configuracion-logo-preview img {
+        max-width: 150px;
+        max-height: 150px;
+    }
+
+    /* BOTONES 100% */
+    .configuracion-form-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .configuracion-btn {
+        width: 100%;
+        padding: 12px;
+        font-size: 1rem;
+        text-align: center;
+    }
+
+    /* Reducir padding del contenedor de errores */
+    .configuracion-error-container {
+        padding: 20px;
+        max-width: 100%;
+    }
+
+    .configuracion-error-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+}
+/* ============================================
+   📱📲 RESPONSIVE – TABLETS (481px – 768px)
+   ============================================ */
+@media (max-width: 768px) {
+
+    .configuracion-title {
+        font-size: 1.6rem;
+        text-align: center;
+    }
+
+    .configuracion-form {
+        padding: 22px;
+        max-width: 100%;
+    }
+
+    .configuracion-form-actions {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .configuracion-btn {
+        width: 100%;
+        padding: 14px;
+        font-size: 1.05rem;
+    }
+
+    .configuracion-input,
+    .configuracion-textarea,
+    .configuracion-file-input {
+        font-size: 1rem;
+    }
+
+    .configuracion-logo-preview img {
+        max-width: 180px;
+    }
+
+    .configuracion-error-container {
+        padding: 25px;
+        max-width: 100%;
+    }
+
+    .configuracion-error-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .configuracion-error-btn {
+        width: 100%;
+    }
+}
+
+
+
+/* ============================================
+   💻 LAPTOPS PEQUEÑAS (≤ 1024px)
+   ============================================ */
+@media (max-width: 1024px) {
+
+    .configuracion-form {
+        max-width: 90%;
+        margin: 0 auto;
+    }
+
+    .configuracion-error-container {
+        max-width: 90%;
+        margin: 0 auto;
+    }
+}

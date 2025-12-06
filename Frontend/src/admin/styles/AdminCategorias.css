@@ -327,3 +327,119 @@
     margin-top: 8px;
 }
 
+/* ============================================
+   📱 RESPONSIVE – CELULARES (≤ 480px)
+   ============================================ */
+@media (max-width: 480px) {
+
+    .categorias-container {
+        padding: 15px;
+    }
+
+    .categorias-title {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+
+    .categorias-subtitle {
+        font-size: 1rem;
+        text-align: center;
+    }
+
+    .categorias-form-container,
+    .categorias-list-container {
+        padding: 20px;
+        max-width: 100%;
+    }
+
+    .categorias-form-actions {
+        flex-direction: column;
+    }
+
+    .categorias-btn {
+        width: 100%;
+        padding: 12px;
+        font-size: 1rem;
+    }
+
+    .categorias-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .categorias-item-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .categorias-edit-input {
+        width: 100%;
+    }
+
+    .categorias-loading {
+        min-height: 250px;
+    }
+}
+
+/* ============================================
+   📱📲 RESPONSIVE – TABLETS (481px – 768px)
+   ============================================ */
+@media (max-width: 768px) {
+
+    .categorias-container {
+        padding: 20px;
+    }
+
+    .categorias-title {
+        text-align: center;
+        font-size: 1.8rem;
+    }
+
+    .categorias-subtitle {
+        text-align: center;
+        font-size: 1.1rem;
+    }
+
+    .categorias-form-container,
+    .categorias-list-container {
+        padding: 25px;
+        max-width: 100%;
+    }
+
+    .categorias-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .categorias-item-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .categorias-btn {
+        font-size: 1rem;
+        padding: 10px 18px;
+    }
+
+    .categorias-edit-input {
+        width: 100%;
+    }
+}
+
+/* ============================================
+   💻 RESPONSIVE – LAPTOPS PEQUEÑAS (≤ 1024px)
+   ============================================ */
+@media (max-width: 1024px) {
+
+    .categorias-form-container,
+    .categorias-list-container {
+        max-width: 90%;
+        margin: 0 auto 30px auto;
+    }
+
+    .categorias-btn {
+        font-size: 1rem;
+    }
+}
